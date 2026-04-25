@@ -1,7 +1,8 @@
-// Profile controller: user profile, achievements, and public routine summaries.
-const { User, WorkoutLog, Achievement, Routine } = require('../models');
+const { User, WorkoutLog, Achievement, Routine, ProgressPhoto } = require('../models');
 const achievementService = require('../services/achievementService');
 const azureStorageService = require('../services/azureStorageService');
+const mailService = require('../services/mailService');
+const bcrypt = require('bcryptjs');
 
 exports.getProfile = async (req, res) => {
   try {
@@ -207,3 +208,83 @@ function calculateLevel(totalVolume) {
 
   return { number: 25, title: 'Legend', progress: 100 };
 }
+
+// NEW: Request Email Change (sends code to NEW email)
+exports.requestEmailChange = async (req, res) => {
+  const { newEmail } = req.body;
+  if (!newEmail) return res.status(400).json({ message: 'New email is required.' });
+
+  try {
+    // Check if email already taken
+    const existing = await User.findOne({ where: { email: newEmail } });
+    if (existing) return res.status(400).json({ message: 'This email is already in use.' });
+
+    // Generate code
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    req.user.pending_email = newEmail;
+    req.user.verification_code = code;
+    await req.user.save();
+
+    await mailService.sendVerificationCode(newEmail, code);
+    res.json({ message: 'Verification code sent to your new email address.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// NEW: Verify Email Change
+exports.verifyEmailChange = async (req, res) => {
+  const { code } = req.body;
+  if (!code) return res.status(400).json({ message: 'Verification code is required.' });
+
+  try {
+    if (req.user.verification_code !== code || !req.user.pending_email) {
+      return res.status(400).json({ message: 'Invalid or expired verification code.' });
+    }
+
+    req.user.email = req.user.pending_email;
+    req.user.pending_email = null;
+    req.user.verification_code = null;
+    await req.user.save();
+
+    res.json({ 
+        message: 'Email updated successfully.',
+        data: { email: req.user.email } 
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// NEW: Delete Account (Full Wipe)
+exports.deleteAccount = async (req, res) => {
+  const { password } = req.body;
+  
+  // Google accounts don't have passwords stored here, but they should confirm via other means if needed.
+  // For now, let's enforce password check for standard accounts.
+  if (!req.user.google_id) {
+    if (!password) return res.status(400).json({ message: 'Password is required to delete account.' });
+    const isMatch = await bcrypt.compare(password, req.user.password);
+    if (!isMatch) return res.status(401).json({ message: 'Incorrect password.' });
+  }
+
+  try {
+    // 1. Delete all progress photos from Azure
+    const photos = await ProgressPhoto.findAll({ where: { user_id: req.user.id } });
+    for (const p of photos) {
+      await azureStorageService.deleteFromAzure(p.photo_path);
+    }
+
+    // 2. Delete avatar from Azure
+    if (req.user.avatar_url && req.user.avatar_url.includes('.blob.core.windows.net/')) {
+      await azureStorageService.deleteFromAzure(req.user.avatar_url);
+    }
+
+    // 3. Delete user record (Cascade will handle WorkoutLogs, Routines, DB entries)
+    await req.user.destroy();
+
+    res.json({ message: 'Account and all associated data deleted permanently.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

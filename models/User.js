@@ -68,6 +68,13 @@ const User = sequelize.define('User', {
     allowNull: true,
     unique: true,
   },
+  pending_email: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    validate: {
+      isEmail: true,
+    },
+  },
 }, {
   tableName: 'users',
   underscored: true,

@@ -15,35 +15,35 @@ const ChatSession = require('./ChatSession');
 const ChatMessage = require('./ChatMessage');
 
 // User-owned resources.
-User.hasMany(Program, { foreignKey: 'user_id' });
+User.hasMany(Program, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 Program.belongsTo(User, { foreignKey: 'user_id' });
 
-User.hasMany(Routine, { foreignKey: 'user_id' });
+User.hasMany(Routine, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 Routine.belongsTo(User, { foreignKey: 'user_id' });
 
-User.hasMany(WorkoutLog, { foreignKey: 'user_id' });
+User.hasMany(WorkoutLog, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 WorkoutLog.belongsTo(User, { foreignKey: 'user_id' });
 
-User.hasMany(Exercise, { foreignKey: 'user_id', as: 'customExercises' });
+User.hasMany(Exercise, { foreignKey: 'user_id', as: 'customExercises', onDelete: 'CASCADE' });
 Exercise.belongsTo(User, { foreignKey: 'user_id' });
 
-User.hasMany(Measurement, { foreignKey: 'user_id' });
+User.hasMany(Measurement, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 Measurement.belongsTo(User, { foreignKey: 'user_id' });
 
-User.hasMany(ProgressPhoto, { foreignKey: 'user_id' });
+User.hasMany(ProgressPhoto, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 ProgressPhoto.belongsTo(User, { foreignKey: 'user_id' });
 
-User.hasOne(UserSetting, { foreignKey: 'user_id', as: 'settings' });
+User.hasOne(UserSetting, { foreignKey: 'user_id', as: 'settings', onDelete: 'CASCADE' });
 UserSetting.belongsTo(User, { foreignKey: 'user_id' });
 
-User.belongsToMany(Achievement, { through: UserAchievement, foreignKey: 'user_id' });
+User.belongsToMany(Achievement, { through: UserAchievement, foreignKey: 'user_id', onDelete: 'CASCADE' });
 Achievement.belongsToMany(User, { through: UserAchievement, foreignKey: 'achievement_id' });
 
 // Favorites is a many-to-many relation stored in `exercise_favorites` join table.
-User.belongsToMany(Exercise, { through: 'exercise_favorites', as: 'favoriteExercises', foreignKey: 'user_id' });
+User.belongsToMany(Exercise, { through: 'exercise_favorites', as: 'favoriteExercises', foreignKey: 'user_id', onDelete: 'CASCADE' });
 Exercise.belongsToMany(User, { through: 'exercise_favorites', as: 'favoritedBy', foreignKey: 'exercise_id' });
 
-User.hasMany(ChatSession, { foreignKey: 'user_id' });
+User.hasMany(ChatSession, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 ChatSession.belongsTo(User, { foreignKey: 'user_id' });
 
 // Program and routine structure.
