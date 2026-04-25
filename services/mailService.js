@@ -17,6 +17,8 @@ class MailService {
     const config = {
       host: process.env.MAIL_HOST || 'smtp.gmail.com',
       port: port,
+      // Strictly force IPv4 to avoid ENETUNREACH errors in environments without IPv6 routing
+      family: 4,
       // Force secure: false for port 587 to use STARTTLS
       secure: port === 465, 
       auth: {
