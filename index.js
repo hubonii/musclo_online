@@ -42,6 +42,10 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 
+// Passport initialization
+const passport = require('./config/passport');
+app.use(passport.initialize());
+
 // Serve uploaded media from predictable public URLs.
 // Explicit CORP header so cross-origin frontends can load these assets.
 app.use('/storage', (req, res, next) => {
