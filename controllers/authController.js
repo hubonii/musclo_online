@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const mailService = require('../services/mailService');
 const crypto = require('crypto');
+const { Op } = require('sequelize');
 
 // JWT helper that signs user id payload with 30-day expiry.
 const generateToken = (id) => {
@@ -193,7 +194,7 @@ exports.resetPassword = async (req, res) => {
       where: { 
         email, 
         reset_code: code,
-        reset_code_expires_at: { [require('sequelize').Op.gt]: new Date() }
+        reset_code_expires_at: { [Op.gt]: new Date() }
       } 
     });
 

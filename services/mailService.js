@@ -14,6 +14,10 @@ class MailService {
   }
 
   async sendMail(to, subject, html) {
+    if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
+      console.warn('Mail Service: Missing credentials. Email not sent.');
+      return null;
+    }
     try {
       const info = await this.transporter.sendMail({
         from: `"Musclo AI" <${process.env.MAIL_FROM || process.env.MAIL_USER}>`,

@@ -85,16 +85,24 @@ const startServer = async () => {
     await sequelize.authenticate();
     console.log('Database connected successfully.');
 
-    // Syncs model definitions with DB tables before serving requests.
-    await sequelize.sync();
-
-    // Seeds baseline exercise catalog if entries are missing.
-    const seedExercises = require('./seeders/detectAnatomySplit');
-    await seedExercises();
-
+    // Start listening as soon as DB is authenticated to pass health checks
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
+
+    // Run sync and seed in background so we don't block the port opening
+    (async () => {
+      try {
+        console.log('Syncing database models...');
+        await sequelize.sync();
+        
+        console.log('Seeding baseline data...');
+        const seedExercises = require('./seeders/detectAnatomySplit');
+        await seedExercises();
+      } catch (err) {
+        console.error('Background startup task failed:', err);
+      }
+    })();
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
