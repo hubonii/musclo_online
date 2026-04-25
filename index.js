@@ -18,7 +18,7 @@ app.use(helmet({
 }));
 
 // Allow one or more frontend origins and keep cookies enabled for auth.
-const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://musclo.tech', 'https://www.musclo.tech'];
+const defaultOrigins = ['https://musclo.tech', 'https://www.musclo.tech', 'https://musclo-react.vercel.app'];
 const envOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
 const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
 
