@@ -79,8 +79,11 @@ exports.register = async (req, res) => {
       verification_code: verificationCode
     });
 
-    // Send verification email in background
-    mailService.sendVerificationCode(email, verificationCode);
+    // Send verification email in background (non-blocking)
+    console.log(`[AUTH] Registering user ${email}. Verification code: ${verificationCode}`);
+    mailService.sendVerificationCode(email, verificationCode).catch(err => {
+      console.error(`[MAIL ERROR] Failed to send verification to ${email}:`, err);
+    });
 
     sendTokenResponse(user, 201, res);
   } catch (err) {
@@ -177,7 +180,11 @@ exports.forgotPassword = async (req, res) => {
     user.reset_code_expires_at = new Date(Date.now() + 3600000); // 1 hour
     await user.save();
 
-    await mailService.sendResetCode(email, resetCode);
+    console.log(`[AUTH] Password reset requested for ${email}. Reset code: ${resetCode}`);
+    // Send reset code in background (non-blocking)
+    mailService.sendResetCode(email, resetCode).catch(err => {
+      console.error(`[MAIL ERROR] Failed to send reset code to ${email}:`, err);
+    });
 
     res.status(200).json({ message: 'Reset code sent to your email.' });
   } catch (err) {
