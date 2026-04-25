@@ -93,8 +93,8 @@ const startServer = async () => {
     // Run sync and seed in background so we don't block the port opening
     (async () => {
       try {
-        console.log('Syncing database models...');
-        await sequelize.sync();
+        console.log('Syncing database models (alter: true)...');
+        await sequelize.sync({ alter: true });
         
         console.log('Seeding baseline data...');
         const seedExercises = require('./seeders/detectAnatomySplit');
