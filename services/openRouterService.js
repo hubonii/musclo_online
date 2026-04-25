@@ -104,10 +104,10 @@ class OpenRouterService {
               const content = delta.content || '';
               // Some providers (like OpenRouter for reasoning models) might still send thoughts
               const thought = delta.reasoning_content || '';
-              
+
               fullContent += content;
               fullThought += thought;
-              
+
               res.write(`data: ${JSON.stringify({ content, thought })}\n\n`);
             } catch (e) {
               // Ignore partial frames
