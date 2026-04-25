@@ -49,6 +49,20 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING(100),
     allowNull: true,
   },
+  verification_code: {
+    // 6-digit code sent for email verification.
+    type: DataTypes.STRING(6),
+    allowNull: true,
+  },
+  reset_code: {
+    // 6-digit code sent for password reset.
+    type: DataTypes.STRING(6),
+    allowNull: true,
+  },
+  reset_code_expires_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
 }, {
   tableName: 'users',
   underscored: true,

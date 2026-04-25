@@ -2,6 +2,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
+const mailService = require('../services/mailService');
+const crypto = require('crypto');
 
 // JWT helper that signs user id payload with 30-day expiry.
 const generateToken = (id) => {
@@ -66,11 +68,18 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Generate 6-digit verification code
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
     user = await User.create({
       name,
       email,
       password: hashedPassword,
+      verification_code: verificationCode
     });
+
+    // Send verification email in background
+    mailService.sendVerificationCode(email, verificationCode);
 
     sendTokenResponse(user, 201, res);
   } catch (err) {
@@ -125,6 +134,106 @@ exports.getMe = async (req, res) => {
 };
 
 // Laravel Sanctum-compatible CSRF cookie endpoint for the frontend.
+// Verify email code
+exports.verifyEmail = async (req, res) => {
+  const { code } = req.body;
+
+  try {
+    if (!code) {
+      return res.status(400).json({ message: 'Verification code is required.' });
+    }
+
+    const user = await User.findOne({ where: { id: req.user.id } });
+
+    if (user.verification_code !== code) {
+      return res.status(400).json({ message: 'Invalid verification code.' });
+    }
+
+    user.email_verified_at = new Date();
+    user.verification_code = null;
+    await user.save();
+
+    res.status(200).json({ message: 'Email verified successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Send password reset code
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      // Don't reveal if user exists for security, just say if email is valid we sent it
+      return res.status(200).json({ message: 'If an account exists with this email, a reset code has been sent.' });
+    }
+
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    user.reset_code = resetCode;
+    user.reset_code_expires_at = new Date(Date.now() + 3600000); // 1 hour
+    await user.save();
+
+    await mailService.sendResetCode(email, resetCode);
+
+    res.status(200).json({ message: 'Reset code sent to your email.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Reset password with code
+exports.resetPassword = async (req, res) => {
+  const { email, code, password } = req.body;
+
+  try {
+    const user = await User.findOne({ 
+      where: { 
+        email, 
+        reset_code: code,
+        reset_code_expires_at: { [require('sequelize').Op.gt]: new Date() }
+      } 
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired reset code.' });
+    }
+
+    const salt = await bcrypt.genSalt(12);
+    user.password = await bcrypt.hash(password, salt);
+    user.reset_code = null;
+    user.reset_code_expires_at = null;
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successfully. You can now login.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Change password (for logged in users)
+exports.changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    const user = await User.findByPk(req.user.id);
+
+    if (!(await bcrypt.compare(currentPassword, user.password))) {
+      return res.status(400).json({ message: 'Current password is incorrect.' });
+    }
+
+    const salt = await bcrypt.genSalt(12);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    res.status(200).json({ message: 'Password updated successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.getCsrfCookie = (req, res) => {
   res.cookie('XSRF-TOKEN', 'dummy-token', {
     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
