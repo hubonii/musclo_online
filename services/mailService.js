@@ -11,26 +11,33 @@ class MailService {
     this.transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST || 'smtp.gmail.com',
       port: port,
-      // Direct TLS (secure: true) is usually only for port 465. 
-      // Port 587 (Gmail default) uses STARTTLS, which requires secure: false.
       secure: port === 465, 
       auth: {
         user: user,
         pass: pass,
       },
       tls: {
-        // Do not fail on invalid certificates (useful for some SMTP relays)
         rejectUnauthorized: false
+      }
+    });
+
+    // Verify connection on startup
+    this.transporter.verify((error, success) => {
+      if (error) {
+        console.error('[MAIL] Connection verification failed:', error);
+      } else {
+        console.log('[MAIL] SMTP Server is ready to take our messages');
       }
     });
   }
 
   async sendMail(to, subject, html) {
     if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
-      console.warn('Mail Service: Missing credentials. Email not sent.');
+      console.warn('[MAIL] Missing credentials. Email not sent.');
       return null;
     }
     try {
+      console.log(`[MAIL] Attempting to send email to ${to}...`);
       const info = await this.transporter.sendMail({
         from: `"Musclo AI" <${process.env.MAIL_FROM || process.env.MAIL_USER}>`,
         to,
