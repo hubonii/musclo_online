@@ -6,7 +6,7 @@ class OpenRouterService {
   constructor() {
     // Reads standardized AI engine configuration from environment variables.
     this.apiKey = process.env.AI_ENGINE_KEY;
-    this.model = process.env.AI_ENGINE_MODEL || 'google/gemma-4-31b-it:free';
+    this.model = process.env.AI_ENGINE_MODEL || 'openai/gpt-oss-120b:free';
     this.baseUrl = process.env.AI_ENGINE_BASE_URL || 'https://openrouter.ai/api/v1';
   }
 
