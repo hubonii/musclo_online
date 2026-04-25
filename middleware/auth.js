@@ -5,12 +5,13 @@ const { User } = require('../models');
 const protect = async (req, res, next) => {
   let token;
 
-  // Accept JWT from cookie-based auth flow.
-  if (req.cookies && req.cookies.token) {
-    token = req.cookies.token;
   // Accept JWT from API clients that send `Authorization: Bearer <token>`.
-  } else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
+  }
+  // Fallback to cookie-based auth flow (ignore 'none' logout tombstone).
+  else if (req.cookies && req.cookies.token && req.cookies.token !== 'none') {
+    token = req.cookies.token;
   }
 
   // Block request immediately when token is missing.
