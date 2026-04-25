@@ -18,8 +18,20 @@ app.use(helmet({
 }));
 
 // Allow one or more frontend origins and keep cookies enabled for auth.
+const defaultOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://musclo.tech', 'https://www.musclo.tech'];
+const envOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
+const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    // or requests from allowed origins.
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
