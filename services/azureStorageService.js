@@ -36,8 +36,13 @@ exports.deleteFromAzure = async (photoUrl) => {
     }
     
     try {
-        const urlParts = photoUrl.split('/');
+        // Strip query parameters from the URL before extracting the blob name
+        const cleanUrl = photoUrl.split('?')[0];
+        const urlParts = cleanUrl.split('/');
         const blobName = urlParts[urlParts.length - 1];
+        
+        if (!blobName) return;
+
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
         await blockBlobClient.deleteIfExists();
     } catch (err) {
