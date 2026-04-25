@@ -9,6 +9,7 @@ require('dotenv').config();
 const sequelize = require('./config/database');
 
 const app = express();
+app.set('trust proxy', 1); // Trust proxy to allow secure cookies across Railway load balancers
 const PORT = process.env.PORT || 8080;
 
 // Security headers (CSP, X-Frame-Options, HSTS, etc.).
