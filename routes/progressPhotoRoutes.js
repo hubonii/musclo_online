@@ -6,10 +6,7 @@ const path = require('path');
 const { getPhotos, createPhoto, deletePhoto } = require('../controllers/progressPhotoController');
 const { protect } = require('../middleware/auth');
 
-// Keep uploads in memory temporarily to upload to Azure directly.
-const storage = multer.memoryStorage();
-
-const upload = multer({ storage });
+const upload = require('../middleware/upload');
 
 // Photo history is private per user.
 router.use(protect);

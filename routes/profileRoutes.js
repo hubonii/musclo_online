@@ -13,8 +13,7 @@ router.get('/me', getProfile);
 // Read profile/achievements/routines by user id.
 // `:userId` can be owner id or another user id (privacy checks happen in controller).
 router.get('/:userId', getProfile);
-const multer = require('multer');
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = require('../middleware/upload');
 
 // Updates authenticated user's editable profile fields.
 router.put('/', updateProfile);
