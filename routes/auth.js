@@ -50,7 +50,23 @@ router.get('/auth/google/callback',
     });
 
     // Redirect to frontend dashboard with token in URL (as a fallback)
-    res.redirect(`${frontendUrl}/dashboard?token=${token}`);
+    // res.redirect(`${frontendUrl}/dashboard?token=${token}`);
+    
+    // Modern approach: Communicate with the opener window and close popup
+    res.send(`
+      <html>
+        <body>
+          <script>
+            window.opener.postMessage({ type: 'GOOGLE_AUTH_SUCCESS', token: "${token}" }, "*");
+            window.close();
+          </script>
+          <div style="font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; gap: 16px;">
+            <div style="color: #EA580C; font-weight: bold;">Authenticating...</div>
+            <p style="color: #64748b; font-size: 14px;">You can close this window if it doesn't close automatically.</p>
+          </div>
+        </body>
+      </html>
+    `);
   }
 );
 
