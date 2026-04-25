@@ -34,14 +34,19 @@ router.get('/auth/google/callback',
     // Generate JWT for the authenticated Google user
     const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '30d' });
     
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    let frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    
+    // Safety check: Ensure frontendUrl starts with http/https to prevent relative redirect issues
+    if (frontendUrl && !frontendUrl.startsWith('http')) {
+      frontendUrl = `https://${frontendUrl}`;
+    }
     
     // Set cookie for browser-based auth
     res.cookie('token', token, {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: true, // Force secure in production
+      sameSite: 'none', // Required for cross-site cookies
     });
 
     // Redirect to frontend dashboard with token in URL (as a fallback)
