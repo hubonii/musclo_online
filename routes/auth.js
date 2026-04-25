@@ -30,7 +30,7 @@ const jwt = require('jsonwebtoken');
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/auth/google/callback', 
-  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+  passport.authenticate('google', { session: false, failureRedirect: '/api/auth/google/failure' }),
   (req, res) => {
     // Generate JWT for the authenticated Google user
     const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '30d' });
@@ -70,5 +70,18 @@ router.get('/auth/google/callback',
     `);
   }
 );
+
+router.get('/auth/google/failure', (req, res) => {
+  res.send(`
+    <html>
+      <body>
+        <script>
+          window.opener.postMessage({ type: 'GOOGLE_AUTH_FAILURE' }, "*");
+          window.close();
+        </script>
+      </body>
+    </html>
+  `);
+});
 
 module.exports = router;
