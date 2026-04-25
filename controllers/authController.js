@@ -34,6 +34,9 @@ const sendTokenResponse = (user, statusCode, res) => {
           id: user.id,
           name: user.name,
           email: user.email,
+          avatar_url: user.avatar_url,
+          bio: user.bio,
+          google_id: user.google_id,
           created_at: user.created_at,
           email_verified_at: user.email_verified_at,
         }
@@ -121,6 +124,9 @@ exports.getMe = async (req, res) => {
       id: req.user.id,
       name: req.user.name,
       email: req.user.email,
+      avatar_url: req.user.avatar_url,
+      bio: req.user.bio,
+      google_id: req.user.google_id,
       created_at: req.user.created_at,
       email_verified_at: req.user.email_verified_at,
     }
