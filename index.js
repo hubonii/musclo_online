@@ -9,7 +9,7 @@ require('dotenv').config();
 const sequelize = require('./config/database');
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8080;
 
 // Security headers (CSP, X-Frame-Options, HSTS, etc.).
 app.use(helmet({
@@ -39,8 +39,6 @@ app.use('/storage', (req, res, next) => {
 app.use('/uploads', express.static('uploads'));
 
 const authController = require('./controllers/authController');
-// Exposes compatibility route for clients that call `/sanctum/csrf-cookie`.
-app.get('/sanctum/csrf-cookie', authController.getCsrfCookie);
 const authRoutes = require('./routes/auth');
 const exerciseRoutes = require('./routes/exerciseRoutes');
 
