@@ -2,10 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const { getTodayRoutine, getProgramRoutines, createRoutine, getRoutine, updateRoutine, deleteRoutine, getLastLog } = require('../controllers/routineController');
-const { protect } = require('../middleware/auth');
+const { protect, verified } = require('../middleware/auth');
 
-// Every routine request requires authentication.
+// Every routine request requires authentication and email verification.
 router.use(protect);
+router.use(verified);
 
 // Daily flow and single-routine actions.
 router.get('/today', getTodayRoutine);

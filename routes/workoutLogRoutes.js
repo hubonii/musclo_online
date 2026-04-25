@@ -3,10 +3,11 @@ const express = require('express');
 const router = express.Router();
 const { storeWorkout, getHistory, getWorkout, deleteWorkout, getExerciseHistory } = require('../controllers/workoutLogController');
 const { getStats } = require('../controllers/analyticsController');
-const { protect } = require('../middleware/auth');
+const { protect, verified } = require('../middleware/auth');
 
-// Applies auth middleware to all workout-log routes.
+// Applies auth and verification middleware to all workout-log routes.
 router.use(protect);
+router.use(verified);
 
 // Create and list workout logs.
 router.post('/', storeWorkout);

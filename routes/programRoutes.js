@@ -2,10 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const { getPrograms, createProgram, getProgram, updateProgram, deleteProgram } = require('../controllers/programController');
-const { protect } = require('../middleware/auth');
+const { protect, verified } = require('../middleware/auth');
 
-// Programs are private to the authenticated user.
+// Programs are private to authenticated and verified users.
 router.use(protect);
+router.use(verified);
 
 // Program CRUD.
 router.get('/', getPrograms);

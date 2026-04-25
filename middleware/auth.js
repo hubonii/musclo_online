@@ -35,4 +35,19 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+const verified = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Unauthenticated.' });
+  }
+
+  if (!req.user.email_verified_at) {
+    return res.status(403).json({ 
+      message: 'Your email address is not verified.',
+      needs_verification: true 
+    });
+  }
+
+  next();
+};
+
+module.exports = { protect, verified };
