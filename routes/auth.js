@@ -56,14 +56,25 @@ router.get('/auth/google/callback',
     // Modern approach: Communicate with the opener window and close popup
     res.send(`
       <html>
-        <body>
+        <head><title>Authenticating...</title></head>
+        <body style="font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; gap: 16px; text-align: center; padding: 20px;">
           <script>
-            window.opener.postMessage({ type: 'GOOGLE_AUTH_SUCCESS', token: "${token}" }, "*");
-            window.close();
+            function sendToOpener() {
+              if (window.opener) {
+                console.log('Sending token to opener...');
+                window.opener.postMessage({ type: 'GOOGLE_AUTH_SUCCESS', token: "${token}" }, "*");
+                // Close after a short delay to ensure message is sent
+                setTimeout(() => window.close(), 500);
+              } else {
+                console.error('Opener not found');
+                document.getElementById('status').innerHTML = '<div style="color: #ef4444; font-weight: bold;">Connection Lost</div><p>We lost connection to the main window. Please close this and try again from Musclo.tech.</p>';
+              }
+            }
+            window.onload = sendToOpener;
           </script>
-          <div style="font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; gap: 16px;">
-            <div style="color: #EA580C; font-weight: bold;">Authenticating...</div>
-            <p style="color: #64748b; font-size: 14px;">You can close this window if it doesn't close automatically.</p>
+          <div id="status">
+            <div style="color: #EA580C; font-weight: bold; font-size: 18px;">Authenticating...</div>
+            <p style="color: #64748b; font-size: 14px;">Synchronizing your session. This window will close automatically.</p>
           </div>
         </body>
       </html>
