@@ -1,70 +1,41 @@
-const nodemailer = require('nodemailer');
-const dns = require('dns');
-
-// Force IPv4 because some environments (like Railway) have issues with IPv6 routing to Gmail
-if (dns.setDefaultResultOrder) {
-  dns.setDefaultResultOrder('ipv4first');
-}
+const { Resend } = require('resend');
 
 class MailService {
   constructor() {
-    const port = parseInt(process.env.MAIL_PORT || '587', 10);
-    const user = process.env.MAIL_USER;
-    const pass = process.env.MAIL_PASS;
-
-    console.log(`[MAIL] Initializing with host: ${process.env.MAIL_HOST || 'smtp.gmail.com'}, port: ${port}, user: ${user ? 'FOUND' : 'MISSING'}`);
-
-    const config = {
-      host: process.env.MAIL_HOST || 'smtp.gmail.com',
-      port: port,
-      // Strictly force IPv4 to avoid ENETUNREACH errors in environments without IPv6 routing
-      family: 4,
-      // Force secure: false for port 587 to use STARTTLS
-      secure: port === 465, 
-      auth: {
-        user: user,
-        pass: pass,
-      },
-      tls: {
-        rejectUnauthorized: false,
-        minVersion: 'TLSv1.2'
-      },
-      connectionTimeout: 20000, 
-      greetingTimeout: 20000,
-      socketTimeout: 30000
-    };
-
-    this.transporter = nodemailer.createTransport(config);
-
-    // Verify connection on startup
-    this.transporter.verify((error, success) => {
-      if (error) {
-        console.error('[MAIL] Connection verification failed:', error);
-      } else {
-        console.log('[MAIL] SMTP Server is ready to take our messages');
-      }
-    });
+    // Priority: environment variable, then provided fallback for immediate fix
+    const apiKey = process.env.RESEND_API_KEY || 're_hLM6ZTqK_8Rc8X2ijwFTvaSseaKaNvJtD';
+    this.resend = new Resend(apiKey);
+    
+    // Resend requires a verified domain. 
+    // Default 'onboarding@resend.dev' works for testing but ONLY to the owner's email.
+    this.fromEmail = process.env.MAIL_FROM || 'onboarding@resend.dev';
+    
+    console.log(`[MAIL] Initialized with Resend API (Key: ${apiKey.substring(0, 5)}...)`);
   }
 
   async sendMail(to, subject, html) {
-    if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
-      console.warn('[MAIL] Missing credentials. Email not sent.');
-      return null;
-    }
+    if (!to) return null;
+
     try {
-      console.log(`[MAIL] Attempting to send email to ${to}...`);
-      const info = await this.transporter.sendMail({
-        from: `"Musclo AI" <${process.env.MAIL_FROM || process.env.MAIL_USER}>`,
-        to,
-        subject,
-        html,
+      console.log(`[MAIL] Attempting to send Resend email to ${to}...`);
+      
+      const { data, error } = await this.resend.emails.send({
+        from: `Musclo <${this.fromEmail}>`,
+        to: [to],
+        subject: subject,
+        html: html,
       });
-      console.log('Mail sent:', info.messageId);
-      return info;
+
+      if (error) {
+        console.error('[MAIL] Resend API Error:', error);
+        return null;
+      }
+
+      console.log('[MAIL] Resend email sent successfully:', data.id);
+      return data;
     } catch (error) {
-      console.error('Mail Error:', error);
-      // Don't throw if we want the app to keep working even if mail fails
-      // throw error;
+      console.error('[MAIL] Unexpected Error:', error);
+      return null;
     }
   }
 
