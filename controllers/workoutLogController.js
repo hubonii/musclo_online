@@ -93,8 +93,16 @@ exports.storeWorkout = async (req, res) => {
     let totalVolume = 0;
     for (const setData of sets) {
       // Each incoming set payload becomes one persisted SetData row.
+      // We explicitly pick fields to avoid accidental primary key or metadata collisions.
       const set = await SetData.create({
-        ...setData,
+        exercise_id: setData.exercise_id,
+        set_number: setData.set_number,
+        set_type: setData.set_type,
+        weight_kg: setData.weight_kg,
+        reps: setData.reps,
+        duration_seconds: setData.duration_seconds,
+        rir: setData.rir,
+        rpe: setData.rpe,
         workout_log_id: workoutLog.id,
         routine_id: routine_id || null
       }, { transaction: t });
