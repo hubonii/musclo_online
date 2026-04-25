@@ -80,6 +80,8 @@ exports.storeWorkout = async (req, res) => {
     const { routine_id, name, started_at, completed_at, duration_seconds, notes, sets } = req.body;
     
     // Create the workout log parent row first, then attach set rows using this id.
+    console.log(`[WorkoutLog] Starting save for user ${req.user.id}, routine ${routine_id || 'manual'}`);
+
     const workoutLog = await WorkoutLog.create({
       user_id: req.user.id,
       routine_id,
@@ -93,7 +95,6 @@ exports.storeWorkout = async (req, res) => {
     let totalVolume = 0;
     for (const setData of sets) {
       // Each incoming set payload becomes one persisted SetData row.
-      // We explicitly pick fields to avoid accidental primary key or metadata collisions.
       const set = await SetData.create({
         exercise_id: setData.exercise_id,
         set_number: setData.set_number,
@@ -107,19 +108,23 @@ exports.storeWorkout = async (req, res) => {
         routine_id: routine_id || null
       }, { transaction: t });
 
-      // PR branch compares current set volume against historical max volume.
+      // PR check: compare current volume against historical max for this user/exercise.
       if (set.set_type === 'working' || set.set_type === 'normal') {
         const currentVol = (parseFloat(set.weight_kg) || 0) * (parseInt(set.reps) || 0);
         if (currentVol > 0) {
+          // Efficiently find previous max volume without complex joins if possible.
+          // Note: '$WorkoutLog.user_id$' syntax allows filtering by association fields.
           const previousBest = await SetData.findOne({
             attributes: [[sequelize.fn('MAX', sequelize.literal('weight_kg * reps')), 'max_volume']],
             include: [{
               model: WorkoutLog,
-              where: { user_id: req.user.id, id: { [Op.ne]: workoutLog.id } }
+              attributes: [],
+              where: { user_id: req.user.id }
             }],
             where: {
               exercise_id: set.exercise_id,
-              set_type: { [Op.in]: ['working', 'normal'] }
+              set_type: { [Op.in]: ['working', 'normal'] },
+              workout_log_id: { [Op.ne]: workoutLog.id }
             },
             raw: true,
             transaction: t
@@ -136,6 +141,7 @@ exports.storeWorkout = async (req, res) => {
 
     await workoutLog.update({ total_volume: totalVolume }, { transaction: t });
     await t.commit();
+    console.log(`[WorkoutLog] Successfully saved workout ${workoutLog.id}`);
 
     const finalModel = await WorkoutLog.findByPk(workoutLog.id, {
       include: [{ model: SetData, include: [Exercise] }, Routine]
@@ -143,7 +149,8 @@ exports.storeWorkout = async (req, res) => {
 
     res.status(201).json({ data: transformWorkoutLog(finalModel) });
   } catch (err) {
-    await t.rollback();
+    console.error('[WorkoutLog] Save failed:', err);
+    if (t) await t.rollback();
     res.status(500).json({ message: err.message });
   }
 };
