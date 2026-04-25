@@ -57,21 +57,22 @@ app.use('/uploads', express.static('uploads'));
 
 const authController = require('./controllers/authController');
 const authRoutes = require('./routes/auth');
-const exerciseRoutes = require('./routes/exerciseRoutes');
+const { protect, verified } = require('./middleware/auth');
 
 app.use('/api', authRoutes);
-// Feature routes are grouped under `/api/*` for consistent frontend base URL usage.
-app.use('/api/exercises', exerciseRoutes);
-app.use('/api/programs', require('./routes/programRoutes'));
-app.use('/api/routines', require('./routes/routineRoutes'));
-app.use('/api/workouts', require('./routes/workoutLogRoutes'));
-app.use('/api/analytics', require('./routes/analyticsRoutes'));
-app.use('/api/measurements', require('./routes/measurementRoutes'));
-app.use('/api/progress-photos', require('./routes/progressPhotoRoutes'));
-app.use('/api/settings', require('./routes/settingsRoutes'));
-app.use('/api/profile', require('./routes/profileRoutes'));
-app.use('/api/chat', require('./routes/aiCoachRoutes'));
-app.use('/api/export', require('./routes/exportRoutes'));
+
+// All routes below this line require authentication AND email verification
+app.use('/api/exercises', protect, verified, require('./routes/exerciseRoutes'));
+app.use('/api/programs', protect, verified, require('./routes/programRoutes'));
+app.use('/api/routines', protect, verified, require('./routes/routineRoutes'));
+app.use('/api/workouts', protect, verified, require('./routes/workoutLogRoutes'));
+app.use('/api/analytics', protect, verified, require('./routes/analyticsRoutes'));
+app.use('/api/measurements', protect, verified, require('./routes/measurementRoutes'));
+app.use('/api/progress-photos', protect, verified, require('./routes/progressPhotoRoutes'));
+app.use('/api/settings', protect, verified, require('./routes/settingsRoutes'));
+app.use('/api/profile', protect, verified, require('./routes/profileRoutes'));
+app.use('/api/chat', protect, verified, require('./routes/aiCoachRoutes'));
+app.use('/api/export', protect, verified, require('./routes/exportRoutes'));
 
 app.get('/', (req, res) => {
   // Lightweight health/info endpoint for quick server checks.
