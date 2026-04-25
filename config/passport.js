@@ -21,11 +21,10 @@ passport.use(new GoogleStrategy({
         return done(null, user);
       }
 
-      // 2. Try to find user by email (if they registered with email previously)
+      // 2. Try to find user by email (Account Linking)
       user = await User.findOne({ where: { email } });
-
       if (user) {
-        // Link google_id to existing account
+        console.log(`[AUTH] Linking Google ID to existing account: ${email}`);
         user.google_id = id;
         if (!user.email_verified_at) user.email_verified_at = new Date();
         if (photos && photos[0] && !user.avatar_url) user.avatar_url = photos[0].value;
