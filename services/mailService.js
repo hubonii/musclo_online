@@ -6,9 +6,8 @@ class MailService {
     const apiKey = process.env.RESEND_API_KEY || 're_hLM6ZTqK_8Rc8X2ijwFTvaSseaKaNvJtD';
     this.resend = new Resend(apiKey);
     
-    // Resend requires a verified domain. 
-    // Default 'onboarding@resend.dev' works for testing but ONLY to the owner's email.
-    this.fromEmail = process.env.MAIL_FROM || 'onboarding@resend.dev';
+    // Now that the domain is verified, we can use a professional address
+    this.fromEmail = process.env.MAIL_FROM || 'noreply@musclo.tech';
     
     console.log(`[MAIL] Initialized with Resend API (Key: ${apiKey.substring(0, 5)}...)`);
   }
