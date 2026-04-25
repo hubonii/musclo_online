@@ -3,33 +3,22 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const { getPhotos, createPhoto, deletePhoto, showFile } = require('../controllers/progressPhotoController');
+const { getPhotos, createPhoto, deletePhoto } = require('../controllers/progressPhotoController');
 const { protect } = require('../middleware/auth');
 
-// Store uploads on disk and prefix filenames with a timestamp to reduce collisions.
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/progress_photos/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
+// Keep uploads in memory temporarily to upload to Azure directly.
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage });
 
 // Photo history is private per user.
 router.use(protect);
 
-// Photo CRUD + direct file view.
+// Photo CRUD.
 router.get('/', getPhotos);
 // Expects multipart field name `photo` and stores metadata in ProgressPhoto table.
 router.post('/', upload.single('photo'), createPhoto);
 // Deletes one photo metadata row owned by current user.
 router.delete('/:id', deletePhoto);
-// Streams the stored file for photo id `:id` when ownership check passes.
-router.get('/:id/file', showFile);
 
 module.exports = router;
-
-

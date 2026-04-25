@@ -1,7 +1,15 @@
-// Progress photo controller: list/upload/delete photos and stream file content.
+// Progress photo controller: list/upload/delete photos using Azure Blob Storage.
 const { ProgressPhoto } = require('../models');
 const path = require('path');
 const fs = require('fs');
+const { ContainerClient } = require('@azure/storage-blob');
+
+const AZURE_SAS_URL = process.env.AZURE_STORAGE_SAS_URL || '';
+
+// Initialize ContainerClient if SAS URL is provided
+const containerClient = AZURE_SAS_URL 
+  ? new ContainerClient(AZURE_SAS_URL)
+  : null;
 
 exports.getPhotos = async (req, res) => {
   try {
@@ -21,7 +29,7 @@ exports.getPhotos = async (req, res) => {
     res.json({
       data: photos.map(p => ({
         ...p.toJSON(),
-        photo_url: `/api/progress-photos/${p.id}/file`
+        photo_url: p.photo_path
       })),
       meta: {
         current_page: page,
@@ -35,17 +43,31 @@ exports.getPhotos = async (req, res) => {
   }
 };
 
-// Save uploaded photo metadata for the authenticated user.
+// Save uploaded photo to Azure Blob Storage and metadata to DB
 exports.createPhoto = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'Photo is required' });
     }
+    if (!containerClient) {
+      return res.status(500).json({ message: 'Azure Storage SAS URL not configured' });
+    }
+    
+    // Create a unique blob name
+    const blobName = `${Date.now()}-${req.file.originalname}`;
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+    // Upload buffer to Azure Blob Storage
+    await blockBlobClient.uploadData(req.file.buffer, {
+      blobHTTPHeaders: { blobContentType: req.file.mimetype }
+    });
+
+    const photoUrl = blockBlobClient.url;
 
     // Persist one photo metadata row linked to uploaded file path.
     const photo = await ProgressPhoto.create({
       user_id: req.user.id,
-      photo_path: req.file.path,
+      photo_path: photoUrl,
       pose: req.body.pose || 'other',
       measurement_id: req.body.measurement_id,
       taken_at: req.body.taken_at || new Date(),
@@ -55,7 +77,7 @@ exports.createPhoto = async (req, res) => {
     res.status(201).json({
       data: {
         ...photo.toJSON(),
-        photo_url: `/api/progress-photos/${photo.id}/file`
+        photo_url: photoUrl
       }
     });
   } catch (err) {
@@ -63,56 +85,27 @@ exports.createPhoto = async (req, res) => {
   }
 };
 
-// Delete one user-owned photo and remove its physical file when possible.
+// Delete one user-owned photo from DB and Azure
 exports.deletePhoto = async (req, res) => {
   try {
     const photo = await ProgressPhoto.findOne({ where: { id: req.params.id, user_id: req.user.id } });
     if (!photo) return res.status(404).json({ message: 'Photo not found' });
 
-    // Remove physical file first when it exists on disk.
-    if (fs.existsSync(photo.photo_path)) {
+    if (containerClient && photo.photo_path.includes('.blob.core.windows.net/')) {
+      // Extract blob name from URL
+      // URL format: https://<account>.blob.core.windows.net/progressphotos/<blobName>
+      const urlParts = photo.photo_path.split('/');
+      const blobName = urlParts[urlParts.length - 1];
+      
+      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+      await blockBlobClient.deleteIfExists();
+    } else if (fs.existsSync(photo.photo_path)) {
+      // Fallback for any old local files not yet migrated
       fs.unlinkSync(photo.photo_path);
     }
 
     await photo.destroy();
     res.status(204).send();
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-exports.showFile = async (req, res) => {
-  try {
-    const photo = await ProgressPhoto.findOne({ where: { id: req.params.id, user_id: req.user.id } });
-    if (!photo) return res.status(404).json({ message: 'Photo not found' });
-
-    // Resolve absolute file path from stored path or known upload/storage directories.
-    const rootDir = process.cwd();
-    let fullPath = path.isAbsolute(photo.photo_path) ? photo.photo_path : path.join(rootDir, photo.photo_path);
-    
-    // Resolves file path using known upload and storage directory patterns.
-    if (!fs.existsSync(fullPath)) {
-      const altPaths = [
-        path.join(rootDir, 'uploads', photo.photo_path),
-        path.join(rootDir, 'uploads', 'progress_photos', path.basename(photo.photo_path)),
-        path.join(rootDir, 'public', 'storage', photo.photo_path),
-        path.join(rootDir, 'public', 'storage', 'progress_photos', path.basename(photo.photo_path))
-      ];
-      
-      for (const alt of altPaths) {
-        if (fs.existsSync(alt)) {
-          fullPath = alt;
-          break;
-        }
-      }
-    }
-
-    // If no candidate path exists, return a clear 404 message.
-    if (!fs.existsSync(fullPath)) {
-      return res.status(404).json({ message: 'Physical file not found' });
-    }
-
-    res.sendFile(fullPath);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
