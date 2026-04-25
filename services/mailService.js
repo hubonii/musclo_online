@@ -3,6 +3,11 @@ const nodemailer = require('nodemailer');
 class MailService {
   constructor() {
     const port = parseInt(process.env.MAIL_PORT || '587', 10);
+    const user = process.env.MAIL_USER;
+    const pass = process.env.MAIL_PASS;
+
+    console.log(`[MAIL] Initializing with host: ${process.env.MAIL_HOST || 'smtp.gmail.com'}, port: ${port}, user: ${user ? 'FOUND' : 'MISSING'}`);
+
     this.transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST || 'smtp.gmail.com',
       port: port,
@@ -10,9 +15,13 @@ class MailService {
       // Port 587 (Gmail default) uses STARTTLS, which requires secure: false.
       secure: port === 465, 
       auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+        user: user,
+        pass: pass,
       },
+      tls: {
+        // Do not fail on invalid certificates (useful for some SMTP relays)
+        rejectUnauthorized: false
+      }
     });
   }
 
