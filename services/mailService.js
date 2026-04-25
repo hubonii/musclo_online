@@ -15,21 +15,21 @@ class MailService {
     console.log(`[MAIL] Initializing with host: ${process.env.MAIL_HOST || 'smtp.gmail.com'}, port: ${port}, user: ${user ? 'FOUND' : 'MISSING'}`);
 
     const config = {
-      // Use 'gmail' service preset for best compatibility with Gmail App Passwords
-      service: (process.env.MAIL_HOST === 'smtp.gmail.com' || !process.env.MAIL_HOST) ? 'gmail' : undefined,
       host: process.env.MAIL_HOST || 'smtp.gmail.com',
       port: port,
+      // Force secure: false for port 587 to use STARTTLS
       secure: port === 465, 
       auth: {
         user: user,
         pass: pass,
       },
       tls: {
-        rejectUnauthorized: false
+        rejectUnauthorized: false,
+        minVersion: 'TLSv1.2'
       },
-      connectionTimeout: 10000, // 10 seconds timeout
-      greetingTimeout: 10000,
-      socketTimeout: 20000
+      connectionTimeout: 20000, 
+      greetingTimeout: 20000,
+      socketTimeout: 30000
     };
 
     this.transporter = nodemailer.createTransport(config);
