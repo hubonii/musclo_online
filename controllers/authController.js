@@ -20,8 +20,8 @@ const sendTokenResponse = (user, statusCode, res) => {
   const options = {
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: true, // Force secure
+    sameSite: 'none',
   };
 
   res
@@ -35,6 +35,7 @@ const sendTokenResponse = (user, statusCode, res) => {
           name: user.name,
           email: user.email,
           created_at: user.created_at,
+          email_verified_at: user.email_verified_at,
         }
       }
     });
@@ -44,7 +45,6 @@ const sendTokenResponse = (user, statusCode, res) => {
 exports.register = async (req, res) => {
   const { name, email, password } = req.body;
 
-  // Reject incomplete registration payloads before hitting the database.
   if (!name || !email || !password) {
     return res.status(422).json({
       message: 'Validation failed.',
@@ -57,7 +57,6 @@ exports.register = async (req, res) => {
   }
 
   try {
-    // Reject duplicate emails before doing password hashing work.
     let user = await User.findOne({ where: { email } });
     if (user) {
       return res.status(422).json({
@@ -69,20 +68,11 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Generate 6-digit verification code
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-
     user = await User.create({
       name,
       email,
       password: hashedPassword,
-      verification_code: verificationCode
-    });
-
-    // Send verification email in background (non-blocking)
-    console.log(`[AUTH] Registering user ${email}. Verification code: ${verificationCode}`);
-    mailService.sendVerificationCode(email, verificationCode).catch(err => {
-      console.error(`[MAIL ERROR] Failed to send verification to ${email}:`, err);
+      verification_code: null // Don't generate yet, let them click the button
     });
 
     sendTokenResponse(user, 201, res);
@@ -98,7 +88,6 @@ exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } });
 
-    // Returns one shared auth error message for invalid email/password combinations.
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({
         message: 'The provided credentials are incorrect.',
@@ -116,8 +105,8 @@ exports.logout = (req, res) => {
   res.cookie('token', 'none', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: true,
+    sameSite: 'none',
   });
 
   res.status(200).json({
@@ -133,11 +122,11 @@ exports.getMe = async (req, res) => {
       name: req.user.name,
       email: req.user.email,
       created_at: req.user.created_at,
+      email_verified_at: req.user.email_verified_at,
     }
   });
 };
 
-// Laravel Sanctum-compatible CSRF cookie endpoint for the frontend.
 // Verify email code
 exports.verifyEmail = async (req, res) => {
   const { code } = req.body;
@@ -149,7 +138,7 @@ exports.verifyEmail = async (req, res) => {
 
     const user = await User.findOne({ where: { id: req.user.id } });
 
-    if (user.verification_code !== code) {
+    if (!user.verification_code || user.verification_code !== code) {
       return res.status(400).json({ message: 'Invalid verification code.' });
     }
 
@@ -163,6 +152,33 @@ exports.verifyEmail = async (req, res) => {
   }
 };
 
+// Resend verification code (The new button logic)
+exports.resendVerification = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    if (user.email_verified_at) {
+      return res.status(400).json({ message: 'Email is already verified.' });
+    }
+
+    // Generate 6-digit code
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    user.verification_code = verificationCode;
+    await user.save();
+
+    console.log(`[AUTH] Sending verification to ${user.email}: ${verificationCode}`);
+    await mailService.sendVerificationCode(user.email, verificationCode);
+
+    res.status(200).json({ message: 'Verification code sent to your email.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // Send password reset code
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
@@ -171,7 +187,6 @@ exports.forgotPassword = async (req, res) => {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      // Don't reveal if user exists for security, just say if email is valid we sent it
       return res.status(200).json({ message: 'If an account exists with this email, a reset code has been sent.' });
     }
 
@@ -181,7 +196,6 @@ exports.forgotPassword = async (req, res) => {
     await user.save();
 
     console.log(`[AUTH] Password reset requested for ${email}. Reset code: ${resetCode}`);
-    // Send reset code in background (non-blocking)
     mailService.sendResetCode(email, resetCode).catch(err => {
       console.error(`[MAIL ERROR] Failed to send reset code to ${email}:`, err);
     });

@@ -1,7 +1,7 @@
 // Auth endpoints (registration, login, logout, current user, CSRF cookie).
 const express = require('express');
 const router = express.Router();
-const { register, login, logout, getMe, getCsrfCookie, forgotPassword, resetPassword, verifyEmail, changePassword } = require('../controllers/authController');
+const { register, login, logout, getMe, getCsrfCookie, forgotPassword, resetPassword, verifyEmail, resendVerification, changePassword } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
 // Public auth routes.
@@ -20,6 +20,7 @@ router.post('/logout', protect, logout);
 // Returns authenticated user profile payload.
 router.get('/user', protect, getMe);
 router.post('/verify-email', protect, verifyEmail);
+router.post('/resend-verification', protect, resendVerification);
 router.post('/change-password', protect, changePassword);
 
 const passport = require('passport');
