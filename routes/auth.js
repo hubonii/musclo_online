@@ -53,46 +53,17 @@ router.get('/auth/google/callback',
     // Redirect to frontend dashboard with token in URL (as a fallback)
     // res.redirect(`${frontendUrl}/dashboard?token=${token}`);
     
-    // Modern approach: Communicate with the opener window and close popup
-    res.send(`
-      <html>
-        <head><title>Authenticating...</title></head>
-        <body style="font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; gap: 16px; text-align: center; padding: 20px;">
-          <script>
-            function sendToOpener() {
-              if (window.opener) {
-                console.log('Sending token to opener...');
-                window.opener.postMessage({ type: 'GOOGLE_AUTH_SUCCESS', token: "${token}" }, "*");
-                // Close after a short delay to ensure message is sent
-                setTimeout(() => window.close(), 500);
-              } else {
-                console.error('Opener not found');
-                document.getElementById('status').innerHTML = '<div style="color: #ef4444; font-weight: bold;">Connection Lost</div><p>We lost connection to the main window. Please close this and try again from Musclo.tech.</p>';
-              }
-            }
-            window.onload = sendToOpener;
-          </script>
-          <div id="status">
-            <div style="color: #EA580C; font-weight: bold; font-size: 18px;">Authenticating...</div>
-            <p style="color: #64748b; font-size: 14px;">Synchronizing your session. This window will close automatically.</p>
-          </div>
-        </body>
-      </html>
-    `);
+    // Redirect the popup to the frontend bridge page
+    res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
   }
 );
 
 router.get('/auth/google/failure', (req, res) => {
-  res.send(`
-    <html>
-      <body>
-        <script>
-          window.opener.postMessage({ type: 'GOOGLE_AUTH_FAILURE' }, "*");
-          window.close();
-        </script>
-      </body>
-    </html>
-  `);
+  let frontendUrl = process.env.FRONTEND_URL || 'https://musclo.tech';
+  if (frontendUrl && !frontendUrl.startsWith('http')) {
+    frontendUrl = `https://${frontendUrl}`;
+  }
+  res.redirect(`${frontendUrl}/auth/callback?error=true`);
 });
 
 module.exports = router;
