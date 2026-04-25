@@ -44,10 +44,27 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-// Update basic fields for the authenticated user.
+// Update specific fields for the authenticated user.
 exports.updateProfile = async (req, res) => {
   try {
-    await req.user.update(req.body);
+    const { name, email, bio, is_public } = req.body;
+
+    // Validation: if email is being changed, check uniqueness
+    if (email && email !== req.user.email) {
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({ message: 'This email is already in use by another account.' });
+      }
+    }
+
+    // Only update allowed fields to prevent mass assignment vulnerabilities.
+    await req.user.update({
+      name: name || req.user.name,
+      email: email || req.user.email,
+      bio: bio !== undefined ? bio : req.user.bio,
+      is_public: is_public !== undefined ? is_public : req.user.is_public
+    });
+
     res.json({
       data: {
         id: req.user.id,
