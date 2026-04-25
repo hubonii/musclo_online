@@ -1,6 +1,7 @@
 // Profile controller: user profile, achievements, and public routine summaries.
 const { User, WorkoutLog, Achievement, Routine } = require('../models');
 const achievementService = require('../services/achievementService');
+const azureStorageService = require('../services/azureStorageService');
 
 exports.getProfile = async (req, res) => {
   try {
@@ -55,6 +56,35 @@ exports.updateProfile = async (req, res) => {
         bio: req.user.bio,
         avatar_url: req.user.avatar_url,
         is_public: !!req.user.is_public
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Handle avatar upload specifically.
+exports.updateAvatar = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No image file provided.' });
+    }
+
+    // Upload to Azure using the centralized service
+    const avatarUrl = await azureStorageService.uploadToAzure(req.file);
+
+    // If user already had a custom avatar (and it was an Azure link), delete the old one
+    if (req.user.avatar_url && req.user.avatar_url.includes('.blob.core.windows.net/')) {
+      await azureStorageService.deleteFromAzure(req.user.avatar_url);
+    }
+
+    // Persist new URL to user profile
+    req.user.avatar_url = avatarUrl;
+    await req.user.save();
+
+    res.json({
+      data: {
+        avatar_url: avatarUrl
       }
     });
   } catch (err) {

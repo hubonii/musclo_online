@@ -13,8 +13,13 @@ router.get('/me', getProfile);
 // Read profile/achievements/routines by user id.
 // `:userId` can be owner id or another user id (privacy checks happen in controller).
 router.get('/:userId', getProfile);
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+
 // Updates authenticated user's editable profile fields.
 router.put('/', updateProfile);
+// Avatar upload endpoint
+router.post('/avatar', upload.single('avatar'), require('../controllers/profileController').updateAvatar);
 // Returns full achievement catalog with unlocked state for target user.
 router.get('/:userId/achievements', getAchievements);
 // Inline import keeps route connected to controller export without extra destructuring.

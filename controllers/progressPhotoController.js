@@ -1,15 +1,6 @@
 // Progress photo controller: list/upload/delete photos using Azure Blob Storage.
 const { ProgressPhoto } = require('../models');
-const path = require('path');
-const fs = require('fs');
-const { ContainerClient } = require('@azure/storage-blob');
-
-const AZURE_SAS_URL = process.env.AZURE_STORAGE_SAS_URL || '';
-
-// Initialize ContainerClient if SAS URL is provided
-const containerClient = AZURE_SAS_URL 
-  ? new ContainerClient(AZURE_SAS_URL)
-  : null;
+const azureStorageService = require('../services/azureStorageService');
 
 exports.getPhotos = async (req, res) => {
   try {
@@ -49,20 +40,9 @@ exports.createPhoto = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: 'Photo is required' });
     }
-    if (!containerClient) {
-      return res.status(500).json({ message: 'Azure Storage SAS URL not configured' });
-    }
     
-    // Create a unique blob name
-    const blobName = `${Date.now()}-${req.file.originalname}`;
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-    // Upload buffer to Azure Blob Storage
-    await blockBlobClient.uploadData(req.file.buffer, {
-      blobHTTPHeaders: { blobContentType: req.file.mimetype }
-    });
-
-    const photoUrl = blockBlobClient.url;
+    // Upload buffer to Azure Blob Storage using shared service
+    const photoUrl = await azureStorageService.uploadToAzure(req.file);
 
     // Persist one photo metadata row linked to uploaded file path.
     const photo = await ProgressPhoto.create({
@@ -91,18 +71,8 @@ exports.deletePhoto = async (req, res) => {
     const photo = await ProgressPhoto.findOne({ where: { id: req.params.id, user_id: req.user.id } });
     if (!photo) return res.status(404).json({ message: 'Photo not found' });
 
-    if (containerClient && photo.photo_path.includes('.blob.core.windows.net/')) {
-      // Extract blob name from URL
-      // URL format: https://<account>.blob.core.windows.net/progressphotos/<blobName>
-      const urlParts = photo.photo_path.split('/');
-      const blobName = urlParts[urlParts.length - 1];
-      
-      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-      await blockBlobClient.deleteIfExists();
-    } else if (fs.existsSync(photo.photo_path)) {
-      // Fallback for any old local files not yet migrated
-      fs.unlinkSync(photo.photo_path);
-    }
+    // Use centralized service to delete from Azure
+    await azureStorageService.deleteFromAzure(photo.photo_path);
 
     await photo.destroy();
     res.status(204).send();
