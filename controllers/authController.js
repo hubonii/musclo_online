@@ -168,7 +168,7 @@ exports.resendVerification = async (req, res) => {
     }
 
     if (user.email_verified_at) {
-      return res.status(400).json({ message: 'Email is already verified.' });
+      return res.status(200).json({ message: 'Email is already verified.', alreadyVerified: true });
     }
 
     // Generate 6-digit code
@@ -177,7 +177,11 @@ exports.resendVerification = async (req, res) => {
     await user.save();
 
     console.log(`[AUTH] Sending verification to ${user.email}: ${verificationCode}`);
-    await mailService.sendVerificationCode(user.email, verificationCode);
+    const mailSent = await mailService.sendVerificationCode(user.email, verificationCode);
+
+    if (!mailSent) {
+        return res.status(500).json({ message: 'Failed to send verification email. Please try again later.' });
+    }
 
     res.status(200).json({ message: 'Verification code sent to your email.' });
   } catch (err) {

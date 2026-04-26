@@ -58,12 +58,17 @@ exports.updateProfile = async (req, res) => {
       }
     }
 
+    const isEmailChanged = email && email !== req.user.email;
+
     // Only update allowed fields to prevent mass assignment vulnerabilities.
     await req.user.update({
       name: name || req.user.name,
       email: email || req.user.email,
       bio: bio !== undefined ? bio : req.user.bio,
-      is_public: is_public !== undefined ? is_public : req.user.is_public
+      is_public: is_public !== undefined ? is_public : req.user.is_public,
+      // Reset verification if email changed
+      email_verified_at: isEmailChanged ? null : req.user.email_verified_at,
+      verification_code: isEmailChanged ? null : req.user.verification_code
     });
 
     res.json({
@@ -73,7 +78,8 @@ exports.updateProfile = async (req, res) => {
         email: req.user.email,
         bio: req.user.bio,
         avatar_url: req.user.avatar_url,
-        is_public: !!req.user.is_public
+        is_public: !!req.user.is_public,
+        email_verified_at: req.user.email_verified_at
       }
     });
   } catch (err) {
@@ -245,11 +251,15 @@ exports.verifyEmailChange = async (req, res) => {
     req.user.email = req.user.pending_email;
     req.user.pending_email = null;
     req.user.verification_code = null;
+    req.user.email_verified_at = new Date(); // MARK AS VERIFIED
     await req.user.save();
 
     res.json({ 
-        message: 'Email updated successfully.',
-        data: { email: req.user.email } 
+        message: 'Email updated and verified successfully.',
+        data: { 
+            email: req.user.email,
+            email_verified_at: req.user.email_verified_at
+        } 
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

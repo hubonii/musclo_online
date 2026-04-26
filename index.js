@@ -69,8 +69,8 @@ app.use('/api/workouts', protect, verified, require('./routes/workoutLogRoutes')
 app.use('/api/analytics', protect, verified, require('./routes/analyticsRoutes'));
 app.use('/api/measurements', protect, verified, require('./routes/measurementRoutes'));
 app.use('/api/progress-photos', protect, verified, require('./routes/progressPhotoRoutes'));
-app.use('/api/settings', protect, verified, require('./routes/settingsRoutes'));
-app.use('/api/profile', protect, verified, require('./routes/profileRoutes'));
+app.use('/api/settings', protect, require('./routes/settingsRoutes'));
+app.use('/api/profile', protect, require('./routes/profileRoutes'));
 app.use('/api/chat', protect, verified, require('./routes/aiCoachRoutes'));
 app.use('/api/export', protect, verified, require('./routes/exportRoutes'));
 
