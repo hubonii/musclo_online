@@ -10,6 +10,7 @@ router.use(verified);
 
 // Daily flow and single-routine actions.
 router.get('/today', getTodayRoutine);
+router.post('/', createRoutine);
 // Returns the most recent workout log linked to routine `:id`.
 router.get('/:id/last-log', getLastLog);
 // CRUD operations for one routine id.

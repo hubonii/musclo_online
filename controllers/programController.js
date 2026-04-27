@@ -139,23 +139,6 @@ exports.deleteProgram = async (req, res) => {
   }
 };
 
-// Quick endpoint to create a routine directly under a specific program.
-exports.addRoutineToProgram = async (req, res) => {
-  try {
-    // Ensure parent program exists and belongs to current user before insert.
-    const program = await Program.findOne({ where: { id: req.params.id, user_id: req.user.id } });
-    if (!program) return res.status(404).json({ message: 'Program not found' });
 
-    const routine = await Routine.create({
-      ...req.body,
-      user_id: req.user.id,
-      program_id: program.id
-    });
-
-    res.status(201).json({ data: transformRoutine(routine) });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
 
 

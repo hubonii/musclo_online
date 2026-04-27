@@ -17,8 +17,8 @@ router.put('/:id', updateProgram);
 router.delete('/:id', deleteProgram);
 
 // Add a routine under an existing program.
-// Creates a routine linked to program `:id` and current user.
-router.post('/:id/routines', require('../controllers/programController').addRoutineToProgram);
+// Creates a routine linked to program `:programId` and current user.
+router.post('/:programId/routines', require('../controllers/routineController').createRoutine);
 
 module.exports = router;
 

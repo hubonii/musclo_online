@@ -40,10 +40,14 @@ exports.createRoutine = async (req, res) => {
   // Uses one DB transaction for routine row, pivot rows, and template set rows.
   const t = await sequelize.transaction();
   try {
-    const program = await Program.findByPk(req.params.programId);
-    if (!program || program.user_id !== req.user.id) {
-      await t.rollback();
-      return res.status(403).json({ message: 'Forbidden' });
+    const programId = req.params.programId || req.body.program_id;
+    
+    if (programId) {
+      const program = await Program.findByPk(programId);
+      if (!program || program.user_id !== req.user.id) {
+        await t.rollback();
+        return res.status(403).json({ message: 'Forbidden' });
+      }
     }
 
     const { name, notes, day_of_week, exercises } = req.body;
@@ -52,7 +56,7 @@ exports.createRoutine = async (req, res) => {
       notes,
       day_of_week,
       user_id: req.user.id,
-      program_id: program.id
+      program_id: programId || null
     }, { transaction: t });
 
     if (exercises && exercises.length > 0) {
