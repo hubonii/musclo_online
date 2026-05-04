@@ -17,7 +17,9 @@ export const useMemoryStore = create(
             setExercisesCategory: (val) => set({ exercisesCategory: val }),
             setExercisesBodyPart: (val) => set({ exercisesBodyPart: val }),
             setExercisesEquipment: (val) => set({ exercisesEquipment: val }),
-            setExercisesPage: (val) => set({ exercisesPage: val }),
+            setExercisesPage: (val) => set((state) => ({
+                exercisesPage: typeof val === 'function' ? val(state.exercisesPage) : val
+            })),
             
             resetExercisesFilters: () => set({ 
                 exercisesSearch: '', 

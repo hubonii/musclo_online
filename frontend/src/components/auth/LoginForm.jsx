@@ -110,7 +110,7 @@ export default function LoginForm() {
                     required
                 />
                 <div className="flex justify-end">
-                    <Link to="/forgot-password" university className="text-[11px] font-black text-orange uppercase tracking-wider hover:opacity-70 transition-all">
+                    <Link to="/forgot-password" className="text-[11px] font-black text-orange uppercase tracking-wider hover:opacity-70 transition-all">
                         Forgot Password?
                     </Link>
                 </div>
