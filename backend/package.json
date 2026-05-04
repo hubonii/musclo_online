@@ -1,0 +1,74 @@
+{
+  "name": "backend_node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest --runInBand",
+    "test:unit": "jest --runInBand test/unit",
+    "test:contracts": "jest --runInBand test/contracts",
+    "test:meta": "jest --runInBand test/meta",
+    "test:ci": "jest --ci --runInBand --coverage",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "perf:smoke": "node test/perf/runPerfTests.js --profile smoke",
+    "perf:ci": "node test/perf/runPerfTests.js --profile ci --json-output test/perf/results/perf-ci.json",
+    "perf:report": "node test/perf/runPerfTests.js --profile baseline --json-output test/perf/results/perf-report.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@azure/storage-blob": "^12.31.0",
+    "axios": "^1.13.6",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "json2csv": "^6.0.0-alpha.2",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "multer": "^2.1.1",
+    "mysql2": "^3.22.2",
+    "nodemailer": "^8.0.6",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "resend": "^6.12.2",
+    "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "autocannon": "^8.0.0",
+    "jest": "^30.0.0",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.1.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/test/setup/env.guard.js"
+    ],
+    "roots": [
+      "<rootDir>/test"
+    ],
+    "collectCoverageFrom": [
+      "controllers/**/*.js",
+      "middleware/**/*.js",
+      "routes/**/*.js",
+      "services/**/*.js",
+      "!**/node_modules/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
+      }
+    }
+  }
+}
