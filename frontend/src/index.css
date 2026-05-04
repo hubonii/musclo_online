@@ -1,0 +1,328 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Animations */
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes cursorBlink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes thinkingPulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes thinkingSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes thinkingFade {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@keyframes thinkingDot {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1.3); }
+}
+
+:root {
+    /* Global Backgrounds & Surfaces - Standard Soft UI White */
+    --bg-app: #F0F0F3;      /* The 'Gold Standard' for Light Neumorphism */
+    --bg-surface: #F0F0F3;
+    --border-divider: rgba(0, 0, 0, 0.05);
+
+    /* Surface Gradients (Surface becomes 'curved') */
+    --neu-grad-light: linear-gradient(145deg, #ffffff, #d8d8db);
+    --neu-grad-light-active: linear-gradient(145deg, #d8d8db, #ffffff);
+
+    /* Typography */
+    --text-primary: #1A1A1A;
+    --text-secondary: #4A4A4A;
+    --text-muted: #7C7C80;
+
+    /* Interactive Elements */
+    --accent-orange: #EA580C;
+    --orange-rgb: 234, 88, 12;
+    --accent-emerald: #EA580C; /* Mapped to orange for branding consistency */
+    --emerald-rgb: 234, 88, 12;
+    --accent-tertiary: #52525B; /* Zinc theme for tertiary elements */
+    
+    /* Text on Interactive */
+    --text-on-primary: #FFFFFF;
+    --text-on-secondary: #FFFFFF;
+
+    /* Semantic States */
+    --success: #EA580C; /* Rebranded success to Orange as per platform standard */
+    --warning: #F38A3F;
+    --danger: #ef4444;
+
+    /* Bold Neumorphism Shadows for White Mode */
+    --neu-dark-base: rgba(174, 174, 192, 0.6);   /* Deeper contrast */
+    --neu-light-base: #FFFFFF;
+    --neu-dark-sm: rgba(174, 174, 192, 0.4);
+    --neu-light-sm: #FFFFFF;
+    --neu-dark-lg: rgba(174, 174, 192, 0.8);
+    --neu-light-lg: #FFFFFF;
+  }
+
+  .dark {
+    color-scheme: dark;
+    /* Global Backgrounds & Surfaces - Midnight Black Mode */
+    --bg-app: #121214;
+    --bg-surface: #121214;
+    --border-divider: rgba(255, 255, 255, 0.06);
+
+    /* Surface Gradients */
+    --neu-grad-dark: linear-gradient(145deg, #131315, #101012);
+    --neu-grad-dark-active: linear-gradient(145deg, #101012, #131315);
+
+    /* Typography */
+    --text-primary: #FFFFFF;
+    --text-secondary: #D1D1D6;
+    --text-muted: #8E8E93;
+
+    /* Interactive Elements */
+    --accent-orange: #F97316;
+    --orange-rgb: 249, 115, 22;
+    --accent-emerald: #F97316;
+    --emerald-rgb: 249, 115, 22;
+    --accent-tertiary: #3F3F46;
+
+    /* Text on Interactive */
+    --text-on-primary: #000000;
+    --text-on-secondary: #000000;
+    --text-on-accent: #FFFFFF;
+
+    /* Semantic States */
+    --success: #F97316;
+    --warning: #FF9F5B;
+    --danger: #ef4444;
+
+    /* Bold Neumorphism Shadows for Black Mode */
+    --neu-dark-base: rgba(0, 0, 0, 0.9);
+    --neu-light-base: rgba(255, 255, 255, 0.07);
+    --neu-dark-sm: rgba(0, 0, 0, 0.8);
+    --neu-light-sm: rgba(255, 255, 255, 0.05);
+    --neu-dark-lg: rgba(0, 0, 0, 1);
+    --neu-light-lg: rgba(255, 255, 255, 0.1);
+  }
+
+  html, body, #root {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    @apply font-sans antialiased text-[15px] leading-relaxed;
+    /* Prevent overall scroll cut-offs */
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-text-primary uppercase;
+  }
+
+  h1 { @apply text-4xl lg:text-5xl font-extrabold; }
+  h2 { @apply text-2xl lg:text-3xl font-extrabold; }
+  h3 { @apply text-xl lg:text-2xl; }
+  h4 { @apply text-lg lg:text-xl; }
+
+  ::selection {
+    background-color: var(--accent-orange);
+    color: #FFFFFF;
+  }
+
+  /* Minimal scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-app);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border-divider);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-muted);
+  }
+}
+
+@layer utilities {
+
+  /* High-Impact Neomorphic Shadows with Bold Blur for extreme Soft UI Effect */
+  .shadow-neu {
+    box-shadow:
+      10px 10px 20px var(--neu-dark-base),
+      -10px -10px 20px var(--neu-light-base);
+  }
+
+  .shadow-neu-inset {
+    box-shadow:
+      inset 6px 6px 12px var(--neu-dark-base),
+      inset -6px -6px 12px var(--neu-light-base);
+  }
+
+  .shadow-neu-inset-focused {
+    box-shadow:
+      inset 10px 10px 20px var(--neu-dark-base),
+      inset -10px -10px 20px var(--neu-light-base);
+  }
+
+  .shadow-neu-sm {
+    box-shadow:
+      4px 4px 8px var(--neu-dark-sm),
+      -4px -4px 8px var(--neu-light-sm);
+  }
+
+  .shadow-neu-lg {
+    box-shadow:
+      20px 20px 40px var(--neu-dark-lg),
+      -20px -20px 40px var(--neu-light-lg);
+  }
+
+  .shadow-neu-orange {
+    box-shadow:
+      8px 8px 16px rgba(234, 88, 12, 0.3),
+      -8px -8px 16px rgba(255, 255, 255, 0.8);
+  }
+  .dark .shadow-neu-orange {
+    box-shadow:
+      8px 8px 16px rgba(0, 0, 0, 0.8),
+      -8px -8px 16px rgba(249, 115, 22, 0.15);
+  }
+
+  /* Surface Gradient Utilities */
+  .bg-neu {
+    background: var(--neu-grad-light);
+  }
+  .dark .bg-neu {
+    background: var(--neu-grad-dark);
+  }
+
+  .bg-neu-active {
+    background: var(--neu-grad-light-active);
+  }
+  .dark .bg-neu-active {
+    background: var(--neu-grad-dark-active);
+  }
+
+  /* Glassmorphism explicitly removed per user rule 2. Solid panels only. */
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Safe Area Utilities */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .pb-safe {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.75rem); /* BottomNav h-15 (3.75rem) + 1rem buffer */
+  }
+
+  .pt-safe {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 1rem); /* Default pt-4 + safe */
+  }
+
+  .mb-safe-bottom {
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Markdown & Prose Overrides for AI Chat */
+  .prose {
+    color: inherit;
+    max-width: none;
+  }
+
+  .prose :where(h1, h2, h3, h4, th):not(:where([class~="not-prose"] *)) {
+    color: inherit;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  /* Optimized Tables for Chat Bubbles */
+  .prose table {
+    width: 100%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-size: 0.85em;
+    border-collapse: collapse;
+    display: block;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .prose thead {
+    border-bottom: 2px solid var(--border-divider);
+    background: rgba(0,0,0,0.02);
+  }
+
+  .prose th {
+    padding: 0.75rem 0.5rem;
+    text-align: left;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .prose td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--border-divider);
+  }
+
+  .prose tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Lists & Spacing */
+  .prose ul, .prose ol {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding-left: 1.25em;
+  }
+
+  .prose li {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+  }
+
+  .prose p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+}
