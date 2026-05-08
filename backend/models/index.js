@@ -1,4 +1,6 @@
-// Central place where Sequelize models are linked together.
+/**
+ * Central model registry where Sequelize models are initialized and associated.
+ */
 const User = require('./User');
 const Program = require('./Program');
 const Routine = require('./Routine');
@@ -14,7 +16,7 @@ const UserSetting = require('./UserSetting');
 const ChatSession = require('./ChatSession');
 const ChatMessage = require('./ChatMessage');
 
-// User-owned resources.
+
 User.hasMany(Program, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 Program.belongsTo(User, { foreignKey: 'user_id' });
 
@@ -46,7 +48,7 @@ Exercise.belongsToMany(User, { through: 'exercise_favorites', as: 'favoritedBy',
 User.hasMany(ChatSession, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 ChatSession.belongsTo(User, { foreignKey: 'user_id' });
 
-// Program and routine structure.
+
 // One program contains multiple routines.
 Program.hasMany(Routine, { foreignKey: 'program_id' });
 Routine.belongsTo(Program, { foreignKey: 'program_id' });
@@ -69,10 +71,13 @@ SetData.belongsTo(Exercise, { foreignKey: 'exercise_id' });
 WorkoutLog.hasMany(SetData, { foreignKey: 'workout_log_id' });
 SetData.belongsTo(WorkoutLog, { foreignKey: 'workout_log_id' });
 
-// AI coach chat history.
+
 ChatSession.hasMany(ChatMessage, { foreignKey: 'chat_session_id' });
 ChatMessage.belongsTo(ChatSession, { foreignKey: 'chat_session_id' });
 
+/**
+ * Central registry for all Sequelize models and their relationships.
+ */
 module.exports = {
   User,
   Program,

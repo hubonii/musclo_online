@@ -1,7 +1,11 @@
-// Measurement controller: track body metrics over time.
+
 const { Measurement } = require('../models');
 
-// Map database fields to the API response shape used by the frontend.
+/**
+ * Transforms a measurement model instance into the API response shape.
+ * @param {Object} m - The measurement model instance.
+ * @returns {Object|null} Transformed measurement data.
+ */
 function transformMeasurement(m) {
   if (!m) return null;
   const json = m.toJSON ? m.toJSON() : m;
@@ -11,7 +15,7 @@ function transformMeasurement(m) {
     date: json.date,
     weight_kg: json.weight_kg,
     body_fat_percent: json.body_fat_percent,
-    fat_percentage: json.body_fat_percent, // Alias for frontend consistency if needed
+    fat_percentage: json.body_fat_percent,
     height_cm: json.height_cm,
     chest_cm: json.chest_cm,
     waist_cm: json.waist_cm,
@@ -28,14 +32,19 @@ function transformMeasurement(m) {
   };
 }
 
+/**
+ * Retrieves a paginated list of measurements for the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getMeasurements = async (req, res) => {
   try {
-    // Simple page/limit pagination for progress history screens.
+
     const limit = parseInt(req.query.per_page || 20);
     const page = parseInt(req.query.page || 1);
     const offset = (page - 1) * limit;
 
-    // Fetch count + page rows in one call for paginated API metadata.
+
     const { count, rows: measurements } = await Measurement.findAndCountAll({
       where: { user_id: req.user.id },
       order: [['date', 'DESC']],
@@ -57,10 +66,15 @@ exports.getMeasurements = async (req, res) => {
   }
 };
 
-// Creates a measurement row and binds `user_id` from auth context.
+
+/**
+ * Creates a new measurement entry.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.createMeasurement = async (req, res) => {
   try {
-    // Persist one measurement row and bind it to authenticated user id.
+
     const measurement = await Measurement.create({
       ...req.body,
       user_id: req.user.id
@@ -71,10 +85,15 @@ exports.createMeasurement = async (req, res) => {
   }
 };
 
-// Updates one measurement row filtered by `id` and `user_id`.
+
+/**
+ * Updates an existing measurement entry.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.updateMeasurement = async (req, res) => {
   try {
-    // Owner-scoped lookup prevents editing rows from another user.
+
     const measurement = await Measurement.findOne({ where: { id: req.params.id, user_id: req.user.id } });
     if (!measurement) return res.status(404).json({ message: 'Measurement not found' });
 
@@ -85,10 +104,15 @@ exports.updateMeasurement = async (req, res) => {
   }
 };
 
-// Deletes one measurement row filtered by `id` and `user_id`.
+
+/**
+ * Deletes a measurement entry.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.deleteMeasurement = async (req, res) => {
   try {
-    // Owner-scoped lookup before hard delete.
+
     const measurement = await Measurement.findOne({ where: { id: req.params.id, user_id: req.user.id } });
     if (!measurement) return res.status(404).json({ message: 'Measurement not found' });
 

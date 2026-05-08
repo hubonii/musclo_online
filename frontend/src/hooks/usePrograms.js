@@ -1,8 +1,15 @@
-// Program list/detail queries with create/update/delete mutations.
+/**
+ * Hooks for managing training programs via React Query.
+ */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiGet, apiPost, apiPut, apiDelete } from '../api/axios';
 import { queryKeys } from '../api/queryKeys';
 import { useToast } from '../components/ui/Toast';
+
+/**
+ * Hook for managing the list of user training programs.
+ * @returns {Object} React Query results and mutations for programs.
+ */
 export function usePrograms() {
     return useQuery({
         queryKey: queryKeys.programs.all,
@@ -13,7 +20,7 @@ export function useProgram(id) {
     return useQuery({
         queryKey: queryKeys.programs.detail(id),
         queryFn: () => apiGet(`/programs/${id}`),
-        // Avoid firing detail requests until route param or selected id is available.
+
         enabled: !!id,
     });
 }
@@ -37,7 +44,7 @@ export function useUpdateProgram() {
     return useMutation({
         mutationFn: ({ id, ...data }) => apiPut(`/programs/${id}`, data),
         onSuccess: (data) => {
-            // Invalidates list and detail query caches after update mutation.
+
             queryClient.invalidateQueries({ queryKey: queryKeys.programs.all });
             queryClient.invalidateQueries({ queryKey: queryKeys.programs.detail(data.id) });
             toast('success', 'Program updated successfully');

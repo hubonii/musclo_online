@@ -1,10 +1,11 @@
-// Routine template (day-specific workout inside a program).
+/**
+ * Routine model defining a single workout session's exercise set.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Routine = sequelize.define('Routine', {
   id: {
-    // Primary key for one routine template row.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -42,4 +43,7 @@ const Routine = sequelize.define('Routine', {
   paranoid: true,
 });
 
+/**
+ * Routine model represents a workout template inside a training program.
+ */
 module.exports = Routine;

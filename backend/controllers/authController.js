@@ -1,4 +1,4 @@
-// Auth controller handles user session lifecycle and credentials.
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
@@ -89,7 +89,7 @@ exports.register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      verification_code: null // Don't generate yet, let them click the button
+      verification_code: null
     });
 
     sendTokenResponse(user, 201, res);
@@ -205,7 +205,7 @@ exports.resendVerification = async (req, res) => {
       return res.status(200).json({ message: 'Email is already verified.', alreadyVerified: true });
     }
 
-    // Generate 6-digit code
+
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     user.verification_code = verificationCode;
     await user.save();
@@ -240,7 +240,7 @@ exports.forgotPassword = async (req, res) => {
 
     const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
     user.reset_code = resetCode;
-    user.reset_code_expires_at = new Date(Date.now() + 3600000); // 1 hour
+    user.reset_code_expires_at = new Date(Date.now() + 3600000);
     await user.save();
 
     console.log(`[AUTH] Password reset requested for ${email}. Reset code: ${resetCode}`);

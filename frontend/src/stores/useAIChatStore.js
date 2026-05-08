@@ -1,4 +1,6 @@
-// AI chat store: session list, message stream state, and panel visibility.
+/**
+ * Store for managing AI coach chat sessions and message streaming.
+ */
 import { create } from 'zustand';
 import { apiGet, apiDelete } from '../api/axios';
 
@@ -16,7 +18,7 @@ export const useAIChatStore = create()((set, get) => ({
     closeChat: () => set({ isOpen: false }),
     toggleChat: () => set({ isOpen: !get().isOpen }),
     setSelectedImage: (img) => set({ selectedImage: img }),
-    // Load chat sessions from the API and normalize local state.
+
     fetchSessions: async () => {
         try {
             const sessions = await apiGet('/chat/sessions');
@@ -54,7 +56,7 @@ export const useAIChatStore = create()((set, get) => ({
         }
     },
     addUserMessage: (content, imageUrl) => {
-        // Appends user message to local store before request streaming begins.
+
         set({
             messages: [...get().messages, {
                     id: `u-${Date.now()}`,
@@ -66,7 +68,7 @@ export const useAIChatStore = create()((set, get) => ({
         });
     },
     addAssistantMessage: (content, thought) => {
-        // Create a temporary streaming assistant message and return its id.
+
         const id = `a-${Date.now()}`;
         set({
             messages: [...get().messages, {
@@ -84,7 +86,7 @@ export const useAIChatStore = create()((set, get) => ({
         set({
             messages: get().messages.map((m) => m.id === id ? { ...m, isStreaming: false } : m),
         });
-        // Reloads session list after assistant response persistence.
+
         get().fetchSessions();
     },
     setLoading: (loading) => set({ isLoading: loading }),

@@ -1,10 +1,11 @@
-// Exercise library items (built-in + user-created custom exercises).
+/**
+ * Exercise model for built-in and user-created custom movements.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Exercise = sequelize.define('Exercise', {
   id: {
-    // Primary key for one exercise row.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -107,15 +108,23 @@ const Exercise = sequelize.define('Exercise', {
   underscored: true,
 });
 
+/**
+ * Splits composite body-part labels and returns the first segment.
+ * @param {string} bodyPart - The raw body part string.
+ * @returns {string|null} The normalized body part name.
+ */
 Exercise.normalizeBodyPart = (bodyPart) => {
-  // Splits composite body-part labels and returns first segment.
   if (!bodyPart) return null;
   const primary = bodyPart.split(',')[0].trim();
   return primary ? primary.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : null;
 };
 
+/**
+ * Maps body part names to icon asset filenames used by the frontend.
+ * @param {string} bodyPart - The body part name to map.
+ * @returns {string|null} The URL path to the icon.
+ */
 Exercise.bodyPartIconUrl = (bodyPart) => {
-  // Map body part names to icon asset filenames used by the frontend.
   const normalized = Exercise.normalizeBodyPart(bodyPart);
   if (!normalized) return null;
 
@@ -133,4 +142,7 @@ Exercise.bodyPartIconUrl = (bodyPart) => {
   return `/storage/exercises/icons/ic_${slug}.svg`;
 };
 
+/**
+ * Exercise model represents library items (built-in + user-created custom exercises).
+ */
 module.exports = Exercise;

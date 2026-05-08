@@ -1,4 +1,6 @@
-// Global auth store (session state + auth actions).
+/**
+ * Global authentication store for managing user session state and auth actions.
+ */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { apiClient, apiGet, apiPost } from '../api/axios';
@@ -40,13 +42,13 @@ export const useAuthStore = create()(persist((set, get) => ({
         try {
             await apiClient.post('/logout');
         } catch {
-            // Clear anyway
+
         }
         set({ user: null, isAuthenticated: false });
         localStorage.removeItem('musclo-auth');
         localStorage.removeItem('musclo-token');
         
-        // Also clear any response cache entries to prevent data leak
+
         const { clearAllCache } = await import('../lib/offlineCache');
         clearAllCache();
     },
@@ -123,7 +125,7 @@ export const useAuthStore = create()(persist((set, get) => ({
             const response = await apiClient.post('/profile/avatar', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            // Support both data.avatar_url and direct response
+
             const avatar_url = response.data?.data?.avatar_url || response.data?.avatar_url;
             if (avatar_url) {
                 set(state => ({ user: { ...state.user, avatar_url } }));
@@ -169,7 +171,7 @@ export const useAuthStore = create()(persist((set, get) => ({
         set({ isLoading: true });
         try {
             await apiClient.delete('/profile/delete', { data: { password } });
-            // Logout after deletion triggers full cleanup
+
             await get().logout();
         } finally {
             set({ isLoading: false });

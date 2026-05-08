@@ -1,10 +1,11 @@
-// Achievement definitions (static badge catalog and unlock criteria).
+/**
+ * Achievement model defining unlockable badges and milestones.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Achievement = sequelize.define('Achievement', {
   id: {
-    // Primary key for one achievement definition.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -47,4 +48,7 @@ const Achievement = sequelize.define('Achievement', {
   underscored: true,
 });
 
+/**
+ * Achievement model defines the static badge catalog and unlock criteria.
+ */
 module.exports = Achievement;

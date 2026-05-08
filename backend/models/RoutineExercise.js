@@ -1,10 +1,11 @@
-// Pivot model linking routines to exercises plus per-exercise targets.
+/**
+ * RoutineExercise join model linking exercises to routines with custom order/notes.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const RoutineExercise = sequelize.define('RoutineExercise', {
   id: {
-    // Primary key for one routine-exercise link row.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -51,6 +52,9 @@ const RoutineExercise = sequelize.define('RoutineExercise', {
   underscored: true,
 });
 
+/**
+ * RoutineExercise model links routines to exercises with per-exercise targets.
+ */
 module.exports = RoutineExercise;
 
 

@@ -1,11 +1,14 @@
-// Program details hook: load routines, search them, and handle routine deletion.
+/**
+ * Hook for fetching comprehensive training program details and routines.
+ * @returns {Object} Program details, loading states, and routine operations.
+ */
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/axios';
 import { useToast } from '../components/ui/Toast';
 import { queryKeys } from '../api/queryKeys';
 
-// Coordinates program detail page data, search filtering, and routine deletion state.
+
 import { useProgram } from './usePrograms';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -22,7 +25,7 @@ export function useProgramDetailsData() {
     const [deleteModalRoutine, setDeleteModalRoutine] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    // Fetch last logs using react-query for caching
+
     const { data: lastLogMap = {} } = useQuery({
         queryKey: ['routines', 'last-logs', programId],
         queryFn: async () => {
@@ -40,7 +43,7 @@ export function useProgramDetailsData() {
         enabled: routines.length > 0,
         staleTime: 60000 // 1 minute
     });
-    // Derived list updates immediately as search text changes.
+
     const filteredWorkouts = routines.filter(r => r.name.toLowerCase().includes(search.toLowerCase()));
     const handleDeleteRoutine = async () => {
         if (!deleteModalRoutine)
@@ -59,7 +62,7 @@ export function useProgramDetailsData() {
             setIsDeleting(false);
         }
     };
-    // Summary count used by ProgramBreakdown sidebar card.
+
     const totalExercises = routines.reduce((acc, r) => acc + (r.exercises?.length || 0), 0);
     return {
         programId,

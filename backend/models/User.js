@@ -1,10 +1,11 @@
-// Application user account and profile settings.
+/**
+ * User model for account management and profile settings.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const User = sequelize.define('User', {
   id: {
-    // Primary key for one user account row.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -80,4 +81,7 @@ const User = sequelize.define('User', {
   underscored: true,
 });
 
+/**
+ * User model represents application user accounts and profile settings.
+ */
 module.exports = User;

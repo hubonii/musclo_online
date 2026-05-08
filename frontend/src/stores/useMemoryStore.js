@@ -1,12 +1,14 @@
+/**
+ * Persistent store for maintaining UI state across navigation.
+ */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// Persistent store to keep UI state in memory across navigation.
-// This makes the app feel "instant" as filters and search terms are preserved.
+
 export const useMemoryStore = create(
     persist(
         (set) => ({
-            // Exercises Page State
+
             exercisesSearch: '',
             exercisesCategory: null,
             exercisesBodyPart: null,
@@ -29,7 +31,7 @@ export const useMemoryStore = create(
                 exercisesPage: 1
             }),
 
-            // Progress Page State
+
             progressScrollPos: 0,
             progressIsMeasurementsOpen: false,
             progressSelectedUploadPose: 'front',
@@ -39,7 +41,7 @@ export const useMemoryStore = create(
             setProgressSelectedUploadPose: (val) => set({ progressSelectedUploadPose: val }),
         }),
         {
-            name: 'musclo-memory-store', // stored in localStorage
+            name: 'musclo-memory-store',
             partialize: (state) => ({
                 exercisesSearch: state.exercisesSearch,
                 exercisesCategory: state.exercisesCategory,

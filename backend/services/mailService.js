@@ -1,17 +1,27 @@
+/**
+ * Service for sending transactional emails using the Resend API.
+ */
 const { Resend } = require('resend');
 
 class MailService {
   constructor() {
-    // Priority: environment variable, then provided fallback for immediate fix
+
     const apiKey = process.env.RESEND_API_KEY || 're_hLM6ZTqK_8Rc8X2ijwFTvaSseaKaNvJtD';
     this.resend = new Resend(apiKey);
     
-    // Now that the domain is verified, we can use a professional address
+
     this.fromEmail = process.env.MAIL_FROM || 'noreply@musclo.tech';
     
     console.log(`[MAIL] Initialized with Resend API (Key: ${apiKey.substring(0, 5)}...)`);
   }
 
+  /**
+   * Sends an email using the Resend API.
+   * @param {string} to - Recipient email address.
+   * @param {string} subject - Email subject line.
+   * @param {string} html - HTML body content.
+   * @returns {Promise<Object|null>} Response data or null on failure.
+   */
   async sendMail(to, subject, html) {
     if (!to) return null;
 
@@ -38,6 +48,12 @@ class MailService {
     }
   }
 
+  /**
+   * Sends a 6-digit verification code to the user's email.
+   * @param {string} to - Recipient email address.
+   * @param {string} code - The 6-digit verification code.
+   * @returns {Promise<Object|null>}
+   */
   async sendVerificationCode(to, code) {
     const subject = 'Verify your Musclo account';
     const html = `
@@ -53,6 +69,12 @@ class MailService {
     return this.sendMail(to, subject, html);
   }
 
+  /**
+   * Sends a 6-digit password reset code to the user's email.
+   * @param {string} to - Recipient email address.
+   * @param {string} code - The 6-digit reset code.
+   * @returns {Promise<Object|null>}
+   */
   async sendResetCode(to, code) {
     const subject = 'Reset your Musclo password';
     const html = `
@@ -70,4 +92,7 @@ class MailService {
   }
 }
 
+/**
+ * Service for handling transactional email operations via Resend.
+ */
 module.exports = new MailService();

@@ -1,4 +1,7 @@
-// Orchestrates progress page forms, uploads, and grouped timeline data.
+/**
+ * Hook to manage progress page state, forms, and photo uploads.
+ * @returns {Object} Progress state, handlers, and loading indicators.
+ */
 import { useState, useRef } from 'react';
 import { useMeasurements, useAddMeasurement, useUpdateMeasurement } from './useMeasurements';
 import { useProgressPhotos, useUploadProgressPhoto, useDeleteProgressPhoto } from './useProgressPhotos';
@@ -26,7 +29,7 @@ export function useProgressPageData() {
         neck_cm: '', body_fat_percent: '', notes: ''
     });
     const handleSaveMeasurements = async (e) => {
-        // Build payload from non-empty form fields only.
+
         e.preventDefault();
         const payload = { date: getTodayString() };
         let hasData = false;
@@ -42,7 +45,7 @@ export function useProgressPageData() {
         }
         try {
             const todayMeasurement = measurements.find((m) => m.date === getTodayString());
-            // Date-keyed upsert flow: updates existing daily record or creates a new row.
+
             if (todayMeasurement) {
                 await updateMeasurement({
                     id: todayMeasurement.id,
@@ -69,7 +72,7 @@ export function useProgressPageData() {
         }
     };
     const handleFileChange = async (e) => {
-        // Upload one selected photo and attach today's measurement when available.
+
         const file = e.target.files?.[0];
         if (!file)
             return;
@@ -83,7 +86,7 @@ export function useProgressPageData() {
         formData.append('taken_at', getTodayString());
         const todayMeasurement = measurements.find(m => m.date === getTodayString());
         if (todayMeasurement) {
-            // Attaches measurement foreign key when a same-day measurement exists.
+
             formData.append('measurement_id', todayMeasurement.id.toString());
         }
         try {
@@ -95,7 +98,7 @@ export function useProgressPageData() {
         }
         finally {
             if (fileInputRef.current) {
-                // Resets input element state to allow re-selecting the same file name.
+
                 fileInputRef.current.value = '';
             }
         }

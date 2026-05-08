@@ -1,12 +1,17 @@
-// AI coach controller: manage chat sessions and stream model responses.
+
 const { ChatSession, ChatMessage, SetData, WorkoutLog, Exercise } = require('../models');
 const openRouter = require('../services/openRouterService');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 
+/**
+ * Retrieves all chat sessions for the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getSessions = async (req, res) => {
   try {
-    // Returns sessions ordered by latest update timestamp.
+
     const sessions = await ChatSession.findAll({
       where: { user_id: req.user.id },
       order: [['updated_at', 'DESC']],
@@ -18,13 +23,18 @@ exports.getSessions = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves message history for a specific chat session.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getMessages = async (req, res) => {
   try {
-    // Resolve the session first to enforce user ownership before loading messages.
+
     const session = await ChatSession.findOne({ where: { id: req.params.sessionId, user_id: req.user.id } });
     if (!session) return res.status(404).json({ message: 'Session not found' });
 
-    // Return message history in ascending order for chat-style rendering.
+
     const messages = await ChatMessage.findAll({
       where: { chat_session_id: session.id },
       order: [['created_at', 'ASC']],
@@ -36,10 +46,15 @@ exports.getMessages = async (req, res) => {
   }
 };
 
-// Create a new chat session for the authenticated user.
+
+/**
+ * Creates a new chat session for the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.createSession = async (req, res) => {
   try {
-    // Persists a minimal session row; the first user prompt can update title later.
+
     const session = await ChatSession.create({
       user_id: req.user.id,
       title: 'New Chat'
@@ -50,10 +65,15 @@ exports.createSession = async (req, res) => {
   }
 };
 
-// Delete one user-owned session.
+
+/**
+ * Deletes a specific chat session and its associated messages.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.deleteSession = async (req, res) => {
   try {
-    // Deletes only sessions owned by the authenticated user.
+
     const session = await ChatSession.findOne({ where: { id: req.params.sessionId, user_id: req.user.id } });
     if (!session) return res.status(404).json({ message: 'Session not found' });
 
@@ -64,12 +84,17 @@ exports.deleteSession = async (req, res) => {
   }
 };
 
+/**
+ * Processes a user message and streams the AI coach's response via SSE.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.ask = async (req, res) => {
   try {
     const { message, session_id, image, workout_context, model } = req.body;
     let session;
 
-    // Reuse the selected session, or auto-create one if missing.
+
     if (session_id) {
       session = await ChatSession.findOne({ where: { id: session_id, user_id: req.user.id } });
     }
@@ -77,12 +102,12 @@ exports.ask = async (req, res) => {
     if (!session) {
       session = await ChatSession.create({
         user_id: req.user.id,
-        // Session title is initialized from the first user prompt text.
+
         title: message.substring(0, 40)
       });
     }
 
-    // Save user's message before streaming the assistant response.
+
     await ChatMessage.create({
       chat_session_id: session.id,
       role: 'user',
@@ -90,26 +115,26 @@ exports.ask = async (req, res) => {
       image_url: image ? 'embedded' : null
     });
 
-    // Loads last 10 messages for model context window construction.
+
     const historyMessages = await ChatMessage.findAll({
       where: { chat_session_id: session.id },
       order: [['created_at', 'ASC']],
-      // Keep prompt context short to control token cost and response latency.
+
       limit: 10
     });
 
-    // Build additional workout context that is not directly in the current user prompt.
+
     const latentContext = await getLatentWorkoutContext(req.user.id, workout_context);
 
-    // Sets Server-Sent Events headers for token streaming responses.
+
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
-    // Validate model override: only allow free-tier models to prevent cost abuse.
+
     const safeModel = (model && model.endsWith(':free')) ? model : undefined;
 
-    // Delegate prompt assembly + token streaming to OpenRouter service.
+
     await openRouter.askStream(
       res,
       message,
@@ -125,16 +150,22 @@ exports.ask = async (req, res) => {
   }
 };
 
+/**
+ * Builds additional workout history context for AI prompt enrichment.
+ * @param {string} userId - ID of the authenticated user.
+ * @param {Object} context - Current active workout context.
+ * @returns {Promise<Array>} List of context items.
+ */
 async function getLatentWorkoutContext(userId, context) {
-  // Builds workout history context entries for prompt assembly.
+
   const historyContext = [];
   
   if (context && context.exercises && context.exercises.length > 0) {
-    // Use only valid exercise ids from the active workout payload.
+
     const exerciseIds = context.exercises.map(ex => ex.id).filter(Boolean);
     
     if (exerciseIds.length > 0) {
-      // Per-exercise lifetime stats for exercises in the active workout context.
+
       const stats = await SetData.findAll({
         attributes: [
           'exercise_id',
@@ -151,7 +182,7 @@ async function getLatentWorkoutContext(userId, context) {
         raw: true
       });
 
-      // Convert DB aggregate rows into context entries consumed by the prompt builder.
+
       stats.forEach(s => {
         const ex = context.exercises.find(e => e.id === s.exercise_id);
         if (ex) {
@@ -165,7 +196,7 @@ async function getLatentWorkoutContext(userId, context) {
       });
     }
   } else {
-    // Fallback context when no active workout payload is provided.
+
     const recentLogs = await WorkoutLog.findAll({
       where: { user_id: userId, completed_at: { [Op.ne]: null } },
       order: [['completed_at', 'DESC']],
@@ -176,7 +207,7 @@ async function getLatentWorkoutContext(userId, context) {
     recentLogs.forEach(log => {
       historyContext.push({
         type: 'recent_workout',
-        // Stores date in `YYYY-MM-DD` format inside history context entries.
+
         date: log.completed_at.toISOString().split('T')[0],
         name: log.name,
         exercises: []

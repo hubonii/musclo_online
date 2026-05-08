@@ -1,4 +1,6 @@
-// Workout session page: start, log sets, and save completed workouts.
+/**
+ * Page component for logging a live workout session.
+ */
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -37,12 +39,12 @@ export default function WorkoutPage() {
     const isImperial = settings?.unit_system === 'imperial';
     const { data: measurements } = useMeasurements();
     
-    // Extract the user's most recent logged weight to be used for bodyweight exercises.
+
     const profileWeight = useMemo(() => {
         return measurements && measurements.length > 0 ? measurements[0].weight_kg : null;
     }, [measurements]);
 
-    // Bind to global workout state to ensure persistence across page navigation.
+
     const isActive = useWorkoutStore(state => state.isActive);
     const startedAt = useWorkoutStore(state => state.startedAt);
     const notes = useWorkoutStore(state => state.notes);
@@ -91,10 +93,10 @@ export default function WorkoutPage() {
                 try {
                     const routine = await apiGet(`/routines/${routineId}`);
                     setPendingRoutine(routine);
-                    // Cache routine for offline workout starts.
+
                     cacheSet(`routine-${routineId}`, routine);
                 } catch (e) {
-                    // Fall back to cached routine when offline.
+
                     const cached = cacheGet(`routine-${routineId}`, 7 * 24 * 60 * 60 * 1000);
                     if (cached) {
                         setPendingRoutine(cached);
@@ -142,7 +144,7 @@ export default function WorkoutPage() {
                 toast('info', 'Abandoned session was auto-cleared.');
                 return false;
             }
-            if (restTimerRunning && restTimerEnd && now >= restTimerEnd) {
+
                 stopRestTimer();
             }
             setElapsed(elapsedSeconds);
@@ -262,7 +264,7 @@ export default function WorkoutPage() {
             toast('success', `Protocol Saved. Volume: ${displayWeight}`);
             navigate('/history');
         } catch (err) {
-            // Queue workout for later sync when offline, tagged with current user ID.
+
             queueWorkoutSave(payload, user?.id);
             resetWorkout();
             toast('success', 'Saved offline — will sync when connected.');

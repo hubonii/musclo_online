@@ -1,14 +1,19 @@
-// Exercise controller: search/filter catalog, manage custom exercises, and favorites.
+
 const { Exercise, User, RoutineExercise } = require('../models');
 const { Op, Sequelize } = require('sequelize');
 
+/**
+ * Retrieves a paginated list of exercises with optional filters.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getExercises = async (req, res) => {
   try {
-    // Query params are optional filters coming from the exercise library screen.
+
     const { search, muscle_group, muscle, equipment, body_part, has_video, per_page, limit } = req.query;
     
     const userId = req.user.id;
-    // Users can see global exercises plus any custom exercises they created.
+
     const where = {
       [Op.or]: [
         { is_custom: false },
@@ -25,7 +30,7 @@ exports.getExercises = async (req, res) => {
     }
 
     if (muscle) {
-      // Match muscle names inside JSON columns (primary and secondary muscles).
+
       where[Op.or] = [
         Sequelize.fn('JSON_CONTAINS', Sequelize.col('primary_muscles'), JSON.stringify(muscle)),
         Sequelize.fn('JSON_CONTAINS', Sequelize.col('secondary_muscles_json'), JSON.stringify(muscle))
@@ -44,7 +49,7 @@ exports.getExercises = async (req, res) => {
       where.video_url = { [Op.ne]: null };
     }
 
-    // Applies server-side upper bound to page size (`max = 2000`).
+
     const pageSize = Math.min(parseInt(per_page || limit || 25), 2000);
     const page = parseInt(req.query.page || 1);
     const offset = (page - 1) * pageSize;
@@ -53,7 +58,7 @@ exports.getExercises = async (req, res) => {
       where,
       limit: pageSize,
       offset,
-      // Sort order: equipment-priority CASE expression, then `name ASC`.
+
       order: [
         [Sequelize.literal(`
           CASE 
@@ -87,7 +92,11 @@ exports.getExercises = async (req, res) => {
   }
 };
 
-// Convert model fields to the API shape expected by frontend cards/details.
+/**
+ * Convert model fields to the API shape expected by frontend.
+ * @param {Object} ex - The exercise model instance.
+ * @returns {Object} Transformed exercise data.
+ */
 const transformExercise = (ex) => {
   const iconUrl = Exercise.bodyPartIconUrl(ex.body_part);
   
@@ -112,7 +121,7 @@ const transformExercise = (ex) => {
     }
   }
 
-  // Convert DB paths into URLs the browser can load directly.
+
   const formatUrl = (url) => {
     if (!url) return null;
     if (url.startsWith('http') || url.startsWith('https')) return url;
@@ -142,9 +151,14 @@ const transformExercise = (ex) => {
   };
 };
 
+/**
+ * Retrieves a list of exercise categories based on body parts.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getCategories = async (req, res) => {
   try {
-    // Build distinct category list from body_part values.
+
     const results = await Exercise.findAll({
       attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('body_part')), 'body_part']],
       where: {
@@ -173,9 +187,14 @@ exports.getCategories = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves all available filter options (equipment, muscles, etc.).
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getFilters = async (req, res) => {
   try {
-    // Executes distinct-value filter queries concurrently with `Promise.all`.
+
     const [equipmentList, bodyPartsList, primaryMuscles, secondaryMuscles, categoriesList] = await Promise.all([
       Exercise.findAll({ attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('equipment')), 'equipment']], where: { equipment: { [Op.ne]: null } }, raw: true }),
       Exercise.findAll({ attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('body_part')), 'body_part']], where: { body_part: { [Op.ne]: null } }, raw: true }),
@@ -197,7 +216,12 @@ exports.getFilters = async (req, res) => {
   }
 };
 
-// Favorite toggle endpoint using `hasFavoriteExercise` relation checks.
+
+/**
+ * Toggles an exercise as a favorite for the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.toggleFavorite = async (req, res) => {
   try {
     const user = req.user;
@@ -219,12 +243,17 @@ exports.toggleFavorite = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves details for a single exercise.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getExercise = async (req, res) => {
   try {
     const exercise = await Exercise.findByPk(req.params.id);
     if (!exercise) return res.status(404).json({ message: 'Exercise not found' });
     
-    // Custom exercises are private to their owner.
+
     if (exercise.is_custom && exercise.user_id !== req.user.id) {
       return res.status(403).json({ message: 'Unauthorized' });
     }
@@ -235,7 +264,12 @@ exports.getExercise = async (req, res) => {
   }
 };
 
-// Creates a custom exercise row with `is_custom: true` and caller `user_id`.
+
+/**
+ * Creates a new custom exercise for the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.createExercise = async (req, res) => {
   try {
     const { name, muscle_group, equipment, body_part, instructions, category } = req.body;
@@ -257,6 +291,11 @@ exports.createExercise = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves the list of favorite exercise IDs for the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getFavorites = async (req, res) => {
   try {
     const favorites = await req.user.getFavoriteExercises({ attributes: ['id'] });

@@ -1,0 +1,8 @@
+Baseline Banned Tokens (2026-05-08):
+- backend/: 0 (excluding node_modules)
+- frontend/src/: 0
+- backend/test/: 0 (pending check)
+- frontend/test/: 0 (pending check)
+
+Note: Explicit tokens from tasks.md (ChatGPT in AIChatComponent, Laravel in axios.js) are already absent.
+However, "what" comments and missing JSDoc remain prevalent.

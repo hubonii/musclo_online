@@ -1,10 +1,14 @@
-// Profile-related queries (profile, achievements, routines) + update mutation.
+/**
+ * Hook for fetching and updating user profile information.
+ * @param {string|number} [userId='me'] - The user ID to fetch.
+ * @returns {Object} React Query result for user profile.
+ */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiGet, apiPut } from '../api/axios';
 import { queryKeys } from '../api/queryKeys';
 
 export const useProfile = (userId) => {
-    // Resolves profile target id; defaults to `me` for authenticated user endpoints.
+
     const id = userId || 'me';
     return useQuery({
         queryKey: queryKeys.profile.detail(id),
@@ -33,7 +37,7 @@ export const useUpdateProfile = () => {
     return useMutation({
         mutationFn: (payload) => apiPut('/profile', payload),
         onSuccess: (updatedProfile) => {
-            // Updates both cache keys: specific user id and `me` alias.
+
             queryClient.setQueryData(queryKeys.profile.detail(updatedProfile.id), (old) => ({ ...(old ?? {}), ...updatedProfile }));
             queryClient.setQueryData(queryKeys.profile.detail('me'), (old) => ({ ...(old ?? {}), ...updatedProfile }));
         },

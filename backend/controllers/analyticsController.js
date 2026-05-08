@@ -1,13 +1,17 @@
-// Analytics controller for workout aggregates and chart data endpoints.
+
 const { WorkoutLog, SetData, Exercise, Routine, Program } = require('../models');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 
-// Routine model transformer for analytics response payloads.
+/**
+ * Routine model transformer for analytics response payloads.
+ * @param {Object} r - The routine model instance.
+ * @returns {Object|null} Transformed routine data.
+ */
 function transformRoutine(r) {
   if (!r) return null;
   const json = r.toJSON ? r.toJSON() : r;
-  // Normalize ORM instances and plain objects to one API shape.
+
   return {
     id: json.id,
     name: json.name,
@@ -23,7 +27,11 @@ function transformRoutine(r) {
   };
 }
 
-// Convert program model to analytics response shape.
+/**
+ * Convert program model to analytics response shape.
+ * @param {Object} p - The program model instance.
+ * @returns {Object|null} Transformed program data.
+ */
 function transformProgram(p) {
   if (!p) return null;
   const json = p.toJSON ? p.toJSON() : p;
@@ -36,20 +44,25 @@ function transformProgram(p) {
   };
 }
 
+/**
+ * Retrieves aggregate workout statistics for the dashboard.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getStats = async (req, res) => {
   try {
     const userId = req.user.id;
-    // Shared rolling window timestamps for week and month aggregate fields.
+
     const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const lastMonth = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    // Escape date values through Sequelize to avoid raw string interpolation in SQL.
+
     const weekISO = sequelize.escape(lastWeek.toISOString());
     const monthISO = sequelize.escape(lastMonth.toISOString());
 
     const stats = await WorkoutLog.findOne({
       attributes: [
-        // Single aggregate query with SQL CASE expressions for time-window counters.
+
         [sequelize.fn('COUNT', sequelize.col('id')), 'total'],
         [sequelize.literal(`SUM(CASE WHEN started_at >= ${weekISO} THEN 1 ELSE 0 END)`), 'this_week'],
         [sequelize.literal(`SUM(CASE WHEN started_at >= ${monthISO} THEN 1 ELSE 0 END)`), 'this_month'],
@@ -59,7 +72,7 @@ exports.getStats = async (req, res) => {
         [sequelize.literal(`SUM(CASE WHEN started_at >= ${weekISO} THEN duration_seconds ELSE 0 END)`), 'this_week_seconds'],
       ],
       where: { user_id: userId },
-      // Sequelize raw mode returns plain object values for aggregate columns.
+
       raw: true
     });
 
@@ -77,7 +90,7 @@ exports.getStats = async (req, res) => {
       limit: 3
     });
 
-    // Builds dashboard summary payload sections from aggregate query results.
+
     res.json({
       data: {
         workouts: {
@@ -102,13 +115,17 @@ exports.getStats = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves progression data for a specific exercise over time.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getProgression = async (req, res) => {
   try {
     const { exerciseId } = req.params;
     const userId = req.user.id;
 
-    // Track progression as max (weight * reps) per workout date.
-    // Aggregate one value per workout date for chart points.
+
     const progression = await SetData.findAll({
       attributes: [
         [sequelize.fn('MAX', sequelize.literal('weight_kg * reps')), 'one_rep_max'],
@@ -136,12 +153,17 @@ exports.getProgression = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves muscle group volume distribution for charts.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getVolumeAnalytics = async (req, res) => {
   try {
     const { range = 'all' } = req.query;
     const userId = req.user.id;
 
-    // Optional range filter for week/month chart toggles.
+
     let where = { '$WorkoutLog.user_id$': userId };
     if (range === 'week') {
       where['$WorkoutLog.started_at$'] = { [Op.gte]: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) };
@@ -149,7 +171,7 @@ exports.getVolumeAnalytics = async (req, res) => {
       where['$WorkoutLog.started_at$'] = { [Op.gte]: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) };
     }
 
-    // Groups total lifted volume by muscle group for distribution charts.
+
     const volumes = await SetData.findAll({
       attributes: [
         [sequelize.col('Exercise.muscle_group'), 'muscle'],
@@ -165,9 +187,9 @@ exports.getVolumeAnalytics = async (req, res) => {
     });
 
     const totalVolume = volumes.reduce((acc, v) => acc + parseFloat(v.volume || 0), 0);
-    // Keep muscle keys predictable for chart components.
+
     const muscles = volumes.map(v => ({
-      // Normalize to snake_case keys expected by existing frontend chart labels.
+
       muscle: v.muscle ? v.muscle.toLowerCase().replace(/ /g, '_') : 'other',
       volume: parseFloat(v.volume || 0),
       percentage: totalVolume > 0 ? Math.round((parseFloat(v.volume || 0) / totalVolume) * 100 * 10) / 10 : 0
@@ -188,6 +210,11 @@ exports.getVolumeAnalytics = async (req, res) => {
 exports.getAnatomy = exports.getVolumeAnalytics;
 // `getAnatomy` intentionally reuses volume analytics data.
 
+/**
+ * Placeholder for muscle symmetry analysis.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getSymmetry = async (req, res) => {
   try {
     // Placeholder endpoint currently returns empty dataset.
@@ -197,9 +224,14 @@ exports.getSymmetry = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves workout frequency data for calendar heatmaps.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getCalendar = async (req, res) => {
   try {
-    // Lightweight payload: one point per workout date for calendar heatmaps.
+
     const userId = req.user.id;
     const logs = await WorkoutLog.findAll({
       attributes: ['started_at', 'total_volume', 'duration_seconds'],
@@ -208,7 +240,7 @@ exports.getCalendar = async (req, res) => {
       raw: true
     });
 
-    // Maps raw workout rows into date-based calendar cells.
+
     res.json({
       data: logs.map(l => ({
         date: l.started_at,

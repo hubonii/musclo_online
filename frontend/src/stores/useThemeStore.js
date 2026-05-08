@@ -1,4 +1,6 @@
-// Theme preference store (light/dark/system) with DOM class sync.
+/**
+ * Store for managing application theme preferences and DOM synchronization.
+ */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 export const useThemeStore = create()(persist((set, get) => ({
@@ -7,7 +9,7 @@ export const useThemeStore = create()(persist((set, get) => ({
         const current = get().theme;
         let resolved = current;
         if (current === 'system') {
-            // Resolve system mode first, then toggle from the resolved value.
+
             resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
         const next = resolved === 'dark' ? 'light' : 'dark';
@@ -17,7 +19,7 @@ export const useThemeStore = create()(persist((set, get) => ({
     setTheme: (theme) => {
         set({ theme });
         if (theme === 'system') {
-            // Applies current OS color-scheme when theme value is `system`.
+
             const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.classList.toggle('dark', isDark);
         }

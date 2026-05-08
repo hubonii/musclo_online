@@ -1,10 +1,11 @@
-// Individual set rows used for both routine templates and completed workouts.
+/**
+ * SetData model for individual exercise sets (reps, weight, RPE).
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const SetData = sequelize.define('SetData', {
   id: {
-    // Primary key for one set entry row.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -64,4 +65,7 @@ const SetData = sequelize.define('SetData', {
   timestamps: true,
 });
 
+/**
+ * SetData model represents individual set rows for templates and workouts.
+ */
 module.exports = SetData;

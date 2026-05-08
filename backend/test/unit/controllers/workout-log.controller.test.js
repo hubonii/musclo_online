@@ -1,11 +1,11 @@
-// Unit tests for WorkoutLogController — session recording and history tracking.
+
 const { storeWorkout, getHistory, getWorkout, deleteWorkout, getExerciseHistory } = require('../../../controllers/workoutLogController');
 const { WorkoutLog, SetData } = require('../../../models');
 const sequelize = require('../../../config/database');
 const { Op } = require('sequelize');
 const { createRes } = require('../../helpers/express');
 
-// --- Module Mocks ---
+
 jest.mock('../../../models', () => ({
   WorkoutLog: {
     create: jest.fn(),

@@ -1,24 +1,42 @@
+/**
+ * General utility functions for the frontend application.
+ */
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+/**
+ * Returns the current date as a YYYY-MM-DD string.
+ * @returns {string} Formatted date string.
+ */
 export function getTodayString() {
     return new Date().toISOString().split('T')[0];
 }
 
+/**
+ * Merges CSS classes using clsx and tailwind-merge.
+ * @param {...any} inputs - Class names or conditional class objects.
+ * @returns {string} Merged class string.
+ */
 export function cn(...inputs) {
     return twMerge(clsx(inputs));
 }
 
-// Format weight values for display with intelligent rounding and unit conversion.
+
+/**
+ * Formats a weight value with appropriate units and rounding.
+ * @param {number} kg - Weight in kilograms.
+ * @param {'kg'|'lbs'} [unit='kg'] - Target unit for display.
+ * @returns {string} Formatted weight string.
+ */
 export function formatWeight(kg, unit = 'kg') {
     const val = unit === 'lbs' ? (kg * 2.20462) : kg;
     
-    // For very large volumes (e.g. lifetime total), use 'k' notation to save space.
+
     if (val >= 10000) {
         return `${(val / 1000).toFixed(1).replace(/\.0$/, '')}k ${unit}`;
     }
     
-    // For moderate weights, show 1 decimal if needed.
+
     if (val >= 100) {
         return `${Math.round(val)} ${unit}`;
     }
@@ -26,7 +44,12 @@ export function formatWeight(kg, unit = 'kg') {
     return `${val.toFixed(1).replace(/\.0$/, '')} ${unit}`;
 }
 
-// Format calendar dates for display.
+
+/**
+ * Formats a date string or object into a human-readable format.
+ * @param {string|Date} date - Date to format.
+ * @returns {string} Formatted date string (e.g., "Jan 1, 2024").
+ */
 export function formatDate(date) {
     return new Intl.DateTimeFormat('en-US', {
         month: 'short',
@@ -35,7 +58,12 @@ export function formatDate(date) {
     }).format(new Date(date));
 }
 
-// Converts total seconds into `h m`, `m s`, or `s` display strings.
+
+/**
+ * Formats a duration in seconds into a human-readable H:M:S string.
+ * @param {number} seconds - Duration in seconds.
+ * @returns {string} Formatted duration string.
+ */
 export function formatDuration(seconds) {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -47,7 +75,12 @@ export function formatDuration(seconds) {
     return `${s}s`;
 }
 
-// Format relative time labels such as "2h ago".
+
+/**
+ * Formats a timestamp into a relative time string (e.g., "5m ago").
+ * @param {string|Date} date - Date to format.
+ * @returns {string} Relative time string.
+ */
 export function formatRelativeTime(date) {
     const now = new Date();
     const then = new Date(date);
@@ -66,23 +99,43 @@ export function formatRelativeTime(date) {
     return formatDate(date);
 }
 
-// Sum completed set volume (weight x reps), excluding warmups.
+
+/**
+ * Calculates total lifting volume for a collection of exercise sets.
+ * @param {Array} exercises - List of exercise objects with sets.
+ * @returns {number} Total volume in kg.
+ */
 export function calculateTotalVolume(exercises) {
     return exercises.reduce((total, e) => total + e.sets.reduce((sum, s) => sum + (s.isCompleted && s.set_type !== 'warmup' ? (s.weight_kg ?? 0) * (s.reps ?? 0) : 0), 0), 0);
 }
 
-// Count completed sets across all exercises.
+
+/**
+ * Counts total completed sets across all exercises.
+ * @param {Array} exercises - List of exercise objects.
+ * @returns {number} Total count of completed sets.
+ */
 export function calculateCompletedSetsCount(exercises) {
     return exercises.reduce((t, e) => t + e.sets.filter((s) => s.isCompleted).length, 0);
 }
 
-// Count total planned sets across all exercises.
+
+/**
+ * Counts total sets (completed or not) across all exercises.
+ * @param {Array} exercises - List of exercise objects.
+ * @returns {number} Total count of sets.
+ */
 export function calculateTotalSetsCount(exercises) {
     return exercises.reduce((t, e) => t + e.sets.length, 0);
 }
 
+/**
+ * Groups progress photos by their capture date and pose.
+ * @param {Array} photos - List of photo objects.
+ * @returns {Object} Grouped photos and sorted dates.
+ */
 export function groupPhotosByDate(photos) {
-    // Group photos by day and map primary poses (front/side/back) for timeline cards.
+
     const grouped = photos.reduce((acc, photo) => {
         const dateStr = photo.taken_at.split('T')[0];
         if (!acc[dateStr]) {

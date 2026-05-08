@@ -1,4 +1,6 @@
-// Active workout builder and runtime session state.
+/**
+ * Store for managing active workout sessions and builder state.
+ */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { apiGet } from '../api/axios';
@@ -13,7 +15,7 @@ export const useWorkoutStore = create()(persist((set, get) => ({
     exercises: [],
     notes: '',
     startWorkout: (routineId, routineName, initialExercises = []) => {
-        // Initializes one active session snapshot persisted in local storage.
+
         set({
             isActive: true,
             routineId,
@@ -25,7 +27,7 @@ export const useWorkoutStore = create()(persist((set, get) => ({
     },
     addExercise: (exercise) => {
         const exercises = get().exercises;
-        // Keep one active entry per exercise in a session.
+
         if (exercises.find((e) => e.exerciseId === exercise.id))
             return;
         set({
@@ -68,7 +70,7 @@ export const useWorkoutStore = create()(persist((set, get) => ({
                 if (e.exerciseId !== exerciseId)
                     return e;
                 const lastSet = e.sets[e.sets.length - 1];
-                // Pre-fill next set from last set to speed up logging.
+
                 return {
                     ...e,
                     sets: [...e.sets, {
@@ -112,7 +114,7 @@ export const useWorkoutStore = create()(persist((set, get) => ({
                 const setIndex = e.sets.findIndex(s => s.id === setId);
                 if (setIndex === -1)
                     return e;
-                // Uses immutable array/object copies so Zustand change detection stays reliable.
+
                 const updatedSets = [...e.sets];
                 const sourceSet = updatedSets[setIndex];
                 updatedSets[setIndex] = { ...sourceSet, [field]: value };
@@ -154,7 +156,7 @@ export const useWorkoutStore = create()(persist((set, get) => ({
         });
         if (didJustComplete) {
             const ex = get().exercises.find(e => e.exerciseId === exerciseId);
-            // Resolve timer priority: exercise override -> global setting -> default.
+
             const timerSeconds = ex?.restTimerSeconds || useRestTimerStore.getState().restTimerSeconds || 90;
             useRestTimerStore.getState().startRestTimer(timerSeconds, exerciseId, setId);
         }
@@ -206,11 +208,11 @@ export const useWorkoutStore = create()(persist((set, get) => ({
             }),
         });
     },
-    // Fetch last-session values to show "previous" hints per set.
+
     fetchPreviousData: async (exerciseId) => {
         const state = get();
         const ex = state.exercises.find(e => e.exerciseId === exerciseId);
-        // Skips history fetch when `hasFetchedHistory` is already true for the exercise.
+
         if (!ex || ex.hasFetchedHistory)
             return;
         set({
@@ -220,7 +222,7 @@ export const useWorkoutStore = create()(persist((set, get) => ({
             const historyGroups = await apiGet(`/workouts/exercise/${exerciseId}/history`, { limit: 1 });
             const dates = Object.keys(historyGroups);
             if (dates.length > 0) {
-                // API groups by session date; use the latest one.
+
                 const sortedDates = dates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
                 const lastSessionSets = historyGroups[sortedDates[0]];
                 lastSessionSets.sort((a, b) => a.set_number - b.set_number);
@@ -247,7 +249,7 @@ export const useWorkoutStore = create()(persist((set, get) => ({
             return null;
         const completedAt = new Date().toISOString();
         const duration_seconds = Math.floor((new Date(completedAt).getTime() - new Date(state.startedAt).getTime()) / 1000);
-        // Flatten completed sets into backend payload format.
+
         const payload = {
             routine_id: state.routineId,
             name: state.routineName,
@@ -260,14 +262,14 @@ export const useWorkoutStore = create()(persist((set, get) => ({
                 set_number: s.setNumber,
                 set_type: s.set_type,
                 weight_kg: s.weight_kg ?? 0,
-                // Metric-specific payload fields: reps for rep sets, duration_seconds for timed sets.
+
                 reps: e.targetMetric === 'Time' ? null : (s.reps ?? 0),
                 duration_seconds: e.targetMetric === 'Time' ? (s.duration_seconds ?? 0) : null,
                 rir: s.rir,
                 rpe: s.rpe,
             }))),
         };
-        // Clear local session after payload is created.
+
         get().resetWorkout();
         return payload;
     },

@@ -1,10 +1,11 @@
-// Progress photo metadata (path, pose, date, and optional notes).
+/**
+ * ProgressPhoto model for tracking user physical transformations.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const ProgressPhoto = sequelize.define('ProgressPhoto', {
   id: {
-    // Primary key for one uploaded progress photo record.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -42,6 +43,9 @@ const ProgressPhoto = sequelize.define('ProgressPhoto', {
   underscored: true,
 });
 
+/**
+ * ProgressPhoto model represents metadata for uploaded progress photos.
+ */
 module.exports = ProgressPhoto;
 
 

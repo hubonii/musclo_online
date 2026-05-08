@@ -1,4 +1,7 @@
-// Measurements query and CRUD mutations.
+/**
+ * Hook for managing user body measurements and tracking history.
+ * @returns {Object} React Query result for measurements.
+ */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiGet, apiPost, apiPut, apiDelete } from '../api/axios';
 import { queryKeys } from '../api/queryKeys';
@@ -13,7 +16,7 @@ export const useAddMeasurement = () => {
     return useMutation({
         mutationFn: (measurement) => apiPost('/measurements', measurement),
         onSuccess: () => {
-            // Invalidates measurements collection query after create mutation.
+
             queryClient.invalidateQueries({ queryKey: queryKeys.measurements.all });
         },
     });
@@ -32,7 +35,7 @@ export const useDeleteMeasurement = () => {
     return useMutation({
         mutationFn: (id) => apiDelete(`/measurements/${id}`),
         onSuccess: () => {
-            // Invalidates measurements collection query after delete mutation.
+
             queryClient.invalidateQueries({ queryKey: queryKeys.measurements.all });
         },
     });
