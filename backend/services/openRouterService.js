@@ -5,6 +5,8 @@
 const axios = require('axios');
 const { ChatMessage } = require('../models');
 
+const SEARCH_KEYWORDS = /search|find|latest|news|current|who is|price of|weather|research|studies|link|source|verify|check|today|yesterday|202[4-6]/i;
+
 class OpenRouterService {
   constructor() {
     this.apiKey = process.env.AI_ENGINE_KEY;
@@ -80,7 +82,17 @@ class OpenRouterService {
    */
   async askStream(res, message, context, historyContext, historyMessages, sessionId) {
     const isDeepAudit = /history|log|trend|progress|audit/i.test(message);
-    const systemPrompt = this.buildSystemPrompt(context, historyContext, isDeepAudit);
+    const needsSearch = SEARCH_KEYWORDS.test(message);
+    
+    let activeModel = this.model;
+    let systemPrompt = this.buildSystemPrompt(context, historyContext, isDeepAudit);
+
+    if (needsSearch) {
+      activeModel = 'google/gemini-2.0-flash-exp:free';
+      systemPrompt += "\n\n**WEB SEARCH ENABLED**: The user is asking for real-time or verified information. Access the latest data and provide specific, clickable SOURCES. "
+        + "Cite your sources using markdown links like [Source Name](URL) directly in the text and list them in a '### Sources' section at the bottom. "
+        + "Never hallucinate facts. If you are unsure, state it clearly. Always prioritize accuracy.";
+    }
 
     const messages = [{ role: 'system', content: systemPrompt }];
     historyMessages.forEach(msg => messages.push({ role: msg.role, content: msg.content }));
@@ -97,9 +109,9 @@ class OpenRouterService {
           'X-Title': 'Musclo AI Coach',
         },
         data: {
-          model: this.model,
+          model: activeModel,
           messages,
-          temperature: 0.7,
+          temperature: 0.5,
           stream: true
         },
         responseType: 'stream'
