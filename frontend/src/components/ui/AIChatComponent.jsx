@@ -12,8 +12,9 @@ import { API_URL } from '../../api/axios';
 import { useAuthStore } from '../../stores/useAuthStore';
 import Textarea from '../ui/Textarea';
 
-const WORKOUT_PLAN_REGEX = /<workout_plan_json>([\s\S]*?)<\/workout_plan_json>/;
-const STREAMING_WORKOUT_PLAN_REGEX = /<workout_plan_json>[\s\S]*/;
+const WORKOUT_PLAN_TAG_REGEX = /<workout_plan_json>([\s\S]*?)<\/workout_plan_json>/;
+const WORKOUT_PLAN_MD_REGEX = /```(?:json)?\s*(\{\s*"name":[\s\S]*?"routines":[\s\S]*?\})\s*```/;
+const STREAMING_WORKOUT_PLAN_REGEX = /(?:<workout_plan_json>|```(?:json)?\s*\{\s*"name":[\s\S]*?"routines":)[\s\S]*/;
 
 const SUGGESTED_PROMPTS = [
     "Analyze my current training volume",
@@ -338,7 +339,7 @@ export default function AIChatComponent() {
                                                                 </ReactMarkdown>
                                                                 
                                                                 {/* Save Program Button if JSON block detected */}
-                                                                {msg.role === 'assistant' && !msg.isStreaming && msg.content.match(WORKOUT_PLAN_REGEX) && (
+                                                                {msg.role === 'assistant' && !msg.isStreaming && (msg.content.match(WORKOUT_PLAN_TAG_REGEX) || msg.content.match(WORKOUT_PLAN_MD_REGEX)) && (
                                                                     <div className="mt-6 p-4 bg-app/50 rounded-3xl border border-white/5 shadow-neu-inset">
                                                                         <div className="flex items-center justify-between gap-4">
                                                                             <div className="flex items-center gap-3">
@@ -353,9 +354,11 @@ export default function AIChatComponent() {
                                                                             <button
                                                                                 onClick={() => {
                                                                                     try {
-                                                                                        const match = msg.content.match(WORKOUT_PLAN_REGEX);
-                                                                                        if (match) {
-                                                                                            const data = JSON.parse(match[1]);
+                                                                                        const tagMatch = msg.content.match(WORKOUT_PLAN_TAG_REGEX);
+                                                                                        const mdMatch = msg.content.match(WORKOUT_PLAN_MD_REGEX);
+                                                                                        const jsonStr = tagMatch ? tagMatch[1] : (mdMatch ? mdMatch[1] : null);
+                                                                                        if (jsonStr) {
+                                                                                            const data = JSON.parse(jsonStr);
                                                                                             saveAIProgram(data);
                                                                                         }
                                                                                     } catch (e) {
