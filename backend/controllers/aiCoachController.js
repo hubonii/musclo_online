@@ -97,6 +97,10 @@ exports.ask = async (req, res) => {
         user_id: req.user.id,
         title: message.substring(0, 50).trim() + (message.length > 50 ? '...' : '')
       });
+    } else {
+      // Touch the session to update updated_at and move it to the top of the list
+      session.changed('updated_at', true);
+      await session.save();
     }
 
     await ChatMessage.create({

@@ -254,23 +254,38 @@ export default function AIChatComponent() {
                                                 <h3 className="text-xs font-black uppercase tracking-[0.2em] text-text-muted">Session Logs</h3>
                                                 <button onClick={() => setShowHistory(false)} className="p-2 hover:bg-divider/10 rounded-xl transition-all"><X size={16} /></button>
                                             </div>
-                                            <div className="flex-1 overflow-y-auto space-y-3 scrollbar-hide">
-                                                {sessions.map(s => (
-                                                    <div key={s.id} className="group relative">
-                                                        <button
-                                                            onClick={() => { selectSession(s.id); setShowHistory(false); }}
-                                                            className={cn("w-full text-left p-4 rounded-2xl text-[11px] font-bold transition-all truncate pr-10 shadow-neu-sm", currentSessionId === s.id ? "bg-orange text-white shadow-neu-orange" : "bg-app text-text-secondary hover:shadow-neu-inset")}
-                                                        >
-                                                            {s.title || 'Untitled Session'}
-                                                        </button>
-                                                        <button
-                                                            onClick={() => deleteSession(s.id)}
-                                                            className={cn("absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-danger/20 transition-all", currentSessionId === s.id ? "text-white" : "text-text-muted hover:text-danger")}
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
+                                            <div className="flex-1 overflow-y-auto space-y-3 scrollbar-hide pr-1">
+                                                {isLoading && sessions.length === 0 ? (
+                                                    <div className="flex flex-col items-center justify-center py-12 gap-3">
+                                                        <div className="w-8 h-8 border-4 border-orange/20 border-t-orange rounded-full animate-spin" />
+                                                        <p className="text-[10px] font-black uppercase tracking-widest text-text-muted">Loading History...</p>
                                                     </div>
-                                                ))}
+                                                ) : sessions.length === 0 ? (
+                                                    <div className="flex flex-col items-center justify-center py-12 px-4 text-center bg-app/50 rounded-3xl border border-white/5 shadow-neu-inset">
+                                                        <div className="w-12 h-12 rounded-2xl bg-orange/5 text-orange/30 flex items-center justify-center mb-4">
+                                                            <HistoryIcon size={24} />
+                                                        </div>
+                                                        <p className="text-[11px] font-black uppercase tracking-widest text-text-primary mb-1">No History Yet</p>
+                                                        <p className="text-[10px] font-medium text-text-muted leading-relaxed">Your future fitness insights will appear here.</p>
+                                                    </div>
+                                                ) : (
+                                                    sessions.map(s => (
+                                                        <div key={s.id} className="group relative">
+                                                            <button
+                                                                onClick={() => { selectSession(s.id); setShowHistory(false); }}
+                                                                className={cn("w-full text-left p-4 rounded-2xl text-[11px] font-bold transition-all truncate pr-10 shadow-neu-sm", currentSessionId === s.id ? "bg-orange text-white shadow-neu-orange scale-[1.02]" : "bg-app text-text-secondary hover:shadow-neu-inset hover:scale-[1.01]")}
+                                                            >
+                                                                {s.title || 'Untitled Session'}
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); deleteSession(s.id); }}
+                                                                className={cn("absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-danger/20 transition-all", currentSessionId === s.id ? "text-white" : "text-text-muted hover:text-danger")}
+                                                            >
+                                                                <Trash2 size={14} />
+                                                            </button>
+                                                        </div>
+                                                    ))
+                                                )}
                                             </div>
                                         </motion.div>
                                     )}
