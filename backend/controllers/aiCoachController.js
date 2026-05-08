@@ -14,11 +14,12 @@ exports.getSessions = async (req, res) => {
   try {
     const sessions = await ChatSession.findAll({
       where: { user_id: req.user.id },
-      order: [['updated_at', 'DESC']],
-      limit: 50 // Increased for better history access
+      order: [['updatedAt', 'DESC']], // Use field name for Sequelize ordering
+      limit: 50
     });
     res.json({ data: sessions });
   } catch (err) {
+    console.error('[AI Coach] getSessions failed:', err);
     res.status(500).json({ message: err.message });
   }
 };

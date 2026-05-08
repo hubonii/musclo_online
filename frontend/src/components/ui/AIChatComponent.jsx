@@ -251,7 +251,16 @@ export default function AIChatComponent() {
                                     {showHistory && (
                                         <motion.div initial={{ x: -350 }} animate={{ x: 0 }} exit={{ x: -350 }} className="absolute inset-y-0 left-0 w-72 bg-surface border-r border-divider z-30 shadow-neu-lg p-5 flex flex-col">
                                             <div className="flex items-center justify-between mb-6">
-                                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-text-muted">Session Logs</h3>
+                                                <div className="flex items-center gap-3">
+                                                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-text-muted">Session Logs</h3>
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); fetchSessions(); }}
+                                                        className="p-1.5 hover:text-orange text-text-muted transition-all active:rotate-180 duration-500"
+                                                        title="Refresh History"
+                                                    >
+                                                        <RefreshCw size={14} />
+                                                    </button>
+                                                </div>
                                                 <button onClick={() => setShowHistory(false)} className="p-2 hover:bg-divider/10 rounded-xl transition-all"><X size={16} /></button>
                                             </div>
                                             <div className="flex-1 overflow-y-auto space-y-3 scrollbar-hide pr-1">
