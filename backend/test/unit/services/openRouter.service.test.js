@@ -12,7 +12,7 @@ const axios = require('axios');
 const { ChatMessage } = require('../../../models');
 const openRouterService = require('../../../services/openRouterService');
 
-// Unit tests for OpenRouterService — prompt engineering and LLM streaming.
+// Unit tests for OpenRouterService — prompt engineering and response streaming.
 describe('OpenRouterService', () => {
   beforeEach(() => {
     jest.clearAllMocks();

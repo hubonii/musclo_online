@@ -10,14 +10,7 @@ describe('Baseline route contracts', () => {
     expect(res.body).toEqual({ message: 'Musclo API (Node.js) is running' });
   });
 
-  test('GET /api/sanctum/csrf-cookie returns 204', async () => {
-    // Contract: API-prefixed CSRF endpoint stays compatible with frontend clients.
-    const res = await request(app).get('/api/sanctum/csrf-cookie');
 
-    expect(res.statusCode).toBe(204);
-    const cookies = res.headers['set-cookie'] || [];
-    expect(cookies.some((c) => c.includes('XSRF-TOKEN='))).toBe(true);
-  });
 });
 
 

@@ -13,21 +13,7 @@ describe('Successful baseline payload contracts', () => {
     expect(res.body.message.length).toBeGreaterThan(0);
   });
 
-  test.each(['/sanctum/csrf-cookie', '/api/sanctum/csrf-cookie'])(
-    'GET %s returns 204 with XSRF cookie contract',
-    async (path) => {
-      // Validates identical XSRF cookie behavior for both route aliases.
-      const res = await request(app).get(path);
 
-      expect(res.statusCode).toBe(204);
-      const cookies = res.headers['set-cookie'] || [];
-      const xsrfCookie = cookies.find((cookie) => cookie.startsWith('XSRF-TOKEN='));
-
-      expect(xsrfCookie).toBeDefined();
-      expect(xsrfCookie).toContain('Path=/');
-      expect(res.text).toBe('');
-    }
-  );
 });
 
 

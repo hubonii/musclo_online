@@ -1,4 +1,4 @@
-// Unit tests for AiCoachController — LLM-powered fitness coaching and chat sessions.
+// Unit tests for AiCoachController — coaching and chat sessions.
 const { getSessions, getMessages, createSession, deleteSession, ask } = require('../../../controllers/aiCoachController');
 const { ChatSession, ChatMessage, SetData, WorkoutLog } = require('../../../models');
 const openRouter = require('../../../services/openRouterService');
