@@ -20,6 +20,11 @@ const ChatSession = sequelize.define('ChatSession', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  latent_memory: {
+    // Stores condensed context (key facts, user goals) for long-term memory.
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
 }, {
   tableName: 'chat_sessions',
   // Keep snake_case DB column naming consistent across all models.

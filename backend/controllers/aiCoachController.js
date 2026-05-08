@@ -1,4 +1,5 @@
 const { User, ChatSession, ChatMessage, SetData, WorkoutLog, Exercise } = require('../models');
+const axios = require('axios');
 const openRouter = require('../services/openRouterService');
 const achievementService = require('../services/achievementService');
 const { Op } = require('sequelize');
@@ -107,10 +108,10 @@ exports.ask = async (req, res) => {
     const historyMessages = await ChatMessage.findAll({
       where: { chat_session_id: session.id },
       order: [['created_at', 'ASC']],
-      limit: 10
+      limit: 20 // Increased for better immediate context
     });
 
-    const latentContext = await getLatentWorkoutContext(req.user.id, workout_context);
+    const latentContext = await getLatentWorkoutContext(req.user.id, workout_context, session);
 
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -124,15 +125,72 @@ exports.ask = async (req, res) => {
       historyMessages,
       session.id
     );
+
+    // Periodic memory consolidation for long threads
+    const msgCount = await ChatMessage.count({ where: { chat_session_id: session.id } });
+    if (msgCount >= 10 && msgCount % 4 === 0) {
+      consolidateMemory(session.id).catch(err => console.error('[Memory] Consolidation failed:', err));
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-async function getLatentWorkoutContext(userId, context) {
+/**
+ * Summarizes the conversation so far and updates the session's latent memory.
+ * @param {number} sessionId - ID of the chat session to summarize.
+ */
+async function consolidateMemory(sessionId) {
+  try {
+    const messages = await ChatMessage.findAll({
+      where: { chat_session_id: sessionId },
+      order: [['created_at', 'ASC']],
+      limit: 100 // Summarize everything
+    });
+
+    const session = await ChatSession.findByPk(sessionId);
+    if (!session) return;
+
+    const summaryPrompt = "Summarize the key takeaways, user goals, and important fitness facts from this conversation so far. "
+      + "This summary will be used as long-term memory for the AI Coach. Be concise, bulleted, and maintain the user's language (Arabic or English).";
+
+    const chatHistory = messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n');
+
+    const response = await axios.post(`${process.env.AI_ENGINE_BASE_URL}/chat/completions`, {
+      model: process.env.AI_ENGINE_MODEL || 'openai/gpt-oss-120b:free',
+      messages: [
+        { role: 'system', content: summaryPrompt },
+        { role: 'user', content: `CONVERSATION LOG:\n${chatHistory}` }
+      ],
+      temperature: 0.3
+    }, {
+      headers: { 
+        'Authorization': `Bearer ${process.env.AI_ENGINE_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const newMemory = response.data.choices[0].message.content;
+    await session.update({ latent_memory: newMemory });
+    console.log(`[Memory] Session ${sessionId} consolidated.`);
+
+  } catch (err) {
+    console.error('[Memory] Update failed:', err.response?.data || err.message);
+  }
+}
+
+async function getLatentWorkoutContext(userId, context, session) {
   const historyContext = [];
   
   try {
+    // 0. Latent Memory (Long-term Context from past summaries)
+    if (session && session.latent_memory) {
+      historyContext.push({
+        type: 'latent_memory',
+        content: session.latent_memory
+      });
+    }
+
     // 1. Lifetime & Consistency Stats
     const user = await User.findByPk(userId);
     if (user) {
