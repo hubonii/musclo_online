@@ -9,8 +9,7 @@ import { useAuthStore } from './stores/useAuthStore';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 import { initOfflineSync, flushQueue, getPendingCount } from './lib/offlineQueue';
 import { WifiOff } from 'lucide-react';
-import { SpeedInsights } from '@vercel/speed-insights/react';
-import { Analytics } from '@vercel/analytics/react';
+
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -136,7 +135,6 @@ function App() {
           <ErrorBoundary>
             <OfflineBanner />
             <RouterProvider router={router}/>
-            <Analytics />
           </ErrorBoundary>
         </ToastProvider>
       </TooltipProvider>
