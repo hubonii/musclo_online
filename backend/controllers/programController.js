@@ -67,7 +67,10 @@ exports.getPrograms = async (req, res) => {
       include: [{
         model: Routine,
         as: 'Routines',
-        include: [{ model: Exercise, attributes: ['id'] }]
+        include: [
+          { model: Exercise, attributes: ['id', 'name', 'muscle_group', 'equipment'] },
+          { model: SetData }
+        ]
       }],
       order: [['created_at', 'DESC']]
     });
@@ -249,7 +252,10 @@ exports.createProgramFromAI = async (req, res) => {
       include: [{
         model: Routine,
         as: 'Routines',
-        include: [{ model: Exercise }]
+        include: [
+          { model: Exercise },
+          { model: SetData }
+        ]
       }]
     });
 
