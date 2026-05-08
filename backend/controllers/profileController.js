@@ -1,7 +1,7 @@
 /**
  * Controller for managing user profile, achievements, and account actions.
  */
-const { User, WorkoutLog, Achievement, Routine, ProgressPhoto } = require('../models');
+const { User, WorkoutLog, Achievement, Routine, ProgressPhoto, Exercise } = require('../models');
 const achievementService = require('../services/achievementService');
 const azureStorageService = require('../services/azureStorageService');
 const mailService = require('../services/mailService');
@@ -14,32 +14,18 @@ const bcrypt = require('bcryptjs');
  */
 exports.getProfile = async (req, res) => {
   try {
-
     const targetUserId = (req.params.userId === 'me' || !req.params.userId) ? req.user.id : req.params.userId;
     const user = await User.findByPk(targetUserId);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-<<<<<<< HEAD
-    // Privacy guard: only owners can view their profile data.
-    if (req.user.id !== user.id) {
-      return res.status(403).json({ message: 'Access denied.' });
-=======
-
     if (!user.is_public && req.user.id !== user.id) {
       return res.status(403).json({ message: 'This profile is private.' });
->>>>>>> 003-comment-cleanup
     }
-
 
     const totalWorkouts = await WorkoutLog.count({ where: { user_id: user.id } });
     const totalVolume = await WorkoutLog.sum('total_volume', { where: { user_id: user.id } }) || 0;
     const streak = await achievementService.calculateStreak(user);
-
-
-<<<<<<< HEAD
-=======
     const level = calculateLevel(totalVolume);
->>>>>>> 003-comment-cleanup
 
     res.json({
       data: {
@@ -48,7 +34,8 @@ exports.getProfile = async (req, res) => {
         email: req.user.id === user.id ? user.email : null,
         bio: user.bio,
         avatar_url: user.avatar_url,
-
+        is_public: user.is_public,
+        level,
         stats: {
           total_workouts: totalWorkouts,
           total_volume: totalVolume,
@@ -61,7 +48,6 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-
 /**
  * Updates the profile for the authenticated user.
  * @param {Object} req - Express request object.
@@ -69,9 +55,8 @@ exports.getProfile = async (req, res) => {
  */
 exports.updateProfile = async (req, res) => {
   try {
-    const { name, email, bio } = req.body;
+    const { name, email, bio, is_public } = req.body;
 
-    // Validation: if email is being changed, check uniqueness
     if (email && email !== req.user.email) {
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
@@ -81,17 +66,11 @@ exports.updateProfile = async (req, res) => {
 
     const isEmailChanged = email && email !== req.user.email;
 
-
     await req.user.update({
       name: name || req.user.name,
       email: email || req.user.email,
       bio: bio !== undefined ? bio : req.user.bio,
-<<<<<<< HEAD
-      // Reset verification if email changed
-=======
       is_public: is_public !== undefined ? is_public : req.user.is_public,
-
->>>>>>> 003-comment-cleanup
       email_verified_at: isEmailChanged ? null : req.user.email_verified_at,
       verification_code: isEmailChanged ? null : req.user.verification_code
     });
@@ -102,6 +81,7 @@ exports.updateProfile = async (req, res) => {
         name: req.user.name,
         email: req.user.email,
         bio: req.user.bio,
+        is_public: req.user.is_public,
         avatar_url: req.user.avatar_url,
         email_verified_at: req.user.email_verified_at
       }
@@ -110,7 +90,6 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 /**
  * Updates the avatar image for the authenticated user.
@@ -123,14 +102,11 @@ exports.updateAvatar = async (req, res) => {
       return res.status(400).json({ message: 'No image file provided.' });
     }
 
-
     const avatarUrl = await azureStorageService.uploadToAzure(req.file);
-
 
     if (req.user.avatar_url && req.user.avatar_url.includes('.blob.core.windows.net/')) {
       await azureStorageService.deleteFromAzure(req.user.avatar_url);
     }
-
 
     req.user.avatar_url = avatarUrl;
     await req.user.save();
@@ -152,7 +128,6 @@ exports.updateAvatar = async (req, res) => {
  */
 exports.getAchievements = async (req, res) => {
   try {
-
     const targetUserId = (req.params.userId === 'me' || !req.params.userId) ? req.user.id : req.params.userId;
     const user = await User.findByPk(targetUserId);
     if (!user) return res.status(404).json({ message: 'User not found' });
@@ -164,7 +139,6 @@ exports.getAchievements = async (req, res) => {
       acc[a.id] = a.UserAchievement.unlocked_at;
       return acc;
     }, {});
-
 
     const result = allAchievements.map(a => ({
       ...a.toJSON(),
@@ -178,8 +152,6 @@ exports.getAchievements = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-=======
 /**
  * Retrieves the routines created by a specific user.
  * @param {Object} req - Express request object.
@@ -190,17 +162,19 @@ exports.getUserRoutines = async (req, res) => {
     const userId = (req.params.userId === 'me' || !req.params.userId) ? req.user.id : req.params.userId;
     const isOwner = req.user.id.toString() === userId.toString();
     
-
     const where = { user_id: userId };
     if (!isOwner) {
       where.is_public = true;
     }
->>>>>>> 003-comment-cleanup
 
-
-<<<<<<< HEAD
-
-=======
+    const routines = await Routine.findAll({
+      where,
+      include: [{
+        model: Exercise,
+        as: 'Exercises',
+        attributes: ['id', 'name', 'muscle_group']
+      }]
+    });
 
     const transformed = routines.map(r => {
       const json = r.toJSON ? r.toJSON() : r;
@@ -259,8 +233,6 @@ function calculateLevel(totalVolume) {
 
   return { number: 25, title: 'Legend', progress: 100 };
 }
->>>>>>> 003-comment-cleanup
-
 
 /**
  * Initiates an email change by sending a verification code to the new address.
@@ -272,10 +244,8 @@ exports.requestEmailChange = async (req, res) => {
   if (!newEmail) return res.status(400).json({ message: 'New email is required.' });
 
   try {
-
     const existing = await User.findOne({ where: { email: newEmail } });
     if (existing) return res.status(400).json({ message: 'This email is already in use.' });
-
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     req.user.pending_email = newEmail;
@@ -288,7 +258,6 @@ exports.requestEmailChange = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 /**
  * Verifies the email change using the provided code.
@@ -307,7 +276,7 @@ exports.verifyEmailChange = async (req, res) => {
     req.user.email = req.user.pending_email;
     req.user.pending_email = null;
     req.user.verification_code = null;
-    req.user.email_verified_at = new Date(); // MARK AS VERIFIED
+    req.user.email_verified_at = new Date();
     await req.user.save();
 
     res.json({ 
@@ -322,7 +291,6 @@ exports.verifyEmailChange = async (req, res) => {
   }
 };
 
-
 /**
  * Deletes the authenticated user's account and all associated data.
  * @param {Object} req - Express request object.
@@ -331,8 +299,6 @@ exports.verifyEmailChange = async (req, res) => {
 exports.deleteAccount = async (req, res) => {
   const { password } = req.body;
   
-  // Google accounts don't have passwords stored here, but they should confirm via other means if needed.
-  // For now, let's enforce password check for standard accounts.
   if (!req.user.google_id) {
     if (!password) return res.status(400).json({ message: 'Password is required to delete account.' });
     const isMatch = await bcrypt.compare(password, req.user.password);
@@ -340,20 +306,16 @@ exports.deleteAccount = async (req, res) => {
   }
 
   try {
-    // 1. Delete all progress photos from Azure
     const photos = await ProgressPhoto.findAll({ where: { user_id: req.user.id } });
     for (const p of photos) {
       await azureStorageService.deleteFromAzure(p.photo_path);
     }
 
-    // 2. Delete avatar from Azure
     if (req.user.avatar_url && req.user.avatar_url.includes('.blob.core.windows.net/')) {
       await azureStorageService.deleteFromAzure(req.user.avatar_url);
     }
 
-    // 3. Delete user record (Cascade will handle WorkoutLogs, Routines, DB entries)
     await req.user.destroy();
-
     res.json({ message: 'Account and all associated data deleted permanently.' });
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -12,39 +12,39 @@ export const useAIChatStore = create()((set, get) => ({
     isLoading: false,
     error: null,
     abortController: null,
+    
     openChat: () => set({ isOpen: true }),
     closeChat: () => set({ isOpen: false }),
     toggleChat: () => set({ isOpen: !get().isOpen }),
-<<<<<<< HEAD
-    // Load chat sessions from the API and normalize local state.
-=======
-    setSelectedImage: (img) => set({ selectedImage: img }),
-
->>>>>>> 003-comment-cleanup
+    
     fetchSessions: async () => {
         try {
             const sessions = await apiGet('/chat/sessions');
             set({ sessions });
         }
-        catch {
+        catch (err) {
+            console.error('Failed to fetch sessions:', err);
         }
     },
+    
     selectSession: async (id) => {
         set({ isLoading: true, currentSessionId: id, messages: [] });
         try {
             const messages = await apiGet(`/chat/sessions/${id}/messages`);
             set({ messages });
         }
-        catch {
+        catch (err) {
             set({ error: 'Failed to load messages' });
         }
         finally {
             set({ isLoading: false });
         }
     },
+    
     createNewSession: async () => {
         set({ messages: [], currentSessionId: null });
     },
+    
     deleteSession: async (id) => {
         try {
             await apiDelete(`/chat/sessions/${id}`);
@@ -54,16 +54,12 @@ export const useAIChatStore = create()((set, get) => ({
                 messages: get().currentSessionId === id ? [] : get().messages
             });
         }
-        catch {
+        catch (err) {
+            console.error('Failed to delete session:', err);
         }
     },
-<<<<<<< HEAD
+    
     addUserMessage: (content) => {
-        // Appends user message to local store before request streaming begins.
-=======
-    addUserMessage: (content, imageUrl) => {
-
->>>>>>> 003-comment-cleanup
         set({
             messages: [...get().messages, {
                     id: `u-${Date.now()}`,
@@ -73,31 +69,36 @@ export const useAIChatStore = create()((set, get) => ({
                 }],
         });
     },
+    
     addAssistantMessage: (content, thought) => {
-
         const id = `a-${Date.now()}`;
         set({
             messages: [...get().messages, {
-                    id, role: 'assistant', content, thought, timestamp: new Date().toISOString(), isStreaming: true,
+                    id, 
+                    role: 'assistant', 
+                    content, 
+                    thought, 
+                    timestamp: new Date().toISOString(), 
+                    isStreaming: true,
                 }],
         });
         return id;
     },
+    
     setStreaming: (id, content, thought) => {
         set({
             messages: get().messages.map((m) => m.id === id ? { ...m, content, thought } : m),
         });
     },
+    
     finalizeStreaming: (id) => {
         set({
             messages: get().messages.map((m) => m.id === id ? { ...m, isStreaming: false } : m),
         });
-
         get().fetchSessions();
     },
+    
     setLoading: (loading) => set({ isLoading: loading }),
     setError: (error) => set({ error }),
     setAbortController: (abortController) => set({ abortController }),
 }));
-
-

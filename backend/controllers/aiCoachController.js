@@ -11,7 +11,6 @@ const sequelize = require('../config/database');
  */
 exports.getSessions = async (req, res) => {
   try {
-
     const sessions = await ChatSession.findAll({
       where: { user_id: req.user.id },
       order: [['updated_at', 'DESC']],
@@ -30,10 +29,8 @@ exports.getSessions = async (req, res) => {
  */
 exports.getMessages = async (req, res) => {
   try {
-
     const session = await ChatSession.findOne({ where: { id: req.params.sessionId, user_id: req.user.id } });
     if (!session) return res.status(404).json({ message: 'Session not found' });
-
 
     const messages = await ChatMessage.findAll({
       where: { chat_session_id: session.id },
@@ -46,7 +43,6 @@ exports.getMessages = async (req, res) => {
   }
 };
 
-
 /**
  * Creates a new chat session for the authenticated user.
  * @param {Object} req - Express request object.
@@ -54,7 +50,6 @@ exports.getMessages = async (req, res) => {
  */
 exports.createSession = async (req, res) => {
   try {
-
     const session = await ChatSession.create({
       user_id: req.user.id,
       title: 'New Chat'
@@ -65,7 +60,6 @@ exports.createSession = async (req, res) => {
   }
 };
 
-
 /**
  * Deletes a specific chat session and its associated messages.
  * @param {Object} req - Express request object.
@@ -73,7 +67,6 @@ exports.createSession = async (req, res) => {
  */
 exports.deleteSession = async (req, res) => {
   try {
-
     const session = await ChatSession.findOne({ where: { id: req.params.sessionId, user_id: req.user.id } });
     if (!session) return res.status(404).json({ message: 'Session not found' });
 
@@ -94,7 +87,6 @@ exports.ask = async (req, res) => {
     const { message, session_id, workout_context } = req.body;
     let session;
 
-
     if (session_id) {
       session = await ChatSession.findOne({ where: { id: session_id, user_id: req.user.id } });
     }
@@ -102,11 +94,9 @@ exports.ask = async (req, res) => {
     if (!session) {
       session = await ChatSession.create({
         user_id: req.user.id,
-
         title: message.substring(0, 40)
       });
     }
-
 
     await ChatMessage.create({
       chat_session_id: session.id,
@@ -114,28 +104,17 @@ exports.ask = async (req, res) => {
       content: message
     });
 
-
     const historyMessages = await ChatMessage.findAll({
       where: { chat_session_id: session.id },
       order: [['created_at', 'ASC']],
-
       limit: 10
     });
 
-
     const latentContext = await getLatentWorkoutContext(req.user.id, workout_context);
-
 
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
-
-
-<<<<<<< HEAD
-=======
-    const safeModel = (model && model.endsWith(':free')) ? model : undefined;
->>>>>>> 003-comment-cleanup
-
 
     await openRouter.askStream(
       res,
@@ -157,15 +136,12 @@ exports.ask = async (req, res) => {
  * @returns {Promise<Array>} List of context items.
  */
 async function getLatentWorkoutContext(userId, context) {
-
   const historyContext = [];
   
   if (context && context.exercises && context.exercises.length > 0) {
-
     const exerciseIds = context.exercises.map(ex => ex.id).filter(Boolean);
     
     if (exerciseIds.length > 0) {
-
       const stats = await SetData.findAll({
         attributes: [
           'exercise_id',
@@ -182,7 +158,6 @@ async function getLatentWorkoutContext(userId, context) {
         raw: true
       });
 
-
       stats.forEach(s => {
         const ex = context.exercises.find(e => e.id === s.exercise_id);
         if (ex) {
@@ -196,7 +171,6 @@ async function getLatentWorkoutContext(userId, context) {
       });
     }
   } else {
-
     const recentLogs = await WorkoutLog.findAll({
       where: { user_id: userId, completed_at: { [Op.ne]: null } },
       order: [['completed_at', 'DESC']],
@@ -207,7 +181,6 @@ async function getLatentWorkoutContext(userId, context) {
     recentLogs.forEach(log => {
       historyContext.push({
         type: 'recent_workout',
-
         date: log.completed_at.toISOString().split('T')[0],
         name: log.name,
         exercises: []
@@ -217,5 +190,3 @@ async function getLatentWorkoutContext(userId, context) {
 
   return historyContext;
 }
-
-
