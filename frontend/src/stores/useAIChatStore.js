@@ -29,6 +29,7 @@ export const useAIChatStore = create()((set, get) => ({
     
     selectSession: async (id) => {
         set({ isLoading: true, currentSessionId: id, messages: [] });
+        localStorage.setItem('musclo-ai-session', id);
         try {
             const messages = await apiGet(`/chat/sessions/${id}/messages`);
             set({ messages });
@@ -43,11 +44,15 @@ export const useAIChatStore = create()((set, get) => ({
     
     createNewSession: async () => {
         set({ messages: [], currentSessionId: null });
+        localStorage.removeItem('musclo-ai-session');
     },
     
     deleteSession: async (id) => {
         try {
             await apiDelete(`/chat/sessions/${id}`);
+            if (get().currentSessionId === id) {
+                localStorage.removeItem('musclo-ai-session');
+            }
             set({
                 sessions: get().sessions.filter(s => s.id !== id),
                 currentSessionId: get().currentSessionId === id ? null : get().currentSessionId,
