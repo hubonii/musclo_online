@@ -44,7 +44,7 @@ class OpenRouterService {
       + "- **Uncompromising Quality**: Provide deep, specific, and actionable advice. Don't be generic.\n"
       + "- **Verified Sources**: If providing a source, ensure it is real. If search is enabled, provide clickable markdown links [Title](URL). If search is NOT enabled or you are unsure, do not provide a link.\n"
       + "- **Tone**: Intelligent, authoritative, yet natural and supportive.\n"
-      + "- **Language**: ALWAYS match the user's language (Arabic or English) with total fluency.";
+      + "- **Language**: ALWAYS match the language used by the user in their prompt with total fluency.";
 
     if (context && context.is_active) {
       base += "\n\n--- CURRENT WORKOUT STATUS ---\n";

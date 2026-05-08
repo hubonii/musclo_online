@@ -157,7 +157,7 @@ async function consolidateMemory(sessionId) {
     if (!session) return;
 
     const summaryPrompt = "Summarize the key takeaways, user goals, and important fitness facts from this conversation so far. "
-      + "This summary will be used as long-term memory for the AI Coach. Be concise, bulleted, and maintain the user's language (Arabic or English).";
+      + "This summary will be used as long-term memory for the AI Coach. Be concise, bulleted, and maintain the user's language.";
 
     const chatHistory = messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n');
 
