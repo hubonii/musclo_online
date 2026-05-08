@@ -1,4 +1,4 @@
-// Unit tests for TodayWorkoutAlert — dynamic dashboard prompts.
+import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TodayWorkoutAlert from '../../../../src/components/dashboard/TodayWorkoutAlert';
 
@@ -15,9 +15,9 @@ describe('TodayWorkoutAlert', () => {
     render(<TodayWorkoutAlert routine={mockRoutine} onStart={onStart} />);
     
     expect(screen.getByText('Pull Day')).toBeInTheDocument();
-    expect(screen.getByText('2 exercises listed')).toBeInTheDocument();
+    expect(screen.getByText(/2 Exercises/i)).toBeInTheDocument();
     
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.click(screen.getByRole('button', { name: /Start Workout/i }));
     expect(onStart).toHaveBeenCalled();
   });
 });

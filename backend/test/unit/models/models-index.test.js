@@ -67,8 +67,8 @@ describe('ModelAssociations', () => {
       ChatMessage,
     }));
 
-    expect(User.hasMany).toHaveBeenCalledWith(Program, { foreignKey: 'user_id' });
-    expect(User.hasOne).toHaveBeenCalledWith(UserSetting, { foreignKey: 'user_id', as: 'settings' });
+    expect(User.hasMany).toHaveBeenCalledWith(Program, { foreignKey: 'user_id', onDelete: 'CASCADE' });
+    expect(User.hasOne).toHaveBeenCalledWith(UserSetting, { foreignKey: 'user_id', as: 'settings', onDelete: 'CASCADE' });
     expect(Routine.belongsToMany).toHaveBeenCalledWith(Exercise, {
       through: RoutineExercise,
       foreignKey: 'routine_id',

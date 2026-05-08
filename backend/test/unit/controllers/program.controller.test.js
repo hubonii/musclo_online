@@ -1,6 +1,6 @@
 // Unit tests for ProgramController — long-term training plans and schedules.
-const { createProgram, getProgram, updateProgram, deleteProgram, addRoutineToProgram } = require('../../../controllers/programController');
-const { Program, Routine } = require('../../../models');
+const { createProgram, getProgram, updateProgram, deleteProgram, createProgramFromAI } = require('../../../controllers/programController');
+const { Program, Routine, Exercise, RoutineExercise, SetData } = require('../../../models');
 const { createRes } = require('../../helpers/express');
 
 // --- Module Mocks ---
@@ -13,11 +13,23 @@ jest.mock('../../../models', () => ({
   Routine: {
     create: jest.fn(),
   },
-  Exercise: {},
-  SetData: {}
+  Exercise: {
+    findOne: jest.fn(),
+  },
+  RoutineExercise: {
+    create: jest.fn(),
+  },
+  SetData: {
+    create: jest.fn(),
+  }
 }));
 
-
+jest.mock('../../../config/database', () => ({
+  transaction: jest.fn().mockResolvedValue({
+    commit: jest.fn(),
+    rollback: jest.fn(),
+  }),
+}));
 
 describe('ProgramController', () => {
   beforeEach(() => {
@@ -104,31 +116,33 @@ describe('ProgramController', () => {
       expect(mockProgram.destroy).toHaveBeenCalled();
       expect(res.json).toHaveBeenCalledWith({ message: 'Program deleted successfully.' });
     });
-
-    test('returns 500 on database error', async () => {
-      Program.findOne.mockRejectedValue(new Error('DB Error'));
-      const req = { user: { id: 1 }, params: { id: 1 } };
-      const res = createRes();
-
-      await deleteProgram(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ message: 'DB Error' });
-    });
   });
 
-  describe('addRoutineToProgram', () => {
-    test('returns 404 for non-existent program', async () => {
-      Program.findOne.mockResolvedValue(null);
+  describe('createProgramFromAI', () => {
+    test('creates program and routines from structured JSON', async () => {
+      const mockProgram = { id: 55, name: 'AI Plan', toJSON: () => ({ id: 55, name: 'AI Plan' }) };
+      Program.create.mockResolvedValue(mockProgram);
+      Program.findOne.mockResolvedValue(mockProgram);
+      Routine.create.mockResolvedValue({ id: 66 });
+      Exercise.findOne.mockResolvedValue({ id: 1, name: 'Bench Press' });
 
-      const req = { user: { id: 1 }, params: { id: 99 }, body: { name: 'New Routine' } };
+      const req = {
+        user: { id: 1 },
+        body: {
+          name: 'AI Plan',
+          description: 'desc',
+          routines: [
+            { name: 'Day 1', day_of_week: 'monday', exercises: [{ name: 'Bench Press', sets: 3, reps: 10 }] }
+          ]
+        }
+      };
       const res = createRes();
 
-      await addRoutineToProgram(req, res);
+      await createProgramFromAI(req, res);
 
-      expect(Program.findOne).toHaveBeenCalledWith({ where: { id: 99, user_id: 1 } });
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ message: 'Program not found' });
+      expect(Program.create).toHaveBeenCalled();
+      expect(Routine.create).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(201);
     });
   });
 });

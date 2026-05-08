@@ -22,7 +22,7 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
             <div className="space-y-2">
                 <AnimatePresence>
                     {sets.map((set, setIndex) => (
-                        <motion.div 
+                        <motion.div
                             key={set.id || setIndex}
                             initial={{ opacity: 0, y: 5 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -38,11 +38,11 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
 
                             {/* Set Type */}
                             <div className="col-span-3">
-                                <Select 
-                                    variant="capsule" 
-                                    className="h-10"
-                                    value={set.set_type} 
-                                    onValueChange={(v) => onUpdateSet(exIndex, setIndex, 'set_type', v)} 
+                                <Select
+                                    variant="compact"
+                                    className="bg-transparent border-0 shadow-none text-[10px] font-black uppercase tracking-tight h-8"
+                                    value={set.set_type}
+                                    onValueChange={(v) => onUpdateSet(exIndex, setIndex, 'set_type', v)}
                                     options={[
                                         { value: 'working', label: 'Normal' },
                                         { value: 'warmup', label: 'Warmup' },
@@ -55,12 +55,12 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
                             {/* Weight (if not bodyweight) */}
                             {!isBodyweight && (
                                 <div className="col-span-2">
-                                    <input 
-                                        type="number" 
-                                        placeholder="0" 
-                                        value={set.weight_kg !== null ? Math.round(set.weight_kg) : ''} 
-                                        onChange={(e) => onUpdateSet(exIndex, setIndex, 'weight_kg', e.target.value ? parseInt(e.target.value) : null)} 
-                                        className="w-full bg-app rounded-full text-center h-10 text-sm font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
+                                    <input
+                                        type="number"
+                                        placeholder="0"
+                                        value={set.weight_kg !== null ? Math.round(set.weight_kg) : ''}
+                                        onChange={(e) => onUpdateSet(exIndex, setIndex, 'weight_kg', e.target.value ? parseInt(e.target.value) : null)}
+                                        className="w-full bg-app rounded-lg text-center h-8 text-xs font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
                                     />
                                 </div>
                             )}
@@ -68,37 +68,37 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
                             {/* Reps or Time */}
                             <div className={cn(isBodyweight ? "col-span-5" : "col-span-3")}>
                                 {isTime ? (
-                                    <TimeInput 
-                                        value={set.duration_seconds} 
-                                        onChange={(v) => onUpdateSet(exIndex, setIndex, 'duration_seconds', v)} 
-                                        className="h-10 text-sm font-black bg-app shadow-neu-inset rounded-full px-4"
+                                    <TimeInput
+                                        value={set.duration_seconds}
+                                        onChange={(v) => onUpdateSet(exIndex, setIndex, 'duration_seconds', v)}
+                                        className="h-8 text-xs font-black bg-app shadow-neu-inset rounded-lg px-2"
                                     />
                                 ) : (
-                                    <input 
-                                        type="number" 
-                                        placeholder="0" 
-                                        value={set.reps ?? ''} 
-                                        onChange={(e) => onUpdateSet(exIndex, setIndex, 'reps', e.target.value ? parseInt(e.target.value) : null)} 
-                                        className="w-full bg-app rounded-full text-center h-10 text-sm font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
+                                    <input
+                                        type="number"
+                                        placeholder="0"
+                                        value={set.reps ?? ''}
+                                        onChange={(e) => onUpdateSet(exIndex, setIndex, 'reps', e.target.value ? parseInt(e.target.value) : null)}
+                                        className="w-full bg-app rounded-lg text-center h-8 text-xs font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
                                     />
                                 )}
                             </div>
 
                             {/* RIR */}
                             <div className="col-span-2">
-                                <input 
-                                    type="number" 
-                                    placeholder="-" 
-                                    value={set.rir ?? ''} 
-                                    onChange={(e) => onUpdateSet(exIndex, setIndex, 'rir', e.target.value ? parseInt(e.target.value) : null)} 
-                                    className="w-full bg-app rounded-full text-center h-10 text-sm font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
+                                <input
+                                    type="number"
+                                    placeholder="-"
+                                    value={set.rir ?? ''}
+                                    onChange={(e) => onUpdateSet(exIndex, setIndex, 'rir', e.target.value ? parseInt(e.target.value) : null)}
+                                    className="w-full bg-app rounded-lg text-center h-8 text-xs font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
                                 />
                             </div>
 
                             {/* Remove Action */}
                             <div className="col-span-1 flex justify-center">
-                                <button 
-                                    onClick={() => onRemoveSet(exIndex, setIndex)} 
+                                <button
+                                    onClick={() => onRemoveSet(exIndex, setIndex)}
                                     className="p-1.5 text-text-muted hover:text-danger hover:bg-danger/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                                 >
                                     <Trash2 size={14} />
@@ -109,9 +109,9 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
                 </AnimatePresence>
             </div>
 
-            <Button 
-                variant="outline" 
-                className="w-full mt-4 border-dashed border-divider/40 hover:border-orange/50 uppercase tracking-widest font-black text-[10px] py-3 h-auto" 
+            <Button
+                variant="outline"
+                className="w-full mt-4 border-dashed border-divider/40 hover:border-orange/50 uppercase tracking-widest font-black text-[10px] py-3 h-auto"
                 onClick={() => onAddSet(exIndex)}
             >
                 <Plus size={12} strokeWidth={3} className="mr-1" /> Add Prescribed Set

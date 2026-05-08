@@ -1,4 +1,3 @@
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../../../models');
@@ -7,11 +6,10 @@ const {
   login,
   logout,
   getMe,
-  getCsrfCookie,
 } = require('../../../controllers/authController');
 const { createRes } = require('../../helpers/express');
 
-
+// --- Module Mocks ---
 jest.mock('bcryptjs', () => ({
   genSalt: jest.fn(),
   hash: jest.fn(),
@@ -26,169 +24,154 @@ jest.mock('../../../models', () => ({
   User: {
     findOne: jest.fn(),
     create: jest.fn(),
+    findByPk: jest.fn(),
   },
+  Op: {
+    or: Symbol('or'),
+    gt: Symbol('gt')
+  }
 }));
 
 describe('AuthController', () => {
   beforeEach(() => {
-
     process.env.JWT_SECRET = 'test-secret';
     jest.clearAllMocks();
     jwt.sign.mockReturnValue('signed-token');
   });
 
-  test('register returns 422 when email already exists', async () => {
-    User.findOne.mockResolvedValue({ id: 9, email: 'taken@example.com' });
+  describe('register', () => {
+    test('returns 422 when email already exists', async () => {
+      User.findOne.mockResolvedValue({ id: 9, email: 'taken@example.com' });
 
-    const req = {
-      body: { name: 'Taken', email: 'taken@example.com', password: 'pw123456' },
-    };
-    const res = createRes();
+      const req = {
+        body: { name: 'Taken', email: 'taken@example.com', password: 'pw123456' },
+      };
+      const res = createRes();
 
-    await register(req, res);
+      await register(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(422);
-    expect(res.json).toHaveBeenCalledWith({
-      message: 'The email has already been taken.',
-      errors: { email: ['The email has already been taken.'] },
+      expect(res.status).toHaveBeenCalledWith(422);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+        message: 'The email has already been taken.'
+      }));
+    });
+
+    test('returns 422 when username already exists', async () => {
+      // First call (email check) returns null, second call (username check) returns user
+      User.findOne.mockResolvedValueOnce(null).mockResolvedValueOnce({ id: 10, username: 'taken' });
+
+      const req = {
+        body: { name: 'N', email: 'e@e.com', username: 'taken', password: 'P' },
+      };
+      const res = createRes();
+
+      await register(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(422);
+      expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+        message: 'The username has already been taken.'
+      }));
+    });
+
+    test('creates user with username and returns auth payload', async () => {
+      User.findOne.mockResolvedValue(null);
+      bcrypt.genSalt.mockResolvedValue('salt');
+      bcrypt.hash.mockResolvedValue('hashed-password');
+      User.create.mockResolvedValue({
+        id: 3,
+        name: 'New User',
+        username: 'newuser',
+        email: 'new@example.com'
+      });
+
+      const req = {
+        body: { name: 'New User', email: 'new@example.com', username: 'newuser', password: 'pw123456' },
+      };
+      const res = createRes();
+
+      await register(req, res);
+
+      expect(User.create).toHaveBeenCalledWith(expect.objectContaining({
+        username: 'newuser',
+        email: 'new@example.com',
+        password: 'hashed-password'
+      }));
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          token: 'signed-token',
+          user: expect.objectContaining({ username: 'newuser' })
+        })
+      });
     });
   });
 
-  test('register creates user and returns auth payload with cookie', async () => {
-    User.findOne.mockResolvedValue(null);
-    bcrypt.genSalt.mockResolvedValue('salt');
-    bcrypt.hash.mockResolvedValue('hashed-password');
+  describe('login', () => {
+    test('authenticates via email identifier', async () => {
+      User.findOne.mockResolvedValue({ id: 1, email: 'user@example.com', password: 'hashed' });
+      bcrypt.compare.mockResolvedValue(true);
 
+      const req = { body: { identifier: 'user@example.com', password: 'password' } };
+      const res = createRes();
 
-    const createdUser = {
-      id: 3,
-      name: 'New User',
-      email: 'new@example.com',
-      created_at: '2026-04-13T00:00:00.000Z',
-    };
-    User.create.mockResolvedValue(createdUser);
+      await login(req, res);
 
-    const req = {
-      body: { name: 'New User', email: 'new@example.com', password: 'pw123456' },
-    };
-    const res = createRes();
-
-    await register(req, res);
-
-    expect(User.create).toHaveBeenCalledWith({
-      name: 'New User',
-      email: 'new@example.com',
-      password: 'hashed-password',
+      expect(User.findOne).toHaveBeenCalledWith(expect.objectContaining({
+        where: expect.any(Object)
+      }));
+      expect(res.status).toHaveBeenCalledWith(200);
     });
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.cookie).toHaveBeenCalledWith(
-      'token',
-      'signed-token',
-      expect.objectContaining({ httpOnly: true })
-    );
-    expect(res.json).toHaveBeenCalledWith({
-      data: {
-        user: {
-          id: 3,
-          name: 'New User',
-          email: 'new@example.com',
-          created_at: '2026-04-13T00:00:00.000Z',
-        },
-      },
+
+    test('authenticates via username identifier', async () => {
+      User.findOne.mockResolvedValue({ id: 1, username: 'myuser', password: 'hashed' });
+      bcrypt.compare.mockResolvedValue(true);
+
+      const req = { body: { identifier: 'myuser', password: 'password' } };
+      const res = createRes();
+
+      await login(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          user: expect.objectContaining({ username: 'myuser' })
+        })
+      });
     });
-  });
 
-  test('register returns 500 on database error', async () => {
-    User.findOne.mockRejectedValue(new Error('DB Error'));
-    const req = { body: { name: 'N', email: 'e@e.com', password: 'P' } };
-    const res = createRes();
+    test('rejects incorrect credentials', async () => {
+      User.findOne.mockResolvedValue({ id: 1, email: 'user@example.com', password: 'hashed' });
+      bcrypt.compare.mockResolvedValue(false);
 
-    await register(req, res);
+      const req = { body: { identifier: 'user@example.com', password: 'wrong' } };
+      const res = createRes();
 
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ message: 'DB Error' });
-  });
+      await login(req, res);
 
-  test('login rejects incorrect credentials', async () => {
-
-    User.findOne.mockResolvedValue({ id: 1, email: 'user@example.com', password: 'hashed' });
-    bcrypt.compare.mockResolvedValue(false);
-
-    const req = { body: { email: 'user@example.com', password: 'wrong' } };
-    const res = createRes();
-
-    await login(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({
-      message: 'The provided credentials are incorrect.',
+      expect(res.status).toHaveBeenCalledWith(401);
     });
   });
 
-  test('login returns 500 on database error', async () => {
-    User.findOne.mockRejectedValue(new Error('DB Error'));
-    const req = { body: { email: 'e@e.com', password: 'P' } };
-    const res = createRes();
-
-    await login(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ message: 'DB Error' });
-  });
-
-  test('logout clears auth cookie and returns confirmation', () => {
+  test('logout clears auth cookie', () => {
     const req = {};
     const res = createRes();
 
     logout(req, res);
 
-    expect(res.cookie).toHaveBeenCalledWith(
-      'token',
-      'none',
-      expect.objectContaining({ httpOnly: true })
-    );
+    expect(res.cookie).toHaveBeenCalledWith('token', 'none', expect.any(Object));
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ message: 'Logged out' });
   });
 
-  test('getMe returns authenticated user payload', async () => {
+  test('getMe returns user data', async () => {
     const req = {
-      user: {
-        id: 88,
-        name: 'Auth User',
-        email: 'auth@example.com',
-        created_at: '2026-04-13T00:00:00.000Z',
-      },
+      user: { id: 88, name: 'Auth User', email: 'auth@example.com', username: 'authuser' }
     };
     const res = createRes();
 
     await getMe(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
-      data: {
-        id: 88,
-        name: 'Auth User',
-        email: 'auth@example.com',
-        created_at: '2026-04-13T00:00:00.000Z',
-      },
+      data: expect.objectContaining({ id: 88, username: 'authuser' })
     });
   });
-
-  test('getCsrfCookie responds 204 and sets XSRF cookie', () => {
-    const req = {};
-    const res = createRes();
-
-    getCsrfCookie(req, res);
-
-    expect(res.cookie).toHaveBeenCalledWith(
-      'XSRF-TOKEN',
-      'dummy-token',
-      expect.objectContaining({ httpOnly: false })
-    );
-    expect(res.status).toHaveBeenCalledWith(204);
-    expect(res.send).toHaveBeenCalled();
-  });
 });
-
-

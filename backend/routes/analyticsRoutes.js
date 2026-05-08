@@ -3,16 +3,13 @@
  */
 const express = require('express');
 const router = express.Router();
-const { getStats, getProgression, getVolumeAnalytics, getCalendar, getAnatomy, getSymmetry } = require('../controllers/analyticsController');
+const { getStats, getProgression, getVolumeAnalytics, getCalendar, getAnatomy } = require('../controllers/analyticsController');
 const { protect } = require('../middleware/auth');
-
 
 router.use(protect);
 
-
 router.get('/stats', getStats);
 router.get('/anatomy', getAnatomy);
-router.get('/symmetry', getSymmetry);
 
 
 

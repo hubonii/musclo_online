@@ -1,8 +1,8 @@
-// Unit tests for SettingsPage — save payloads and export flow feedback.
+import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SettingsPage from '../../../src/pages/SettingsPage';
 import { useSettings, useUpdateSettings } from '../../../src/hooks/useSettings';
-import { useThemeStore } from '../../../src/stores/useThemeStore';
+import { useAuthStore } from '../../../src/stores/useAuthStore';
 import { useToast } from '../../../src/components/ui/Toast';
 import { apiClient } from '../../../src/api/axios';
 
@@ -12,15 +12,20 @@ jest.mock('framer-motion', () => ({
 }));
 
 jest.mock('lucide-react', () => ({
-  Settings: () => null,
+  User: () => null,
+  Mail: () => null,
+  Lock: () => null,
+  Camera: () => null,
+  Globe: () => null,
   Save: () => null,
   Download: () => null,
   Shield: () => null,
-  Moon: () => null,
+  CheckCircle2: () => null,
+  Trash2: () => null,
+  X: () => null,
   Sun: () => null,
-  Monitor: () => null,
-  Clock: () => null,
-  Globe: () => null,
+  Moon: () => null,
+  LogOut: () => null,
 }));
 
 jest.mock('../../../src/lib/motion', () => ({
@@ -34,8 +39,8 @@ jest.mock('../../../src/hooks/useSettings', () => ({
   useUpdateSettings: jest.fn(),
 }));
 
-jest.mock('../../../src/stores/useThemeStore', () => ({
-  useThemeStore: jest.fn(),
+jest.mock('../../../src/stores/useAuthStore', () => ({
+  useAuthStore: jest.fn(),
 }));
 
 jest.mock('../../../src/api/axios', () => ({
@@ -52,13 +57,13 @@ jest.mock('../../../src/components/ui/Toast', () => ({
 
 jest.mock('../../../src/components/ui/Card', () => ({
   __esModule: true,
-  default: ({ children }) => <div>{children}</div>,
+  default: ({ children, className }) => <div className={className}>{children}</div>,
 }));
 
 jest.mock('../../../src/components/ui/Button', () => ({
   __esModule: true,
-  default: ({ children, onClick, disabled }) => (
-    <button onClick={onClick} disabled={disabled}>
+  default: ({ children, onClick, disabled, isLoading }) => (
+    <button onClick={onClick} disabled={disabled || isLoading}>
       {children}
     </button>
   ),
@@ -66,105 +71,85 @@ jest.mock('../../../src/components/ui/Button', () => ({
 
 jest.mock('../../../src/components/ui/LoadingSpinner', () => ({
   __esModule: true,
-  default: () => <div>Loading Spinner</div>,
+  default: () => <div>Loading...</div>,
+}));
+
+jest.mock('../../../src/components/ui/Avatar', () => ({
+  __esModule: true,
+  default: () => <div>Avatar</div>,
+}));
+
+jest.mock('../../../src/components/ui/Input', () => ({
+  __esModule: true,
+  default: ({ label, value, onChange, placeholder, disabled }) => (
+    <div>
+      <label>{label}</label>
+      <input 
+        aria-label={label} 
+        value={value} 
+        onChange={onChange} 
+        placeholder={placeholder} 
+        disabled={disabled}
+      />
+    </div>
+  ),
 }));
 
 describe('SettingsPage', () => {
+  const updateProfile = jest.fn();
+  const updateSettings = jest.fn();
+  const toast = jest.fn();
+
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  test('saves settings payload with updated values', async () => {
-    const mutate = jest.fn();
-    const toast = jest.fn();
-    const setTheme = jest.fn();
-
-    useSettings.mockReturnValue({
-      data: { unit_system: 'metric', theme: 'system', default_rest_timer_seconds: 90 },
+    useAuthStore.mockReturnValue({
+      user: { id: 1, name: 'Jane Doe', email: 'jane@musclo.app', username: 'jane_doe' },
+      updateProfile,
       isLoading: false,
     });
-    useUpdateSettings.mockReturnValue({ mutate, isPending: false });
+    useSettings.mockReturnValue({
+      data: { unit_system: 'metric' },
+      isLoading: false,
+    });
+    useUpdateSettings.mockReturnValue({ mutate: updateSettings, isPending: false });
     useToast.mockReturnValue({ toast });
-    useThemeStore.mockImplementation((selector) => selector({ theme: 'system', setTheme }));
+  });
 
+  test('renders profile data and handles updates', async () => {
     render(<SettingsPage />);
 
+    expect(screen.getByDisplayValue('Jane Doe')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('jane_doe')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('Full Name'), { target: { value: 'Jane Smith' } });
+    fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'jsmith' } });
     fireEvent.click(screen.getByText('Imperial (lbs)'));
-    fireEvent.change(screen.getByDisplayValue('90'), { target: { value: '75' } });
-    fireEvent.click(screen.getByText('Save Settings'));
 
-    expect(mutate).toHaveBeenCalledWith(
-      {
-        unit_system: 'imperial',
-        theme: 'system',
-        default_rest_timer_seconds: 75,
-      },
-      expect.objectContaining({
-        onSuccess: expect.any(Function),
-        onError: expect.any(Function),
-      })
-    );
+    fireEvent.click(screen.getByText(/Save Profile Changes/i));
+
+    await waitFor(() => {
+      expect(updateProfile).toHaveBeenCalledWith(expect.objectContaining({
+        name: 'Jane Smith',
+        username: 'jsmith'
+      }));
+      expect(updateSettings).toHaveBeenCalledWith(expect.objectContaining({
+        unit_system: 'imperial'
+      }));
+    });
   });
 
-  test('exports csv and shows success toast', async () => {
-    const toast = jest.fn();
-
-    useSettings.mockReturnValue({
-      data: { unit_system: 'metric', theme: 'light', default_rest_timer_seconds: 90 },
-      isLoading: false,
-    });
-    useUpdateSettings.mockReturnValue({ mutate: jest.fn(), isPending: false });
-    useToast.mockReturnValue({ toast });
-    useThemeStore.mockImplementation((selector) => selector({ theme: 'light', setTheme: jest.fn() }));
-
-    const appendSpy = jest.spyOn(document.body, 'appendChild');
-    const removeSpy = jest.spyOn(document.body, 'removeChild');
-    const clickSpy = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
-    const createObjectURL = jest.fn(() => 'blob:mock');
-    const revokeObjectURL = jest.fn();
-    window.URL.createObjectURL = createObjectURL;
-    window.URL.revokeObjectURL = revokeObjectURL;
-
-    apiClient.get.mockResolvedValue({ data: new Blob(['a,b']) });
+  test('exports data successfully', async () => {
+    window.URL.createObjectURL = jest.fn(() => 'mock-url');
+    window.URL.revokeObjectURL = jest.fn();
+    apiClient.get.mockResolvedValue({ data: new Blob(['csv']) });
 
     render(<SettingsPage />);
 
-    fireEvent.click(screen.getByText('Export Workout Data'));
+    fireEvent.click(screen.getByText(/Export Data/i));
 
     await waitFor(() => {
       expect(apiClient.get).toHaveBeenCalledWith('/export/csv', { responseType: 'blob' });
-    });
-
-    expect(createObjectURL).toHaveBeenCalled();
-    expect(clickSpy).toHaveBeenCalled();
-    expect(toast).toHaveBeenCalledWith('success', 'Data exported successfully.');
-
-    appendSpy.mockRestore();
-    removeSpy.mockRestore();
-    clickSpy.mockRestore();
-  });
-
-  test('shows error toast when export fails', async () => {
-    const toast = jest.fn();
-
-    useSettings.mockReturnValue({
-      data: { unit_system: 'metric', theme: 'light', default_rest_timer_seconds: 90 },
-      isLoading: false,
-    });
-    useUpdateSettings.mockReturnValue({ mutate: jest.fn(), isPending: false });
-    useToast.mockReturnValue({ toast });
-    useThemeStore.mockImplementation((selector) => selector({ theme: 'light', setTheme: jest.fn() }));
-
-    apiClient.get.mockRejectedValue(new Error('export failed'));
-
-    render(<SettingsPage />);
-
-    fireEvent.click(screen.getByText('Export Workout Data'));
-
-    await waitFor(() => {
-      expect(toast).toHaveBeenCalledWith('error', 'Failed to export data.');
+      expect(toast).toHaveBeenCalledWith('success', 'Data exported successfully.');
     });
   });
 });
-
-

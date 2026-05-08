@@ -12,16 +12,12 @@ const axios = require('axios');
 const { ChatMessage } = require('../../../models');
 const openRouterService = require('../../../services/openRouterService');
 
-
 describe('OpenRouterService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  // getModel was removed in the single-model refactor as logic moved to constructor.
-
   test('buildSystemPrompt includes current workout and history context', () => {
-
     const prompt = openRouterService.buildSystemPrompt(
       {
         is_active: true,
@@ -31,7 +27,7 @@ describe('OpenRouterService', () => {
         ],
       },
       [
-        { type: 'recent_workout', name: 'Upper A', date: '2026-04-10' },
+        { type: 'recent_workout', name: 'Upper A', date: '2026-04-10', volume: 100, duration_mins: 30 },
         { type: 'active_exercise_history', name: 'Bench Press', max_weight: 100, total_reps: 300 },
       ]
     );
@@ -40,7 +36,7 @@ describe('OpenRouterService', () => {
     expect(prompt).toContain('Push Day');
     expect(prompt).toContain('Bench Press');
     expect(prompt).toContain('PERFORMANCE MEMORY');
-    expect(prompt).toContain('Recent: Upper A');
+    expect(prompt).toContain('HISTORY: Upper A');
   });
 
   test('askStream forwards streamed chunks and persists assistant message on end', async () => {
@@ -57,7 +53,6 @@ describe('OpenRouterService', () => {
       { is_active: false },
       [],
       historyMessages,
-      'https://image.example/a.png',
       99
     );
 
@@ -69,12 +64,8 @@ describe('OpenRouterService', () => {
     );
 
     const request = axios.mock.calls[0][0];
-    expect(request.data.temperature).toBe(0.7);
-    expect(request.data.messages[0].content).toContain('deep audit');
-    expect(request.data.messages[2].content).toEqual([
-      { type: 'text', text: 'please review this history log' },
-      { type: 'image_url', image_url: { url: 'https://image.example/a.png' } },
-    ]);
+    expect(request.data.temperature).toBe(0.5);
+    expect(request.data.messages[2].content).toBe('please review this history log');
 
     stream.emit('data', Buffer.from('data: {"choices":[{"delta":{"content":"Hi","reasoning_content":"R"}}]}\n\n'));
     stream.emit('end');
@@ -96,11 +87,9 @@ describe('OpenRouterService', () => {
     axios.mockRejectedValue(new Error('OpenRouter unavailable'));
     const res = { write: jest.fn(), end: jest.fn() };
 
-    await openRouterService.askStream(res, 'hello', null, [], [], null, null);
+    await openRouterService.askStream(res, 'hello', null, [], [], null);
 
-    expect(res.write).toHaveBeenCalledWith('data: {"error":"OpenRouter unavailable"}\n\n');
+    expect(res.write).toHaveBeenCalledWith(expect.stringContaining('⚠️ AI service error. Please try again.'));
     expect(res.end).toHaveBeenCalled();
   });
 });
-
-

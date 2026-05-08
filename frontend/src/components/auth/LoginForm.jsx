@@ -11,7 +11,7 @@ import Button from '../ui/Button';
 import { useToast } from '../ui/Toast';
 
 export default function LoginForm() {
-    const [email, setEmail] = useState('');
+    const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const { login, isAuthenticating } = useAuthStore();
     const navigate = useNavigate();
@@ -20,7 +20,7 @@ export default function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(email, password);
+            await login(identifier, password);
             toast('success', 'Welcome back!');
             navigate('/dashboard', { replace: true });
         } catch (err) {
@@ -92,12 +92,12 @@ export default function LoginForm() {
     return (
         <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
             <Input 
-                label="Email" 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
+                label="Email or Username" 
+                type="text" 
+                value={identifier} 
+                onChange={(e) => setIdentifier(e.target.value)} 
                 icon={<Mail size={18}/>} 
-                placeholder="you@example.com" 
+                placeholder="you@example.com or username" 
                 required
             />
 

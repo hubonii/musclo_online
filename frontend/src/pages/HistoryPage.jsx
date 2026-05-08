@@ -16,12 +16,18 @@ import WorkoutDetailModal from '../components/history/WorkoutDetailModal';
 import { useWorkoutHistory } from '../hooks/useWorkoutHistory';
 
 export default function HistoryPage() {
-    const { data: workouts = [], isLoading: loading } = useWorkoutHistory(100);
+    const { data: workouts = [], isLoading: loading, error } = useWorkoutHistory(100);
     // Holds workout id used to open detail modal when a card is selected.
     const [selectedWorkoutId, setSelectedWorkoutId] = useState(null);
     const { toast } = useToast();
     const { data: settings } = useSettings();
     const isImperial = settings?.unit_system === 'imperial';
+
+    useEffect(() => {
+        if (error) {
+            toast('error', 'Failed to load workout history');
+        }
+    }, [error, toast]);
 
     // Groups workouts by month/year for sectioned timeline rendering.
     const groupedWorkouts = (workouts || []).reduce((groups, workout) => {

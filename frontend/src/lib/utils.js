@@ -32,12 +32,7 @@ export function formatWeight(kg, unit = 'kg') {
     const val = unit === 'lbs' ? (kg * 2.20462) : kg;
     
 
-    if (val >= 10000) {
-        return `${(val / 1000).toFixed(1).replace(/\.0$/, '')}k ${unit}`;
-    }
-    
-
-    if (val >= 100) {
+    if (val >= 1000) {
         return `${Math.round(val)} ${unit}`;
     }
     

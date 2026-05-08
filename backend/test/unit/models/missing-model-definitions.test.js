@@ -4,7 +4,7 @@ const CASES = [
     modulePath: '../../../models/User',
     modelName: 'User',
     tableName: 'users',
-    requiredFields: ['id', 'name', 'email', 'password', 'is_public'],
+    requiredFields: ['id', 'name', 'email', 'password', 'is_public', 'username'],
   },
   {
     modulePath: '../../../models/SetData',

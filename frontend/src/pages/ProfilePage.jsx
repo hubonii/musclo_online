@@ -84,9 +84,10 @@ export default function ProfilePage() {
 
                     <div className="flex-1 text-center md:text-left relative z-10 w-full">
                         <h1 className="text-2xl md:text-3xl font-black text-text-primary tracking-tight break-words">{profile.name}</h1>
-                        <p className="text-sm text-text-secondary mt-1 max-w-md mx-auto md:mx-0 break-words line-clamp-4">{profile.bio || 'This lifter prefers to let their weights do the talking.'}</p>
-
-
+                        {profile.username && (
+                            <p className="text-sm font-bold text-orange uppercase tracking-[0.2em] mt-0.5">@{profile.username}</p>
+                        )}
+                        <p className="text-sm text-text-secondary mt-2 max-w-md mx-auto md:mx-0 break-words line-clamp-4">{profile.bio || 'This lifter prefers to let their weights do the talking.'}</p>
                     </div>
 
                     <div className="flex flex-col gap-3 relative z-10 w-full md:w-auto">

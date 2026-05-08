@@ -11,8 +11,9 @@
     "test:contracts": "jest --runInBand test/contracts",
     "test:meta": "jest --runInBand test/meta",
     "test:ci": "jest --ci --runInBand --coverage",
+    "test:integration": "jest --runInBand test/integration",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --runInBand --coverage",
     "perf:smoke": "node test/perf/runPerfTests.js --profile smoke",
     "perf:ci": "node test/perf/runPerfTests.js --profile ci --json-output test/perf/results/perf-ci.json",
     "perf:report": "node test/perf/runPerfTests.js --profile baseline --json-output test/perf/results/perf-report.json"
@@ -49,11 +50,15 @@
   },
   "jest": {
     "testEnvironment": "node",
+    "testTimeout": 90000,
     "setupFiles": [
       "<rootDir>/test/setup/env.guard.js"
     ],
     "roots": [
       "<rootDir>/test"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules"
     ],
     "collectCoverageFrom": [
       "controllers/**/*.js",

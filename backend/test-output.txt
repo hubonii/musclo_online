@@ -1,0 +1,126 @@
+﻿  console.log
+    ◇ injected env (20) from .env // tip: ⌘ override existing { override: true }
+
+      at _log (node_modules/dotenv/lib/main.js:131:11)
+
+  console.log
+    ◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+
+      at _log (node_modules/dotenv/lib/main.js:131:11)
+
+  console.log
+    [Harness] Database `railway_test` ensured.
+
+      at Object.log [as setup] (test/integration/setup/harness.js:52:15)
+
+  console.log
+    [Harness] Test database synchronized (force: true).
+
+      at Object.log [as setup] (test/integration/setup/harness.js:63:15)
+
+[0mPOST /api/login [32m200[0m 350.973 ms - 329[0m
+[0mPOST /api/chat [33m401[0m 5.058 ms - 30[0m
+[0mPOST /api/chat [32m200[0m 4776.506 ms - -[0m
+  console.log
+    [Harness] Database connection closed.
+
+      at Object.log [as teardown] (test/integration/setup/harness.js:75:13)
+
+node.exe : FAIL test/integration/aiCoach.integration.test.js (98.125 s)
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (FAIL test/integ...t.js (98.125 s):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  AI Coach Integration
+    √ POST /api/chat - returns 401 without auth (36 ms)
+    × POST /api/chat - accepts text messages and returns SSE (mocked) (30016 ms)
+    √ POST /api/chat - ignores model override and image payloads (9377 ms)
+    × POST /api/chat - enforces rate limits (if applicable) (30002 ms)
+
+  ● AI Coach Integration › POST /api/chat - accepts text messages and returns SSE (mocked)
+
+    thrown: "Exceeded timeout of 30000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See 
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 29 |[39m   })[33m;[39m
+     [90m 30 |[39m
+    [31m[1m>[22m[39m[90m 31 |[39m   test([32m'POST /api/chat - accepts text messages and returns SSE 
+(mocked)'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m    |[39m   [31m[1m^[22m[39m
+     [90m 32 |[39m     [90m// Note: In integration tests, we usually mock the external AI service calls[39m
+     [90m 33 |[39m     [90m// But we test the controller logic and route wiring.[39m
+     [90m 34 |[39m     [36mconst[39m res [33m=[39m [36mawait[39m request(harness[33m.[39mapp)[0m
+
+      at test (test/integration/aiCoach.integration.test.js:31:3)
+      at Object.describe (test/integration/aiCoach.integration.test.js:5:1)
+
+  ● AI Coach Integration › POST /api/chat - enforces rate limits (if applicable)
+
+    thrown: "Exceeded timeout of 30000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See 
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 58 |[39m   })[33m;[39m
+     [90m 59 |[39m
+    [31m[1m>[22m[39m[90m 60 |[39m   test([32m'POST /api/chat - enforces rate limits (if 
+applicable)'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m    |[39m   [31m[1m^[22m[39m
+     [90m 61 |[39m     [90m// This would require sending many requests quickly[39m
+     [90m 62 |[39m     [90m// For now we just verify the route exists and is protected.[39m
+     [90m 63 |[39m     [36mconst[39m res [33m=[39m [36mawait[39m request(harness[33m.[39mapp)[0m
+
+      at test (test/integration/aiCoach.integration.test.js:60:3)
+      at Object.describe (test/integration/aiCoach.integration.test.js:5:1)
+
+  ● AI Coach Integration › POST /api/chat - enforces rate limits (if applicable)
+
+
+
+    [0m [90m 149 |[39m       response[33m.[39mdata[33m.[39mon([32m'end'[39m[33m,[39m [36masync[39m () 
+[33m=>[39m {
+     [90m 150 |[39m         [36mif[39m (sessionId) {
+    [31m[1m>[22m[39m[90m 151 |[39m           [36mawait[39m [33mChatMessage[39m[33m.[39mcreate({
+     [90m     |[39m           [31m[1m^[22m[39m
+     [90m 152 |[39m             chat_session_id[33m:[39m sessionId[33m,[39m
+     [90m 153 |[39m             role[33m:[39m [32m'assistant'[39m[33m,[39m
+     [90m 154 |[39m             content[33m:[39m fullContent[33m,[39m[0m
+
+      at Query.run (node_modules/sequelize/src/dialects/mysql/query.js:46:25)
+      at node_modules/sequelize/src/sequelize.js:650:28
+      at MySQLQueryInterface.insert (node_modules/sequelize/src/dialects/abstract/query-interface.js:795:21)
+      at model.save (node_modules/sequelize/src/model.js:4154:35)
+      at ChatMessage.create (node_modules/sequelize/src/model.js:2305:12)
+      at IncomingMessage.<anonymous> (services/openRouterService.js:151:11)
+
+  ● AI Coach Integration › POST /api/chat - enforces rate limits (if applicable)
+
+
+
+    [0m [90m 149 |[39m       response[33m.[39mdata[33m.[39mon([32m'end'[39m[33m,[39m [36masync[39m () 
+[33m=>[39m {
+     [90m 150 |[39m         [36mif[39m (sessionId) {
+    [31m[1m>[22m[39m[90m 151 |[39m           [36mawait[39m [33mChatMessage[39m[33m.[39mcreate({
+     [90m     |[39m           [31m[1m^[22m[39m
+     [90m 152 |[39m             chat_session_id[33m:[39m sessionId[33m,[39m
+     [90m 153 |[39m             role[33m:[39m [32m'assistant'[39m[33m,[39m
+     [90m 154 |[39m             content[33m:[39m fullContent[33m,[39m[0m
+
+      at Query.run (node_modules/sequelize/src/dialects/mysql/query.js:46:25)
+      at node_modules/sequelize/src/sequelize.js:650:28
+      at MySQLQueryInterface.insert (node_modules/sequelize/src/dialects/abstract/query-interface.js:795:21)
+      at model.save (node_modules/sequelize/src/model.js:4154:35)
+      at ChatMessage.create (node_modules/sequelize/src/model.js:2305:12)
+      at IncomingMessage.<anonymous> (services/openRouterService.js:151:11)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 passed, 4 total
+Snapshots:   0 total
+Time:        98.224 s
+Ran all test suites matching test/integration/aiCoach.integration.test.js.
+Jest did not exit one second after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest 
+with `--detectOpenHandles` to troubleshoot this issue.

@@ -12,10 +12,10 @@ export const useAuthStore = create()(persist((set, get) => ({
     isAuthenticating: false,
     isInitializing: false,
 
-    login: async (email, password) => {
+    login: async (identifier, password) => {
         set({ isAuthenticating: true });
         try {
-            const responseData = await apiPost('/login', { email, password });
+            const responseData = await apiPost('/login', { identifier, password });
             const userData = responseData.user || responseData.data?.user || responseData;
             const token = responseData.token || responseData.data?.token;
             if (token) localStorage.setItem('musclo-token', token);
@@ -25,10 +25,10 @@ export const useAuthStore = create()(persist((set, get) => ({
         }
     },
 
-    register: async (name, email, password, password_confirmation) => {
+    register: async (name, email, username, password, password_confirmation) => {
         set({ isAuthenticating: true });
         try {
-            const responseData = await apiPost('/register', { name, email, password, password_confirmation });
+            const responseData = await apiPost('/register', { name, email, username, password, password_confirmation });
             const userData = responseData.user || responseData.data?.user || responseData;
             const token = responseData.token || responseData.data?.token;
             if (token) localStorage.setItem('musclo-token', token);
@@ -47,7 +47,7 @@ export const useAuthStore = create()(persist((set, get) => ({
         set({ user: null, isAuthenticated: false });
         localStorage.removeItem('musclo-auth');
         localStorage.removeItem('musclo-token');
-        
+
 
         const { clearAllCache } = await import('../lib/offlineCache');
         clearAllCache();

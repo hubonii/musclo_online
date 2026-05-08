@@ -137,7 +137,7 @@ exports.getProgression = async (req, res) => {
         where: { user_id: userId }
       }],
       where: { exercise_id: exerciseId, is_completed: true },
-      group: [sequelize.col('WorkoutLog.started_at')],
+      group: [sequelize.col('WorkoutLog.id')],
       order: [[sequelize.col('WorkoutLog.started_at'), 'ASC']],
       raw: true
     });
@@ -210,19 +210,6 @@ exports.getVolumeAnalytics = async (req, res) => {
 exports.getAnatomy = exports.getVolumeAnalytics;
 // `getAnatomy` intentionally reuses volume analytics data.
 
-/**
- * Placeholder for muscle symmetry analysis.
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- */
-exports.getSymmetry = async (req, res) => {
-  try {
-    // Placeholder endpoint currently returns empty dataset.
-    res.json({ data: [] });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
 
 /**
  * Retrieves workout frequency data for calendar heatmaps.

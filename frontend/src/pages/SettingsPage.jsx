@@ -31,6 +31,7 @@ export default function SettingsPage() {
 
     // Profile state
     const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [bio, setBio] = useState('');
     
@@ -62,6 +63,7 @@ export default function SettingsPage() {
     useEffect(() => {
         if (user) {
             setName(user.name || '');
+            setUsername(user.username || '');
             setEmail(user.email || '');
             setBio(user.bio || '');
         }
@@ -81,8 +83,8 @@ export default function SettingsPage() {
                 setIsUploadingAvatar(false);
             }
 
-            // 2. Update Profile (Name/Email/Bio)
-            await updateProfile({ name, email, bio });
+            // 2. Update Profile (Name/Email/Bio/Username)
+            await updateProfile({ name, email, bio, username });
             
             // 3. Update Settings (Units)
             updateSettingsHook.mutate({ unit_system: unitSystem });
@@ -232,7 +234,12 @@ export default function SettingsPage() {
                                 </div>
                                 <div className="flex-1 text-center sm:text-left space-y-1">
                                     <h3 className="font-black text-text-primary text-lg">{name || 'Your Name'}</h3>
-                                    <p className="text-xs text-text-muted uppercase tracking-widest font-bold">{email}</p>
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                                        <p className="text-xs text-text-muted uppercase tracking-widest font-bold">{email}</p>
+                                        {username && (
+                                            <p className="text-[10px] font-black text-orange uppercase tracking-wider">@{username}</p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
@@ -244,6 +251,14 @@ export default function SettingsPage() {
                                     onChange={(e) => setName(e.target.value)}
                                     icon={<User size={18}/>}
                                     placeholder="Enter your name"
+                                />
+                                <Input 
+                                    label="Username" 
+                                    value={username} 
+                                    onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                                    icon={<User size={18}/>}
+                                    placeholder="unique_handle"
+                                    maxLength={20}
                                 />
                                 <Input 
                                     label="Email Address" 

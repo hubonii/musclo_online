@@ -1,9 +1,4 @@
 // Unit tests for ProgressPhotoController — visual transformation tracking.
-const { getPhotos, createPhoto, deletePhoto, showFile } = require('../../../controllers/progressPhotoController');
-const { ProgressPhoto } = require('../../../models');
-const fs = require('fs');
-const path = require('path');
-const { createRes } = require('../../helpers/express');
 
 // --- Module Mocks ---
 jest.mock('../../../models', () => ({
@@ -14,12 +9,32 @@ jest.mock('../../../models', () => ({
   }
 }));
 
+jest.mock('@azure/storage-blob', () => ({
+  ContainerClient: jest.fn().mockImplementation(() => ({
+    getBlockBlobClient: jest.fn().mockImplementation(() => ({
+      uploadData: jest.fn().mockResolvedValue({}),
+      deleteIfExists: jest.fn().mockResolvedValue({}),
+      url: 'https://azure.com/photo.jpg'
+    }))
+  }))
+}));
+
+jest.mock('../../../services/azureStorageService', () => ({
+  uploadToAzure: jest.fn(),
+  deleteFromAzure: jest.fn(),
+}));
+
 jest.mock('fs', () => ({
   existsSync: jest.fn(),
   unlinkSync: jest.fn(),
 }));
 
-
+const { ProgressPhoto } = require('../../../models');
+const fs = require('fs');
+const path = require('path');
+const { createRes } = require('../../helpers/express');
+const { getPhotos, createPhoto, deletePhoto } = require('../../../controllers/progressPhotoController');
+const azureStorageService = require('../../../services/azureStorageService');
 
 describe('ProgressPhotoController', () => {
   beforeEach(() => {
@@ -30,7 +45,7 @@ describe('ProgressPhotoController', () => {
     test('returns paginated list with photo_url', async () => {
       ProgressPhoto.findAndCountAll.mockResolvedValue({
         count: 5,
-        rows: [{ id: 10, toJSON: () => ({ id: 10 }) }]
+        rows: [{ id: 10, photo_path: 'https://azure.com/photo.jpg', toJSON: () => ({ id: 10, photo_path: 'https://azure.com/photo.jpg' }) }]
       });
 
       const req = { user: { id: 1 }, query: { page: 1, per_page: 20 } };
@@ -40,7 +55,7 @@ describe('ProgressPhotoController', () => {
 
       expect(ProgressPhoto.findAndCountAll).toHaveBeenCalled();
       expect(res.json).toHaveBeenCalledWith({
-        data: [{ id: 10, photo_url: '/api/progress-photos/10/file' }],
+        data: [{ id: 10, photo_path: 'https://azure.com/photo.jpg', photo_url: 'https://azure.com/photo.jpg' }],
         meta: expect.any(Object)
       });
     });
@@ -60,6 +75,7 @@ describe('ProgressPhotoController', () => {
     test('creates photo row and returns 201', async () => {
       const mockPhoto = { id: 10, toJSON: () => ({ id: 10 }) };
       ProgressPhoto.create.mockResolvedValue(mockPhoto);
+      azureStorageService.uploadToAzure.mockResolvedValue('https://azure.com/photo.jpg');
 
       const req = {
         user: { id: 1 },
@@ -70,12 +86,13 @@ describe('ProgressPhotoController', () => {
 
       await createPhoto(req, res);
 
+      expect(azureStorageService.uploadToAzure).toHaveBeenCalledWith(req.file);
       expect(ProgressPhoto.create).toHaveBeenCalledWith(
-        expect.objectContaining({ user_id: 1, photo_path: '/tmp/image.jpg', pose: 'front' })
+        expect.objectContaining({ user_id: 1, photo_path: 'https://azure.com/photo.jpg', pose: 'front' })
       );
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith({
-        data: { id: 10, photo_url: '/api/progress-photos/10/file' }
+        data: { id: 10, photo_url: 'https://azure.com/photo.jpg' }
       });
     });
   });
@@ -94,51 +111,19 @@ describe('ProgressPhotoController', () => {
     });
 
     test('deletes photo and unlinks file if exists', async () => {
-      const mockPhoto = { id: 10, photo_path: '/tmp/image.jpg', destroy: jest.fn().mockResolvedValue() };
+      const mockPhoto = { id: 10, photo_path: 'https://azure.com/photo.jpg', destroy: jest.fn().mockResolvedValue() };
       ProgressPhoto.findOne.mockResolvedValue(mockPhoto);
-      fs.existsSync.mockReturnValue(true);
+      azureStorageService.deleteFromAzure.mockResolvedValue();
 
       const req = { user: { id: 1 }, params: { id: 10 } };
       const res = createRes();
 
       await deletePhoto(req, res);
 
-      expect(fs.existsSync).toHaveBeenCalledWith('/tmp/image.jpg');
-      expect(fs.unlinkSync).toHaveBeenCalledWith('/tmp/image.jpg');
+      expect(azureStorageService.deleteFromAzure).toHaveBeenCalledWith('https://azure.com/photo.jpg');
       expect(mockPhoto.destroy).toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(204);
       expect(res.send).toHaveBeenCalled();
-    });
-  });
-
-  describe('showFile', () => {
-    test('sends absolute file path if valid', async () => {
-      const mockPhoto = { id: 10, photo_path: '/absolute/tmp/image.jpg' };
-      ProgressPhoto.findOne.mockResolvedValue(mockPhoto);
-      
-      // Force existsSync behavior so it uses the absolute path
-      fs.existsSync.mockImplementation((p) => p === '/absolute/tmp/image.jpg');
-
-      const req = { user: { id: 1 }, params: { id: 10 } };
-      const res = createRes();
-
-      await showFile(req, res);
-
-      expect(res.sendFile).toHaveBeenCalledWith('/absolute/tmp/image.jpg');
-    });
-
-    test('returns 404 if file does not exist anywhere', async () => {
-      const mockPhoto = { id: 10, photo_path: 'relative/image.jpg' };
-      ProgressPhoto.findOne.mockResolvedValue(mockPhoto);
-      fs.existsSync.mockReturnValue(false);
-
-      const req = { user: { id: 1 }, params: { id: 10 } };
-      const res = createRes();
-
-      await showFile(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ message: 'Physical file not found' });
     });
   });
 });

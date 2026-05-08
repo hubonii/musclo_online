@@ -11,8 +11,7 @@ const { Op } = require('sequelize');
 exports.getTodayRoutine = async (req, res) => {
   try {
     // JS getDay() returns 0-6 (Sun-Sat), matching stored day_of_week values.
-
-    
+    const dayOfWeek = new Date().getDay();
     const routine = await Routine.findOne({
       where: { user_id: req.user.id, day_of_week: dayOfWeek.toString() },
       include: [{ model: Exercise, include: [SetData] }, SetData]

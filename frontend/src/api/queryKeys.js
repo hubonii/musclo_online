@@ -32,7 +32,7 @@ export const queryKeys = {
     profile: {
         detail: (userId) => ['profile', userId],
         achievements: (userId) => ['profile', userId, 'achievements'],
-
+        routines: (userId) => ['profile', userId, 'routines'],
     },
     settings: {
         all: ['settings'],

@@ -2,7 +2,7 @@
  * Hook for fetching comprehensive training program details and routines.
  * @returns {Object} Program details, loading states, and routine operations.
  */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/axios';
 import { useToast } from '../components/ui/Toast';
@@ -18,7 +18,15 @@ export function useProgramDetailsData() {
     const { toast } = useToast();
     const queryClient = useQueryClient();
 
-    const { data: program, isLoading: loading } = useProgram(programId);
+    const { data: program, isLoading: loading, error } = useProgram(programId);
+    
+    useEffect(() => {
+        if (error) {
+            toast('error', 'Failed to load program details');
+            navigate('/programs');
+        }
+    }, [error, navigate, toast]);
+
     const routines = program?.routines || [];
     
     const [search, setSearch] = useState('');

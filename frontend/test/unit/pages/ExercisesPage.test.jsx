@@ -1,4 +1,4 @@
-// Unit tests for ExercisesPage — search, filtration, and lazy-loading.
+import React from 'react';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ExercisesPage from '../../../src/pages/ExercisesPage';
 import { apiClient } from '../../../src/api/axios';
@@ -15,6 +15,7 @@ jest.mock('framer-motion', () => ({
 jest.mock('lucide-react', () => ({
   Search: () => null,
   SlidersHorizontal: () => null,
+  WifiOff: () => null,
 }));
 
 // --- API & State Mocks ---
@@ -64,6 +65,14 @@ jest.mock('../../../src/components/ui/EmptyState', () => ({
   default: ({ title }) => <div>{title}</div>,
 }));
 
+// Global mock for IntersectionObserver
+global.IntersectionObserver = class IntersectionObserver {
+  constructor() {}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
 describe('ExercisesPage', () => {
   const toast = jest.fn();
 
@@ -74,12 +83,19 @@ describe('ExercisesPage', () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
     jest.useRealTimers();
   });
 
   test('loads and renders exercise cards after debounce', async () => {
-    apiClient.get.mockResolvedValue({ data: { data: [{ id: 1, name: 'Bench Press' }] } });
+    apiClient.get.mockResolvedValue({ 
+      data: { 
+        data: [{ id: 1, name: 'Bench Press' }],
+        meta: { current_page: 1, last_page: 1 }
+      } 
+    });
 
     render(<ExercisesPage />);
 
@@ -90,7 +106,8 @@ describe('ExercisesPage', () => {
     expect(await screen.findByText('Bench Press')).toBeInTheDocument();
     expect(apiClient.get).toHaveBeenCalledWith('/exercises', {
       params: {
-        limit: 2000,
+        limit: 20,
+        page: 1,
         search: undefined,
         body_part: undefined,
         equipment: undefined,
@@ -99,7 +116,12 @@ describe('ExercisesPage', () => {
   });
 
   test('applies quick category filter and refetches with body part param', async () => {
-    apiClient.get.mockResolvedValue({ data: { data: [{ id: 2, name: 'Incline Press' }] } });
+    apiClient.get.mockResolvedValue({ 
+      data: { 
+        data: [{ id: 2, name: 'Incline Press' }],
+        meta: { current_page: 1, last_page: 1 }
+      } 
+    });
 
     render(<ExercisesPage />);
 
@@ -118,7 +140,8 @@ describe('ExercisesPage', () => {
     await waitFor(() => {
       expect(apiClient.get).toHaveBeenLastCalledWith('/exercises', {
         params: {
-          limit: 2000,
+          limit: 20,
+          page: 1,
           search: undefined,
           body_part: 'Chest',
           equipment: undefined,
@@ -128,7 +151,12 @@ describe('ExercisesPage', () => {
   });
 
   test('shows empty state when API returns no exercises', async () => {
-    apiClient.get.mockResolvedValue({ data: { data: [] } });
+    apiClient.get.mockResolvedValue({ 
+      data: { 
+        data: [],
+        meta: { current_page: 1, last_page: 1 }
+      } 
+    });
 
     render(<ExercisesPage />);
 
@@ -154,11 +182,15 @@ describe('ExercisesPage', () => {
   });
 
   test('search input renders and triggers a search refetch', async () => {
-    apiClient.get.mockResolvedValue({ data: { data: [] } });
+    apiClient.get.mockResolvedValue({ 
+      data: { 
+        data: [],
+        meta: { current_page: 1, last_page: 1 }
+      } 
+    });
 
     render(<ExercisesPage />);
 
-    // Wait for initial render and debounce
     act(() => {
       jest.advanceTimersByTime(300);
     });
@@ -170,7 +202,6 @@ describe('ExercisesPage', () => {
       target: { value: 'squat' },
     });
 
-    // Advance debounce timer
     act(() => {
       jest.advanceTimersByTime(300);
     });
@@ -178,7 +209,8 @@ describe('ExercisesPage', () => {
     await waitFor(() => {
       expect(apiClient.get).toHaveBeenLastCalledWith('/exercises', {
         params: {
-          limit: 2000,
+          limit: 20,
+          page: 1,
           search: 'squat',
           body_part: undefined,
           equipment: undefined,
@@ -187,5 +219,3 @@ describe('ExercisesPage', () => {
     });
   });
 });
-
-

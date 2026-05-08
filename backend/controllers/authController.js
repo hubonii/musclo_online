@@ -42,6 +42,7 @@ const sendTokenResponse = (user, statusCode, res) => {
         user: {
           id: user.id,
           name: user.name,
+          username: user.username,
           email: user.email,
           avatar_url: user.avatar_url,
           bio: user.bio,
@@ -60,7 +61,7 @@ const sendTokenResponse = (user, statusCode, res) => {
  * @throws {Error} 500 if database creation fails.
  */
 exports.register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, username, password } = req.body;
 
   if (!name || !email || !password) {
     return res.status(422).json({
@@ -73,7 +74,16 @@ exports.register = async (req, res) => {
     });
   }
 
+  // Validate username format if provided
+  if (username && !/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+    return res.status(422).json({
+      message: 'Validation failed.',
+      errors: { username: ['Username must be 3-20 alphanumeric characters or underscores.'] }
+    });
+  }
+
   try {
+    // Check if email already exists
     let user = await User.findOne({ where: { email } });
     if (user) {
       return res.status(422).json({
@@ -82,12 +92,24 @@ exports.register = async (req, res) => {
       });
     }
 
+    // Check if username already exists
+    if (username) {
+      user = await User.findOne({ where: { username } });
+      if (user) {
+        return res.status(422).json({
+          message: 'The username has already been taken.',
+          errors: { username: ['The username has already been taken.'] }
+        });
+      }
+    }
+
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     user = await User.create({
       name,
       email,
+      username: username || null,
       password: hashedPassword,
       verification_code: null
     });
@@ -104,10 +126,25 @@ exports.register = async (req, res) => {
  * @param {object} res - Express response object.
  */
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { identifier, email, password } = req.body;
+  const loginId = identifier || email;
+
+  if (!loginId || !password) {
+    return res.status(401).json({
+      message: 'Identifier and password are required.',
+    });
+  }
 
   try {
-    const user = await User.findOne({ where: { email } });
+    // Find user by email or username
+    const user = await User.findOne({
+      where: {
+        [Op.or]: [
+          { email: loginId },
+          { username: loginId }
+        ]
+      }
+    });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({
@@ -149,6 +186,7 @@ exports.getMe = async (req, res) => {
     data: {
       id: req.user.id,
       name: req.user.name,
+      username: req.user.username,
       email: req.user.email,
       avatar_url: req.user.avatar_url,
       bio: req.user.bio,

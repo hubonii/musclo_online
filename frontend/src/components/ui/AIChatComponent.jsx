@@ -1,7 +1,7 @@
 // Floating AI coach chat entry point and panel container.
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Dumbbell, Square, User as UserIcon, Trash2, ArrowUpCircle, Image as ImageIcon, History as HistoryIcon, Plus, BrainCircuit, Activity as ActivityIcon, ChevronDown as ChevronDownIcon, Cpu as CpuIcon } from 'lucide-react';
+import { Bot, X, Dumbbell, Square, User as UserIcon, Trash2, ArrowUpCircle, Image as ImageIcon, History as HistoryIcon, Plus, BrainCircuit, Activity as ActivityIcon, ChevronDown as ChevronDownIcon, Cpu as CpuIcon, RefreshCw } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAIChatStore } from '../../stores/useAIChatStore';

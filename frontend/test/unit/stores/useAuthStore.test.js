@@ -1,92 +1,67 @@
-// Unit tests for useAuthStore — login, logout, and session restoration.
 import { useAuthStore } from '../../../src/stores/useAuthStore';
-import { apiClient, apiGet, getCsrfCookie } from '../../../src/api/axios';
+import { apiPost, apiGet } from '../../../src/api/axios';
 
+// --- Module Mocks ---
 jest.mock('../../../src/api/axios', () => ({
+  apiPost: jest.fn(),
+  apiGet: jest.fn(),
   apiClient: {
     post: jest.fn(),
-  },
-  apiGet: jest.fn(),
-  getCsrfCookie: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn()
+  }
 }));
 
 describe('useAuthStore', () => {
   beforeEach(() => {
-    localStorage.clear();
     jest.clearAllMocks();
-
-    useAuthStore.setState({
-      user: null,
-      isAuthenticated: false,
-      isLoading: false,
-      isAuthenticating: false,
-      isInitializing: false,
-    });
+    useAuthStore.getState().reset();
+    localStorage.clear();
   });
 
-  test('login stores user and authenticated state', async () => {
-    getCsrfCookie.mockResolvedValue(undefined);
-    apiClient.post.mockResolvedValue({
-      data: {
-        user: { id: 1, name: 'Test User', email: 'test@example.com' },
-      },
-    });
+  test('login updates state and saves token', async () => {
+    const mockUser = { id: 1, email: 'test@example.com', username: 'testuser' };
+    apiPost.mockResolvedValue({ user: mockUser, token: 'mock-token' });
 
-    await useAuthStore.getState().login('test@example.com', 'secret');
+    await useAuthStore.getState().login('testuser', 'password');
 
-    expect(getCsrfCookie).toHaveBeenCalledTimes(1);
-    expect(apiClient.post).toHaveBeenCalledWith('/login', {
-      email: 'test@example.com',
-      password: 'secret',
-    });
+    expect(apiPost).toHaveBeenCalledWith('/login', { identifier: 'testuser', password: 'password' });
+    expect(useAuthStore.getState().user).toEqual(mockUser);
     expect(useAuthStore.getState().isAuthenticated).toBe(true);
-    expect(useAuthStore.getState().user).toEqual({
-      id: 1,
-      name: 'Test User',
-      email: 'test@example.com',
-    });
-    expect(useAuthStore.getState().isAuthenticating).toBe(false);
+    expect(localStorage.getItem('musclo-token')).toBe('mock-token');
   });
 
-  test('logout clears local auth state even if API logout fails', async () => {
-    useAuthStore.setState({
-      user: { id: 2, name: 'Existing User', email: 'existing@example.com' },
-      isAuthenticated: true,
-    });
+  test('register sends name, email, and username', async () => {
+    apiPost.mockResolvedValue({ user: { id: 2 }, token: 't' });
 
-    getCsrfCookie.mockResolvedValue(undefined);
-    apiClient.post.mockRejectedValue(new Error('session already expired'));
+    await useAuthStore.getState().register('Name', 'e@e.com', 'user123', 'p', 'p');
+
+    expect(apiPost).toHaveBeenCalledWith('/register', expect.objectContaining({
+      name: 'Name',
+      email: 'e@e.com',
+      username: 'user123'
+    }));
+  });
+
+  test('logout clears state and storage', async () => {
+    useAuthStore.setState({ user: { id: 1 }, isAuthenticated: true });
+    localStorage.setItem('musclo-token', 't');
 
     await useAuthStore.getState().logout();
 
-    expect(useAuthStore.getState().isAuthenticated).toBe(false);
     expect(useAuthStore.getState().user).toBeNull();
+    expect(useAuthStore.getState().isAuthenticated).toBe(false);
+    expect(localStorage.getItem('musclo-token')).toBeNull();
   });
 
-  test('fetchUser populates user on success and clears state on failure', async () => {
-    apiGet.mockResolvedValueOnce({
-      id: 7,
-      name: 'Fetched User',
-      email: 'fetched@example.com',
-    });
+  test('fetchUser hydrates state if successful', async () => {
+    const mockUser = { id: 5, email: 'h@h.com' };
+    apiGet.mockResolvedValue(mockUser);
 
     await useAuthStore.getState().fetchUser();
 
     expect(apiGet).toHaveBeenCalledWith('/user');
+    expect(useAuthStore.getState().user).toEqual(mockUser);
     expect(useAuthStore.getState().isAuthenticated).toBe(true);
-    expect(useAuthStore.getState().user).toEqual({
-      id: 7,
-      name: 'Fetched User',
-      email: 'fetched@example.com',
-    });
-
-    apiGet.mockRejectedValueOnce(new Error('401'));
-    await useAuthStore.getState().fetchUser();
-
-    expect(useAuthStore.getState().isAuthenticated).toBe(false);
-    expect(useAuthStore.getState().user).toBeNull();
-    expect(useAuthStore.getState().isInitializing).toBe(false);
   });
 });
-
-

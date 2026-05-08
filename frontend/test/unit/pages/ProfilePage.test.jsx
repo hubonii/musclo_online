@@ -1,10 +1,10 @@
-// Unit tests for ProfilePage — loading states and transformation gallery.
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import ProfilePage from '../../../src/pages/ProfilePage';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuthStore } from '../../../src/stores/useAuthStore';
-import { useAchievements, useProfile } from '../../../src/hooks/useProfile';
+import { useAchievements, useProfile, useSharedWorkouts } from '../../../src/hooks/useProfile';
+import { useThemeStore } from '../../../src/stores/useThemeStore';
 
 jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
@@ -18,6 +18,11 @@ jest.mock('../../../src/stores/useAuthStore', () => ({
 jest.mock('../../../src/hooks/useProfile', () => ({
   useProfile: jest.fn(),
   useAchievements: jest.fn(),
+  useSharedWorkouts: jest.fn(),
+}));
+
+jest.mock('../../../src/stores/useThemeStore', () => ({
+  useThemeStore: jest.fn(),
 }));
 
 jest.mock('framer-motion', () => ({
@@ -34,6 +39,11 @@ jest.mock('lucide-react', () => ({
   CalendarDays: () => null,
   TrendingUp: () => null,
   Settings: () => null,
+  Lock: () => null,
+  Camera: () => null,
+  Sun: () => null,
+  Moon: () => null,
+  LogOut: () => null,
 }));
 
 jest.mock('../../../src/components/ui/Card', () => ({
@@ -46,11 +56,16 @@ jest.mock('../../../src/components/ui/Button', () => ({
   default: ({ children, onClick }) => <button onClick={onClick}>{children}</button>,
 }));
 
+jest.mock('../../../src/components/ui/Avatar', () => ({
+  __esModule: true,
+  default: ({ name }) => <div>Avatar {name}</div>,
+}));
 
-jest.mock('../../../src/components/profile/AchievementBadge', () => ({ achievement }) => (
-  <div>Achievement {achievement.id}</div>
+jest.mock('../../../src/components/profile/AchievementBadge', () => ({ name }) => (
+  <div>Achievement {name}</div>
 ));
-jest.mock('../../../src/components/ui/LoadingSpinner', () => () => <div>Loading profile...</div>);
+
+jest.mock('../../../src/components/ui/LoadingSpinner', () => ({ message }) => <div>{message}</div>);
 
 describe('ProfilePage', () => {
   const navigate = jest.fn();
@@ -60,7 +75,9 @@ describe('ProfilePage', () => {
     useNavigate.mockReturnValue(navigate);
     useParams.mockReturnValue({});
     useAuthStore.mockImplementation((selector) => selector({ user: { id: 42 } }));
+    useThemeStore.mockImplementation((selector) => selector({ theme: 'dark', toggleTheme: jest.fn() }));
     useAchievements.mockReturnValue({ data: [], isLoading: false });
+    useSharedWorkouts.mockReturnValue({ data: [], isLoading: false });
   });
 
   test('shows loading state while profile query is pending', () => {
@@ -68,7 +85,7 @@ describe('ProfilePage', () => {
 
     render(<ProfilePage />);
 
-    expect(screen.getByText('Loading profile...')).toBeInTheDocument();
+    expect(screen.getByText(/Preparing your profile/i)).toBeInTheDocument();
   });
 
   test('shows not-found state when profile data is empty', () => {
@@ -85,6 +102,7 @@ describe('ProfilePage', () => {
       data: {
         id: 42,
         name: 'Athlete',
+        username: 'athlete123',
         bio: 'Consistency wins.',
         stats: { total_workouts: 12, total_volume: 12000, current_streak: 4 },
       },
@@ -93,10 +111,10 @@ describe('ProfilePage', () => {
     render(<ProfilePage />);
 
     expect(screen.getByText('Athlete')).toBeInTheDocument();
-    expect(screen.getByText('Trophy Cabinet')).toBeInTheDocument();
+    expect(screen.getByText('@athlete123')).toBeInTheDocument();
+    expect(screen.getByText('Achievements')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /Edit Profile/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Account Settings/i }));
     expect(navigate).toHaveBeenCalledWith('/settings');
   });
 });
-

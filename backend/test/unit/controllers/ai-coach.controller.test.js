@@ -10,16 +10,23 @@ jest.mock('../../../models', () => ({
     findAll: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
+    findByPk: jest.fn(),
   },
   ChatMessage: {
     findAll: jest.fn(),
     create: jest.fn(),
+    count: jest.fn(),
   },
   SetData: {
     findAll: jest.fn(),
   },
   WorkoutLog: {
     findAll: jest.fn(),
+    sum: jest.fn(),
+    count: jest.fn(),
+  },
+  User: {
+    findByPk: jest.fn(),
   },
   Exercise: {}
 }));
@@ -33,7 +40,9 @@ jest.mock('../../../config/database', () => ({
   col: jest.fn(),
 }));
 
-
+jest.mock('../../../services/achievementService', () => ({
+  calculateStreak: jest.fn().mockResolvedValue(5),
+}));
 
 describe('AiCoachController', () => {
   beforeEach(() => {
@@ -51,7 +60,7 @@ describe('AiCoachController', () => {
 
       expect(ChatSession.findAll).toHaveBeenCalledWith(expect.objectContaining({
         where: { user_id: 1 },
-        order: [['updated_at', 'DESC']]
+        order: [['updatedAt', 'DESC']]
       }));
       expect(res.json).toHaveBeenCalledWith({ data: [{ id: 1, title: 'Chat' }] });
     });
@@ -91,17 +100,16 @@ describe('AiCoachController', () => {
     test('persists a minimal session row', async () => {
       ChatSession.create.mockResolvedValue({ id: 10, title: 'New Chat' });
 
-      const req = { user: { id: 1 }, body: { model_mode: 'smart' } };
+      const req = { user: { id: 1 }, body: { } };
       const res = createRes();
 
       await createSession(req, res);
 
       expect(ChatSession.create).toHaveBeenCalledWith({
         user_id: 1,
-        title: 'New Chat'
+        title: 'New Discussion'
       });
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith({ data: expect.any(Object) });
     });
   });
 
@@ -123,21 +131,24 @@ describe('AiCoachController', () => {
 
   describe('ask', () => {
     test('assembles prompt and streams response', async () => {
-      ChatSession.create.mockResolvedValue({ id: 99 });
+      const mockSession = { 
+        id: 99, 
+        changed: jest.fn(), 
+        save: jest.fn().mockResolvedValue() 
+      };
+      ChatSession.findOne.mockResolvedValue(mockSession);
       ChatMessage.findAll.mockResolvedValue([]);
-      WorkoutLog.findAll.mockResolvedValue([]); // Mock fallback latent context
-
+      ChatMessage.count.mockResolvedValue(5);
+      
       const req = {
         user: { id: 1 },
-        body: { message: 'How to squat?', model_mode: 'fast' }
+        body: { message: 'How to squat?', session_id: 99 }
       };
       const res = createRes();
 
       await ask(req, res);
 
-      expect(ChatSession.create).toHaveBeenCalledWith(expect.objectContaining({
-        title: 'How to squat?'
-      }));
+      expect(ChatSession.findOne).toHaveBeenCalledWith({ where: { id: 99, user_id: 1 } });
       expect(ChatMessage.create).toHaveBeenCalledWith(expect.objectContaining({
         chat_session_id: 99,
         role: 'user',
@@ -150,15 +161,14 @@ describe('AiCoachController', () => {
         undefined, // workout_context
         expect.any(Array), // latentContext
         expect.any(Array), // historyMessages
-        undefined, // image
         99 // session_id
       );
     });
 
     test('returns 500 on database error', async () => {
-      ChatSession.create.mockRejectedValue(new Error('DB Error'));
+      ChatSession.findOne.mockRejectedValue(new Error('DB Error'));
 
-      const req = { user: { id: 1 }, body: { message: 'Hi' } };
+      const req = { user: { id: 1 }, body: { message: 'Hi', session_id: 99 } };
       const res = createRes();
 
       await ask(req, res);

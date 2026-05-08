@@ -5,14 +5,13 @@ const { Resend } = require('resend');
 
 class MailService {
   constructor() {
-
-    const apiKey = process.env.RESEND_API_KEY || 're_hLM6ZTqK_8Rc8X2ijwFTvaSseaKaNvJtD';
-    this.resend = new Resend(apiKey);
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error('[MAIL] CRITICAL: RESEND_API_KEY is missing. Emails will not be sent.');
+    }
+    this.resend = new Resend(apiKey || 'missing');
     
-
     this.fromEmail = process.env.MAIL_FROM || 'noreply@musclo.tech';
-    
-    console.log(`[MAIL] Initialized with Resend API (Key: ${apiKey.substring(0, 5)}...)`);
   }
 
   /**

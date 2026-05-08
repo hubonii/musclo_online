@@ -3,7 +3,7 @@ describe('DatabaseConfig', () => {
   beforeEach(() => {
     // Clears module cache before each test case.
     jest.resetModules();
-    process.env.DB_DATABASE = 'musclo_test';
+    process.env.DB_DATABASE = 'musclo';
     process.env.DB_USERNAME = 'tester';
     process.env.DB_PASSWORD = 'secret';
     process.env.DB_HOST = '127.0.0.1';

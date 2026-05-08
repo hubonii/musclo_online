@@ -24,6 +24,14 @@ export const useAchievements = (userId) => {
     });
 };
 
+export const useSharedWorkouts = (userId) => {
+    const id = userId || 'me';
+    return useQuery({
+        queryKey: queryKeys.profile.routines(id),
+        queryFn: () => apiGet(`/profile/${id}/routines`),
+    });
+};
+
 
 
 export const useUpdateProfile = () => {

@@ -1,4 +1,4 @@
-// Unit tests for WorkoutPage — active session management and global store syncing.
+import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import WorkoutPage from '../../../src/pages/WorkoutPage';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { apiGet } from '../../../src/api/axios';
 import { useSettings } from '../../../src/hooks/useSettings';
 import { useMeasurements } from '../../../src/hooks/useMeasurements';
 import { useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '../../../src/stores/useAuthStore';
 
 // --- Routing & Library Mocks ---
 jest.mock('react-router-dom', () => ({
@@ -17,7 +18,10 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('framer-motion', () => ({
-  motion: { div: ({ children, ...props }) => <div {...props}>{children}</div> },
+  motion: { 
+    div: ({ children, ...props }) => <div {...props}>{children}</div>,
+    span: ({ children, ...props }) => <span {...props}>{children}</span> 
+  },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
@@ -25,6 +29,9 @@ jest.mock('lucide-react', () => ({
   Play: () => null,
   Plus: () => null,
   StickyNote: () => null,
+  X: () => null,
+  Clock: () => null,
+  ChevronRight: () => null,
 }));
 
 jest.mock('../../../src/lib/motion', () => ({ MOTION: { pageEnter: {} } }));
@@ -36,6 +43,10 @@ jest.mock('../../../src/stores/useWorkoutStore', () => ({
 
 jest.mock('../../../src/stores/useRestTimerStore', () => ({
   useRestTimerStore: jest.fn(),
+}));
+
+jest.mock('../../../src/stores/useAuthStore', () => ({
+  useAuthStore: jest.fn(),
 }));
 
 jest.mock('../../../src/api/axios', () => ({
@@ -54,7 +65,7 @@ jest.mock('../../../src/components/ui/Toast', () => ({
 
 jest.mock('../../../src/components/ui/Button', () => ({
   __esModule: true,
-  default: ({ children, onClick }) => <button onClick={onClick}>{children}</button>,
+  default: ({ children, onClick, className }) => <button onClick={onClick} className={className}>{children}</button>,
 }));
 
 jest.mock('../../../src/components/ui/Textarea', () => ({
@@ -64,12 +75,12 @@ jest.mock('../../../src/components/ui/Textarea', () => ({
 
 jest.mock('../../../src/components/ui/LoadingSpinner', () => ({
   __esModule: true,
-  default: () => <div>Loading Spinner</div>,
+  default: () => <div>Loading...</div>,
 }));
 
 jest.mock('../../../src/components/ui/Card', () => ({
   __esModule: true,
-  default: ({ children, onClick }) => <div onClick={onClick}>{children}</div>,
+  default: ({ children, onClick, className }) => <div onClick={onClick} className={className}>{children}</div>,
 }));
 
 jest.mock('../../../src/components/ui/ConfirmDialog', () => ({ __esModule: true, default: () => null }));
@@ -82,9 +93,9 @@ jest.mock('../../../src/components/workout/WorkoutFinishDialog', () => ({ __esMo
 describe('WorkoutPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAuthStore.mockImplementation((selector) => selector({ user: { id: 1 } }));
   });
 
-  // Verify the empty workout flow correctly bootstraps a "Freestyle" session via the global store.
   test('starts empty workout from inactive state', async () => {
     const startWorkout = jest.fn();
     const toast = jest.fn();
@@ -103,20 +114,7 @@ describe('WorkoutPage', () => {
       notes: '',
       setNotes: jest.fn(),
       startWorkout,
-      finishWorkout: jest.fn(),
-      resetWorkout: jest.fn(),
-      cancelWorkout: jest.fn(),
-      fetchPreviousData: jest.fn(),
-      addExercise: jest.fn(),
-      removeExercise: jest.fn(),
-      addSet: jest.fn(),
-      removeSet: jest.fn(),
-      updateSet: jest.fn(),
-      completeSet: jest.fn(),
-      updateExerciseConfig: jest.fn(),
       exercises: [],
-      totalVolume: () => 0,
-      completedSetsCount: () => 0,
     };
 
     useWorkoutStore.mockImplementation((selector) => selector(workoutState));
@@ -126,15 +124,13 @@ describe('WorkoutPage', () => {
 
     render(<WorkoutPage />);
 
-    // Wait for the empty state start prompt to map to our button component.
     await waitFor(() => {
-      expect(screen.getByText('START EMPTY WORKOUT')).toBeInTheDocument();
+      expect(screen.getByText(/QUICK WORKOUT/i)).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByText('START EMPTY WORKOUT'));
+    fireEvent.click(screen.getByText(/QUICK WORKOUT/i));
 
     expect(startWorkout).toHaveBeenCalledWith(null, 'Freestyle Workout', []);
-    expect(toast).toHaveBeenCalledWith('info', 'Started Freestyle Workout');
   });
 
   test('renders active workout UI when isActive is true', async () => {
@@ -144,10 +140,6 @@ describe('WorkoutPage', () => {
     useSettings.mockReturnValue({ data: { unit_system: 'metric' } });
     useMeasurements.mockReturnValue({ data: [] });
     useQueryClient.mockReturnValue({ invalidateQueries: jest.fn() });
-    
-    // We already mocked WorkoutHeader and ExercisePicker components 
-    // They will render as null, so let's mock WorkoutHeader specifically for this test
-    // Actually we can just check if Add Exercise button is there since it's hardcoded
     
     const workoutState = {
       isActive: true,
@@ -167,10 +159,8 @@ describe('WorkoutPage', () => {
 
     render(<WorkoutPage />);
 
-    // Add Exercise is standard UI in the active workout
     await waitFor(() => {
-      expect(screen.getByText('Add Exercise')).toBeInTheDocument();
+      expect(screen.getByText(/ADD EXERCISE/i)).toBeInTheDocument();
     });
   });
 });
-

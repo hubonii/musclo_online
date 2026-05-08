@@ -1,95 +1,77 @@
-import axios from 'axios';
-import { apiGet, apiPost, getValidationErrors, apiClient } from '../../../src/api/axios';
+import { apiClient, apiGet, apiPost } from '../../../src/api/axios';
+import { useAuthStore } from '../../../src/stores/useAuthStore';
 
-jest.mock('axios', () => {
-  const mAxiosInstance = {
-    get: jest.fn(),
-    post: jest.fn(),
-    put: jest.fn(),
-    delete: jest.fn(),
-    interceptors: {
-      request: { use: jest.fn() },
-      response: { use: jest.fn() }
-    }
-  };
-  return {
-    create: jest.fn(() => mAxiosInstance),
-    get: jest.fn(),
-    isAxiosError: jest.fn()
-  };
-});
+// --- Mocks ---
+jest.mock('../../../src/stores/useAuthStore', () => ({
+  useAuthStore: {
+    getState: jest.fn(() => ({ reset: jest.fn() })),
+  },
+}));
 
-describe('api/axios helper units', () => {
+describe('Axios API Client', () => {
+  const originalLocation = window.location;
+
+  beforeAll(() => {
+    delete window.location;
+    window.location = { href: '', pathname: '' };
+  });
+
+  afterAll(() => {
+    window.location = originalLocation;
+  });
+
   beforeEach(() => {
+    localStorage.clear();
     jest.clearAllMocks();
   });
 
-  describe('apiGet', () => {
-    test('returns response data on success', async () => {
-      apiClient.get.mockResolvedValue({ data: { data: { id: 1, name: 'Test' } } });
-      
-      const result = await apiGet('/users/1');
-      
-      expect(apiClient.get).toHaveBeenCalledWith('/users/1', { params: undefined });
-      expect(result).toEqual({ id: 1, name: 'Test' });
-    });
+  test('request interceptor adds Authorization header if token exists', async () => {
+    localStorage.setItem('musclo-token', 'test-jwt-token');
     
-    test('returns null if response data does not have data field', async () => {
-      apiClient.get.mockResolvedValue({ data: {} });
-      
-      const result = await apiGet('/users/1');
-      
-      expect(result).toBeNull();
-    });
+    // We can't easily trigger the real interceptor without making a request, 
+    // but we can check the config passed to the adapters.
+    // For unit tests, we check that the logic exists.
+    const config = { headers: {} };
+    const interceptor = apiClient.interceptors.request.handlers[0].fulfilled;
+    const result = interceptor(config);
+    
+    expect(result.headers.Authorization).toBe('Bearer test-jwt-token');
   });
 
-  describe('apiPost', () => {
-    test('sends data and returns response', async () => {
-      apiClient.post.mockResolvedValue({ data: { data: { success: true } } });
-      
-      const result = await apiPost('/login', { email: 'test@example.com' });
-      
-      expect(apiClient.post).toHaveBeenCalledWith('/login', { email: 'test@example.com' }, undefined);
-      expect(result).toEqual({ success: true });
-    });
+  test('response interceptor handles 401 and redirects to login', async () => {
+    const resetMock = jest.fn();
+    useAuthStore.getState.mockReturnValue({ reset: resetMock });
+    
+    const error = {
+      response: { status: 401 },
+      config: {}
+    };
+    
+    const interceptor = apiClient.interceptors.response.handlers[0].rejected;
+    
+    try {
+      await interceptor(error);
+    } catch (e) {
+      // Expected
+    }
+    
+    expect(resetMock).toHaveBeenCalled();
+    expect(window.location.href).toBe('/login');
   });
 
-  describe('getValidationErrors', () => {
-    test('extracts field errors from 422 response', () => {
-      axios.isAxiosError.mockReturnValue(true);
-      const mockError = {
-        response: {
-          status: 422,
-          data: {
-            message: 'Validation failed',
-            errors: { email: ['Email is invalid'] }
-          }
-        }
-      };
-
-      const result = getValidationErrors(mockError);
-      
-      expect(result).toEqual(mockError.response.data);
-    });
-
-    test('returns null for non-422 errors or non-axios errors', () => {
-      axios.isAxiosError.mockReturnValue(true);
-      const mock500Error = {
-        response: {
-          status: 500,
-          data: { message: 'Server error' }
-        }
-      };
-
-      const result = getValidationErrors(mock500Error);
-      
-      expect(result).toBeNull();
-    });
+  test('apiGet extracts data.data payload', async () => {
+    const mockResponse = { data: { data: { id: 1, name: 'Test' } } };
+    jest.spyOn(apiClient, 'get').mockResolvedValue(mockResponse);
     
-    test('returns null if not an axios error', () => {
-      axios.isAxiosError.mockReturnValue(false);
-      const result = getValidationErrors(new Error('Normal error'));
-      expect(result).toBeNull();
-    });
+    const result = await apiGet('/test');
+    expect(result).toEqual({ id: 1, name: 'Test' });
+  });
+
+  test('apiPost extracts data.data payload', async () => {
+    const mockResponse = { data: { data: { success: true } } };
+    jest.spyOn(apiClient, 'post').mockResolvedValue(mockResponse);
+    
+    const result = await apiPost('/test', { foo: 'bar' });
+    expect(result).toEqual({ success: true });
   });
 });

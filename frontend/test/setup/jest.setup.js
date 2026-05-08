@@ -2,7 +2,6 @@
 import '@testing-library/jest-dom';
 import { TextEncoder, TextDecoder } from 'util';
 
-
 if (!global.TextEncoder) {
   global.TextEncoder = TextEncoder;
 }
@@ -11,4 +10,10 @@ if (!global.TextDecoder) {
   global.TextDecoder = TextDecoder;
 }
 
-
+global.IntersectionObserver = class IntersectionObserver {
+  constructor() {}
+  disconnect() {}
+  observe() {}
+  unobserve() {}
+  takeRecords() { return []; }
+};

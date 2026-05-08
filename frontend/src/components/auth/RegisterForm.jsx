@@ -10,6 +10,7 @@ import { useToast } from '../ui/Toast';
 
 export default function RegisterForm() {
     const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -27,8 +28,14 @@ export default function RegisterForm() {
             setValidationError('Passwords do not match');
             return;
         }
+
+        if (username && !/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+            setValidationError('Username must be 3-20 alphanumeric characters');
+            return;
+        }
+
         try {
-            await register(name, email, password, passwordConfirm);
+            await register(name, email, username, password, passwordConfirm);
             toast('success', 'Account created!', 'Please check your email for a verification code.');
             navigate('/verify-email', { replace: true });
         } catch (err) {
@@ -114,6 +121,16 @@ export default function RegisterForm() {
                 onChange={(e) => setEmail(e.target.value)} 
                 icon={<Mail size={18}/>} 
                 placeholder="you@example.com" 
+                required
+            />
+
+            <Input 
+                label="Username" 
+                type="text" 
+                value={username} 
+                onChange={(e) => setUsername(e.target.value)} 
+                icon={<UserIcon size={18}/>} 
+                placeholder="jane_doe" 
                 required
             />
 
