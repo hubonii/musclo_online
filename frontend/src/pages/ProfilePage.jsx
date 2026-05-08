@@ -131,16 +131,21 @@ export default function ProfilePage() {
 
                 {/* Achievement gallery */}
                 <Card>
-                    <div className="flex items-center gap-3 border-b border-divider/10 pb-4 mb-6">
-                        <TrophyIcon className="text-orange" size={22} />
-                        <h2 className="font-black text-text-primary text-xl uppercase tracking-tighter">Achievements</h2>
+                    <div className="flex items-center justify-between border-b border-divider/10 pb-4 mb-6">
+                        <div className="flex items-center gap-3">
+                            <TrophyIcon className="text-orange" size={22} />
+                            <h2 className="font-black text-text-primary text-xl uppercase tracking-tighter">Achievements</h2>
+                        </div>
+                        <span className="text-[10px] font-black bg-orange/10 px-2 py-1 rounded-md text-orange uppercase tracking-widest">
+                            {achievements.length} Total
+                        </span>
                     </div>
                     {isLoadingAchievements ? (
                         <div className="h-32 flex flex-col items-center justify-center">
                             <LoadingSpinner size="md" message="Loading achievements..." />
                         </div>
                     ) : (
-                        <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-8 gap-3 md:gap-4 w-full max-w-full overflow-hidden">
+                        <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-8 gap-3 md:gap-4 w-full">
                             {(achievements || []).map((ach) => (
                                 <AchievementBadge key={ach.id} {...ach} />
                             ))}
