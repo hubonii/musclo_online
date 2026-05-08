@@ -215,14 +215,17 @@ exports.createProgramFromAI = async (req, res) => {
           });
 
           if (exercise) {
+            // Determine if bodyweight or weights based on exercise equipment or AI hint
+            const isBodyweight = exData.equipment === 'bodyweight' || exercise.equipment === 'Body Weight';
+            
             await RoutineExercise.create({
               routine_id: routine.id,
               exercise_id: exercise.id,
               sort_order: i,
               target_sets: parseInt(exData.sets) || 3,
               target_reps: parseInt(exData.reps) || 10,
-              override_type: exData.type || 'normal',
-              override_metric: exData.metric || 'reps',
+              override_type: isBodyweight ? 'Bodyweight' : 'Weights',
+              override_metric: exData.metric === 'time' ? 'Time' : 'Reps',
               rest_timer_seconds: parseInt(exData.rest_time) || 60
             }, { transaction });
 
@@ -233,10 +236,10 @@ exports.createProgramFromAI = async (req, res) => {
                 routine_id: routine.id,
                 exercise_id: exercise.id,
                 set_number: sNum,
-                set_type: exData.type === 'normal' ? 'working' : (exData.type || 'working'),
-                reps: exData.metric === 'reps' ? (parseInt(exData.reps) || 10) : null,
+                set_type: exData.type === 'warmup' ? 'warmup' : (exData.type === 'dropset' ? 'dropset' : 'working'),
+                reps: exData.metric !== 'time' ? (parseInt(exData.reps) || 10) : null,
                 duration_seconds: exData.metric === 'time' ? (parseInt(exData.reps) || 30) : null,
-                weight_kg: 0 // Template usually starts with 0
+                weight_kg: 0 
               }, { transaction });
             }
           }
