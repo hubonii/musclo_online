@@ -1,4 +1,4 @@
-// Unit tests for useAIChatStore — session management and LLM chat state.
+// Unit tests for useAIChatStore — session management and chat response state.
 import { useAIChatStore } from '../../../src/stores/useAIChatStore';
 import { apiDelete, apiGet } from '../../../src/api/axios';
 

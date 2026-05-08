@@ -1,12 +1,10 @@
-// Auth endpoints (registration, login, logout, current user, CSRF cookie).
+// Auth endpoints (registration, login, logout, current user).
 const express = require('express');
 const router = express.Router();
 const { register, login, logout, getMe, getCsrfCookie, forgotPassword, resetPassword, verifyEmail, resendVerification, changePassword } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
 // Public auth routes.
-// Initializes CSRF cookie used by clients before credentialed requests.
-router.get('/sanctum/csrf-cookie', getCsrfCookie);
 // Creates a new user account row and returns auth payload.
 router.post('/register', register);
 // Authenticates credentials and issues session/JWT token.

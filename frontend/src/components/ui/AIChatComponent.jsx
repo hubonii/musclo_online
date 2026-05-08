@@ -298,7 +298,7 @@ export default function AIChatComponent() {
                                                     )}
 
                                                     <div className={cn("p-6 rounded-[32px] text-[15px] leading-[1.8] shadow-neu-sm overflow-hidden", msg.role === 'user' ? "bg-orange text-white" : "bg-surface text-text-primary font-medium border border-white/5")}>
-                                                        {/* Thinking indicator — ChatGPT/Gemini style */}
+                                                        {/* Thinking indicator */}
                                                         {msg.role === 'assistant' && msg.isStreaming && !msg.content && (
                                                             <div className="flex items-center gap-3 py-2 px-1">
                                                                 <div className="relative flex items-center justify-center w-6 h-6">

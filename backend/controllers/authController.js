@@ -1,4 +1,4 @@
-// Auth controller endpoints for register, login, logout, and current-user payload.
+// Auth controller handles user session lifecycle and credentials.
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
@@ -6,21 +6,30 @@ const mailService = require('../services/mailService');
 const crypto = require('crypto');
 const { Op } = require('sequelize');
 
-// JWT helper that signs user id payload with 30-day expiry.
+/**
+ * Signs a JWT with the user's ID and a 30-day expiration.
+ * @param {string|number} id - The user ID to encode.
+ * @returns {string} The signed JWT.
+ */
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d',
   });
 };
 
-// Standard auth response shape + httpOnly token cookie.
+/**
+ * Sends a standard auth response with a 30-day secure token cookie.
+ * @param {object} user - The Sequelize user instance.
+ * @param {number} statusCode - HTTP status code for the response.
+ * @param {object} res - Express response object.
+ */
 const sendTokenResponse = (user, statusCode, res) => {
   const token = generateToken(user.id);
 
   const options = {
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    secure: true, // Force secure
+    secure: true,
     sameSite: 'none',
   };
 
@@ -44,7 +53,12 @@ const sendTokenResponse = (user, statusCode, res) => {
     });
 };
 
-// Registration endpoint: validates uniqueness, hashes password, creates user row.
+/**
+ * Registers a new user account and returns an auth payload.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ * @throws {Error} 500 if database creation fails.
+ */
 exports.register = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -84,7 +98,11 @@ exports.register = async (req, res) => {
   }
 };
 
-// Sign in with email/password.
+/**
+ * Authenticates user credentials and issues a session token.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ */
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -103,7 +121,11 @@ exports.login = async (req, res) => {
   }
 };
 
-// Remove token cookie from the browser.
+/**
+ * Clears the auth token cookie from the client.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ */
 exports.logout = (req, res) => {
   res.cookie('token', 'none', {
     expires: new Date(Date.now() + 10 * 1000),
@@ -117,7 +139,11 @@ exports.logout = (req, res) => {
   });
 };
 
-// Current-user endpoint that serializes `req.user` fields.
+/**
+ * Returns the current authenticated user's profile.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ */
 exports.getMe = async (req, res) => {
   res.status(200).json({
     data: {
@@ -133,7 +159,11 @@ exports.getMe = async (req, res) => {
   });
 };
 
-// Verify email code
+/**
+ * Validates a 6-digit email verification code.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ */
 exports.verifyEmail = async (req, res) => {
   const { code } = req.body;
 
@@ -158,7 +188,11 @@ exports.verifyEmail = async (req, res) => {
   }
 };
 
-// Resend verification code (The new button logic)
+/**
+ * Generates and sends a new 6-digit email verification code.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ */
 exports.resendVerification = async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id);
@@ -189,7 +223,11 @@ exports.resendVerification = async (req, res) => {
   }
 };
 
-// Send password reset code
+/**
+ * Generates and sends a password reset code to the provided email.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ */
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
 
@@ -216,7 +254,11 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-// Reset password with code
+/**
+ * Resets a user's password using a valid reset code.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ */
 exports.resetPassword = async (req, res) => {
   const { email, code, password } = req.body;
 
@@ -245,7 +287,11 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
-// Change password (for logged in users)
+/**
+ * Updates the password for an authenticated user.
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ */
 exports.changePassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
@@ -266,10 +312,4 @@ exports.changePassword = async (req, res) => {
   }
 };
 
-exports.getCsrfCookie = (req, res) => {
-  res.cookie('XSRF-TOKEN', 'dummy-token', {
-    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    httpOnly: false,
-  });
-  res.status(204).send();
-};
+

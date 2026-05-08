@@ -98,8 +98,13 @@ const startServer = async () => {
     // Run sync and seed in background so we don't block the port opening
     (async () => {
       try {
-        console.log('Syncing database models (alter: true)...');
-        await sequelize.sync({ alter: true });
+        if (process.env.DB_ALTER === 'true') {
+          console.log('Syncing database models (alter: true)...');
+          await sequelize.sync({ alter: true });
+        } else {
+          console.log('Syncing database models (no alter)...');
+          await sequelize.sync();
+        }
         
         console.log('Seeding baseline data...');
         const seedExercises = require('./seeders/detectAnatomySplit');

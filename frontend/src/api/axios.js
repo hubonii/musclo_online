@@ -39,9 +39,6 @@ apiClient.interceptors.response.use(
                 window.location.href = '/verify-email';
             }
         }
-
-        // REMOVED: 419 handler and getCsrfCookie (Laravel specific)
-
         if (error.response && error.response.status >= 500) {
             console.error(`Critical API failure [${error.response.status}]:`, error.response.data);
         }
