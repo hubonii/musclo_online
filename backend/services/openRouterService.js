@@ -5,12 +5,12 @@
 const axios = require('axios');
 const { ChatMessage } = require('../models');
 
-const SEARCH_KEYWORDS = /search|find|latest|news|current|who is|price of|weather|research|studies|link|source|verify|check|today|yesterday|202[4-6]/i;
+const SEARCH_KEYWORDS = /\b(search|research|find|latest|today|yesterday|current|news)\b/i;
 
 class OpenRouterService {
   constructor() {
     this.apiKey = process.env.AI_ENGINE_KEY;
-    this.model = process.env.AI_ENGINE_MODEL || 'openai/gpt-oss-120b:free';
+    this.model = process.env.AI_ENGINE_MODEL || 'openai/gpt-3.5-turbo';
     this.baseUrl = process.env.AI_ENGINE_BASE_URL || 'https://openrouter.ai/api/v1';
   }
 
@@ -96,7 +96,8 @@ class OpenRouterService {
     let systemPrompt = this.buildSystemPrompt(context, historyContext, isDeepAudit);
 
     if (needsSearch) {
-      activeModel = 'google/gemini-2.0-flash-exp:free';
+      // Use a more stable search-capable free model if search is detected
+      activeModel = 'google/gemini-2.0-flash-001';
       systemPrompt += "\n\n**WEB SEARCH ENABLED**: The user is asking for real-time or verified information. Access the latest data and provide specific, clickable SOURCES. "
         + "Cite your sources using markdown links like [Source Name](URL) directly in the text and list them in a '### Sources' section at the bottom. "
         + "Never hallucinate facts. If you are unsure, state it clearly. Always prioritize accuracy.";
