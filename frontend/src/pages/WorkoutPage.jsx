@@ -144,7 +144,7 @@ export default function WorkoutPage() {
                 toast('info', 'Abandoned session was auto-cleared.');
                 return false;
             }
-
+            if (restTimerRunning && now >= restTimerEnd) {
                 stopRestTimer();
             }
             setElapsed(elapsedSeconds);
