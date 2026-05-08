@@ -222,6 +222,20 @@ exports.createProgramFromAI = async (req, res) => {
               override_metric: exData.metric || 'reps',
               rest_timer_seconds: parseInt(exData.rest_time) || 60
             }, { transaction });
+
+            // Create the actual sets for the routine template
+            const numSets = parseInt(exData.sets) || 3;
+            for (let sNum = 1; sNum <= numSets; sNum++) {
+              await SetData.create({
+                routine_id: routine.id,
+                exercise_id: exercise.id,
+                set_number: sNum,
+                set_type: exData.type === 'normal' ? 'working' : (exData.type || 'working'),
+                reps: exData.metric === 'reps' ? (parseInt(exData.reps) || 10) : null,
+                duration_seconds: exData.metric === 'time' ? (parseInt(exData.reps) || 30) : null,
+                weight_kg: 0 // Template usually starts with 0
+              }, { transaction });
+            }
           }
         }
       }
