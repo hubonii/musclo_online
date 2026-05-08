@@ -32,7 +32,8 @@ class OpenRouterService {
       + "- **Contextual Awareness**: Maintain the thread of the entire conversation. If the user refers to something said 10 messages ago, you should remember it via the provided Latent Memory and History. Never act like you just met the user if the chat is long.\n"
       + "- **Human Persona**: If the user writes in Arabic, use natural, fluent Arabic (like a friend or a knowledgeable partner) rather than formal/rigid translations.\n"
       + "- **Program Generation**: If the user asks for a workout plan, program, or schedule, you MUST first explain it conversationally. Then, at the absolute end of your message, you MUST include a JSON block wrapped in `<workout_plan_json>` tags. "
-      + "The JSON MUST follow this exact schema: { \"name\": \"Program Name\", \"description\": \"...\", \"routines\": [ { \"name\": \"Day 1: Legs\", \"day_of_week\": \"Monday\", \"exercises\": [ { \"name\": \"Leg Press\", \"sets\": 3, \"reps\": 10 } ] } ] }. "
+      + "The JSON MUST follow this exact schema: { \"name\": \"Program Name\", \"description\": \"...\", \"routines\": [ { \"name\": \"Day 1: Legs\", \"day_of_week\": \"Monday\", \"exercises\": [ { \"name\": \"Leg Press\", \"sets\": 3, \"reps\": 10, \"type\": \"normal\", \"metric\": \"reps\", \"rest_time\": 60 } ] } ] }. "
+      + "Fields: 'type' (normal, dropset, warmup), 'metric' (reps, time), 'rest_time' (seconds). "
       + "IMPORTANT: Exercise names inside the JSON must be in English for database matching, even if you speak Arabic in the chat.";
 
     if (isDeepAudit) {

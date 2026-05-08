@@ -217,7 +217,10 @@ exports.createProgramFromAI = async (req, res) => {
               exercise_id: exercise.id,
               sort_order: i,
               target_sets: parseInt(exData.sets) || 3,
-              target_reps: parseInt(exData.reps) || 10
+              target_reps: parseInt(exData.reps) || 10,
+              override_type: exData.type || 'normal',
+              override_metric: exData.metric || 'reps',
+              rest_timer_seconds: parseInt(exData.rest_time) || 60
             }, { transaction });
           }
         }
