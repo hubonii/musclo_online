@@ -13,6 +13,7 @@ import { useAuthStore } from '../../stores/useAuthStore';
 import Textarea from '../ui/Textarea';
 
 const WORKOUT_PLAN_REGEX = /<workout_plan_json>([\s\S]*?)<\/workout_plan_json>/;
+const STREAMING_WORKOUT_PLAN_REGEX = /<workout_plan_json>[\s\S]*/;
 
 const SUGGESTED_PROMPTS = [
     "Analyze my current training volume",
@@ -333,7 +334,7 @@ export default function AIChatComponent() {
                                                                         p: ({ node, ...props }) => <p className="mb-4 last:mb-0" {...props} />
                                                                     }}
                                                                 >
-                                                                    {msg.content.replace(WORKOUT_PLAN_REGEX, '').trim()}
+                                                                    {msg.content.replace(STREAMING_WORKOUT_PLAN_REGEX, '').trim()}
                                                                 </ReactMarkdown>
                                                                 
                                                                 {/* Save Program Button if JSON block detected */}
