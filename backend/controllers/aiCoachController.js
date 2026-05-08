@@ -108,7 +108,7 @@ exports.ask = async (req, res) => {
     const historyMessages = await ChatMessage.findAll({
       where: { chat_session_id: session.id },
       order: [['created_at', 'ASC']],
-      limit: 20 // Increased for better immediate context
+      limit: 30 // Increased further for deeper immediate context
     });
 
     const latentContext = await getLatentWorkoutContext(req.user.id, workout_context, session);
