@@ -21,20 +21,23 @@ class OpenRouterService {
    */
   buildSystemPrompt(context, historyContext = [], isDeepAudit = false) {
     let base = 'You are Musclo AI Coach, a world-class Sport Scientist and Master Strength Coach. Your expertise is grounded in the most reliable principles of exercise physiology and nutrition. '
-      + "You have persistent memory of the user's past workout logs to provide contextual advice. ";
+      + "You have persistent memory of the user's past workout logs and real-time activity to provide contextual advice. ";
+
+    base += "\n\n**CORE OPERATING DIRECTIVES:**\n"
+      + "- **Laser Focus**: Answer ONLY the specific question or address the specific problem the user raised. Do not pivot to unrelated advice.\n"
+      + "- **Contextual Awareness**: Use the provided 'CURRENT WORKOUT STATUS' and 'PERFORMANCE MEMORY' to inform your answer, but do not recite this data unless it is directly relevant to the question.\n"
+      + "- **No Generic Padding**: Avoid suggesting generic 'workout programs' or 'meal plans' unless the user explicitly asks for them. If the user mentions a pain point, technical issue, or specific lift, focus entirely on solving that.\n"
+      + "- **Directness**: Be concise and high-impact. The user is often in the middle of a workout.";
 
     if (isDeepAudit) {
-      base += "The user has requested a deep audit of their performance. Analyze volume, intensity, and frequency trends across their history. ";
-    } else {
-      base += "Use the provided 'MEMORY DATA' as background context to personalize your response. ";
+      base += "\n\n**AUDIT MODE**: The user has requested a deep analysis of their performance. Analyze volume, intensity, and frequency trends across their history. ";
     }
 
     base += "\n\n**RESPONSE STANDARDS:**\n"
       + "- **Scientific Accuracy**: Use evidence-based training principles.\n"
-      + "- **Structured Output**: Use H3 headers, bold metrics, and Markdown tables for data.\n"
-      + "- **Aesthetics**: Ensure the response is logically structured and visually premium.\n"
+      + "- **Structured Output**: Use H3 headers and bold metrics. Use Markdown tables only for data comparisons.\n"
       + "- **Tone**: Professional, encouraging, and authoritative.\n"
-      + "- **Language**: ALWAYS respond in the same language the user writes in. If the user writes in Arabic, respond fully in Arabic (العربية). If they write in English, respond in English. Match their language exactly.";
+      + "- **Language**: ALWAYS respond in the same language the user writes in. Match their language exactly (e.g. Arabic, English, etc).";
 
     if (context && context.is_active) {
       base += "\n\n--- CURRENT WORKOUT STATUS ---\n";
@@ -49,10 +52,12 @@ class OpenRouterService {
     if (historyContext.length > 0) {
       base += "\n\n--- PERFORMANCE MEMORY ---\n";
       historyContext.forEach(h => {
-        if (h.type === 'active_exercise_history') {
-          base += `${h.name}: Lifetime Max ${h.max_weight}kg | Total Reps ${h.total_reps}\n`;
+        if (h.type === 'lifetime_stats') {
+          base += `LIFETIME: ${h.total_volume}kg total volume over ${h.total_workouts} sessions. Current streak: ${h.current_streak} days.\n`;
+        } else if (h.type === 'active_exercise_history') {
+          base += `EXERCISE (${h.name}): Lifetime Max ${h.max_weight}kg | Total Reps ${h.total_reps}\n`;
         } else if (h.type === 'recent_workout') {
-          base += `Recent: ${h.name} (${h.date})\n`;
+          base += `HISTORY: ${h.name} on ${h.date} (${h.volume}kg, ${h.duration_mins} mins)\n`;
         }
       });
     }

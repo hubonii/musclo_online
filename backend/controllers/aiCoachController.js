@@ -1,6 +1,6 @@
-
-const { ChatSession, ChatMessage, SetData, WorkoutLog, Exercise } = require('../models');
+const { User, ChatSession, ChatMessage, SetData, WorkoutLog, Exercise } = require('../models');
 const openRouter = require('../services/openRouterService');
+const achievementService = require('../services/achievementService');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 
@@ -129,53 +129,66 @@ exports.ask = async (req, res) => {
   }
 };
 
-/**
- * Builds additional workout history context for AI prompt enrichment.
- * @param {string} userId - ID of the authenticated user.
- * @param {Object} context - Current active workout context.
- * @returns {Promise<Array>} List of context items.
- */
 async function getLatentWorkoutContext(userId, context) {
   const historyContext = [];
   
-  if (context && context.exercises && context.exercises.length > 0) {
-    const exerciseIds = context.exercises.map(ex => ex.id).filter(Boolean);
-    
-    if (exerciseIds.length > 0) {
-      const stats = await SetData.findAll({
-        attributes: [
-          'exercise_id',
-          [sequelize.fn('MAX', sequelize.col('weight_kg')), 'max_weight'],
-          [sequelize.fn('SUM', sequelize.col('reps')), 'total_reps']
-        ],
-        include: [{
-          model: WorkoutLog,
-          where: { user_id: userId },
-          attributes: []
-        }],
-        where: { exercise_id: { [Op.in]: exerciseIds } },
-        group: ['exercise_id'],
-        raw: true
-      });
+  try {
+    // 1. Lifetime & Consistency Stats
+    const user = await User.findByPk(userId);
+    if (user) {
+      const totalVolume = await WorkoutLog.sum('total_volume', { where: { user_id: userId } }) || 0;
+      const totalWorkouts = await WorkoutLog.count({ where: { user_id: userId, completed_at: { [Op.ne]: null } } });
+      const streak = await achievementService.calculateStreak(user);
 
-      stats.forEach(s => {
-        const ex = context.exercises.find(e => e.id === s.exercise_id);
-        if (ex) {
-          historyContext.push({
-            type: 'active_exercise_history',
-            name: ex.name,
-            max_weight: parseFloat(s.max_weight) || 0,
-            total_reps: parseInt(s.total_reps) || 0
-          });
-        }
+      historyContext.push({
+        type: 'lifetime_stats',
+        total_volume: parseFloat(totalVolume),
+        total_workouts: totalWorkouts,
+        current_streak: streak
       });
     }
-  } else {
+
+    // 2. Active Workout Context (if any)
+    if (context && context.exercises && context.exercises.length > 0) {
+      const exerciseIds = context.exercises.map(ex => ex.id).filter(Boolean);
+      
+      if (exerciseIds.length > 0) {
+        const stats = await SetData.findAll({
+          attributes: [
+            'exercise_id',
+            [sequelize.fn('MAX', sequelize.col('weight_kg')), 'max_weight'],
+            [sequelize.fn('SUM', sequelize.col('reps')), 'total_reps']
+          ],
+          include: [{
+            model: WorkoutLog,
+            where: { user_id: userId },
+            attributes: []
+          }],
+          where: { exercise_id: { [Op.in]: exerciseIds } },
+          group: ['exercise_id'],
+          raw: true
+        });
+
+        stats.forEach(s => {
+          const ex = context.exercises.find(e => e.id === s.exercise_id);
+          if (ex) {
+            historyContext.push({
+              type: 'active_exercise_history',
+              name: ex.name,
+              max_weight: parseFloat(s.max_weight) || 0,
+              total_reps: parseInt(s.total_reps) || 0
+            });
+          }
+        });
+      }
+    }
+
+    // 3. Recent History (Last 5 sessions for broad context)
     const recentLogs = await WorkoutLog.findAll({
       where: { user_id: userId, completed_at: { [Op.ne]: null } },
       order: [['completed_at', 'DESC']],
-      limit: 3,
-      include: [{ model: SetData, include: [Exercise] }]
+      limit: 5,
+      attributes: ['name', 'total_volume', 'completed_at', 'duration_seconds']
     });
 
     recentLogs.forEach(log => {
@@ -183,9 +196,13 @@ async function getLatentWorkoutContext(userId, context) {
         type: 'recent_workout',
         date: log.completed_at.toISOString().split('T')[0],
         name: log.name,
-        exercises: []
+        volume: parseFloat(log.total_volume),
+        duration_mins: Math.round(log.duration_seconds / 60)
       });
     });
+
+  } catch (err) {
+    console.error('[AI Context] Failed to build latent context:', err);
   }
 
   return historyContext;
