@@ -28,7 +28,10 @@ const DEFAULT_MODEL_ID = FREE_MODELS[0].id;
 export default function AIChatComponent() {
     const {
         isOpen, messages, isLoading, error, abortController, sessions,
-        setSelectedImage,
+        currentSessionId, closeChat, toggleChat,
+        addUserMessage, addAssistantMessage, setStreaming,
+        finalizeStreaming, setLoading, setError, setAbortController,
+        fetchSessions, selectSession, createNewSession, deleteSession
     } = useAIChatStore();
 
     const isActive = useWorkoutStore(state => state.isActive);
