@@ -1,7 +1,9 @@
-// Centralized Framer Motion presets used across pages and components.
+/**
+ * Centralized Framer Motion animation presets.
+ */
 export const MOTION = {
     spring: { type: 'spring', stiffness: 500, damping: 45, mass: 1 },
-    // Snappier profile for tiny controls (toggles, chips, micro interactions).
+
     springSnappy: { type: 'spring', stiffness: 1000, damping: 65, mass: 0.4 },
     simple: { type: 'tween', duration: 0.12, ease: 'easeOut' },
     pageEnter: {
@@ -29,7 +31,7 @@ export const MOTION = {
         transition: { type: 'spring', stiffness: 500, damping: 45 },
     },
     staggerContainer: {
-        // Parent variant used when revealing card/list children one after another.
+
         animate: { transition: { staggerChildren: 0.04, delayChildren: 0.06 } },
     },
     staggerItem: {

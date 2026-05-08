@@ -1,10 +1,11 @@
-// AI chat conversation container (one user can have many sessions).
+/**
+ * ChatSession model grouping AI coach messages for a specific user.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const ChatSession = sequelize.define('ChatSession', {
   id: {
-    // Primary key for one chat thread.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -25,6 +26,9 @@ const ChatSession = sequelize.define('ChatSession', {
   underscored: true,
 });
 
+/**
+ * ChatSession model represents an AI chat conversation container.
+ */
 module.exports = ChatSession;
 
 

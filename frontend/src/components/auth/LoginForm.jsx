@@ -1,4 +1,6 @@
-// Login form: collects credentials and starts an authenticated session.
+/**
+ * Authentication form for user login with support for Google OAuth.
+ */
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react';
@@ -43,7 +45,7 @@ export default function LoginForm() {
         const handleMessage = (event) => {
             console.log('Parent: Received message from', event.origin, event.data);
             
-            // Validate that the message is actually for us and same-origin
+
             if (event.origin !== window.location.origin) {
                 console.warn('Parent: Message ignored due to origin mismatch');
                 return;
@@ -52,7 +54,7 @@ export default function LoginForm() {
 
             if (event.data?.type === 'GOOGLE_AUTH_SUCCESS') {
                 localStorage.setItem('musclo-token', event.data.token);
-                // Force a state refresh and wait for it to be solid
+
                 useAuthStore.getState().fetchUser().then(() => {
                     const currentState = useAuthStore.getState();
                     if (currentState.isAuthenticated) {
@@ -67,7 +69,7 @@ export default function LoginForm() {
             }
         };
 
-        // Storage fallback for cases where opener link is lost
+
         const handleStorageChange = (event) => {
             if (event.key === 'musclo-token' && event.newValue) {
                 console.log('Parent: Token detected in storage');

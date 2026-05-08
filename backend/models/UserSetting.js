@@ -1,10 +1,11 @@
-// Per-user app preferences (units, theme, default rest timer).
+/**
+ * UserSetting model for persisting UI preferences and unit configurations.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const UserSetting = sequelize.define('UserSetting', {
   id: {
-    // Primary key for one settings row.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -37,6 +38,9 @@ const UserSetting = sequelize.define('UserSetting', {
   timestamps: true,
 });
 
+/**
+ * UserSetting model represents per-user application preferences.
+ */
 module.exports = UserSetting;
 
 

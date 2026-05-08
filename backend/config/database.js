@@ -1,23 +1,23 @@
-// Shared Sequelize connection used by all models.
+/**
+ * Database configuration and Sequelize instance initialization.
+ */
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// Sequelize instance initialized from environment variables.
+
 const sequelize = new Sequelize(
-  // Database/schema name.
   process.env.DB_DATABASE,
-  // Database user credentials.
   process.env.DB_USERNAME,
   process.env.DB_PASSWORD,
   {
-    // Connection target details.
+
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: 'mysql',
-    // Keep SQL logs quiet unless debugging is needed.
+    // Keep SQL logs quiet to maintain clean console output.
     logging: false,
     define: {
-      // Apply these defaults to every model automatically.
+
       timestamps: true,
       underscored: true,
     },

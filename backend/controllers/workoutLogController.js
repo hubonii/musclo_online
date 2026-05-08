@@ -1,9 +1,13 @@
-// Workout log controller for workout create/read/delete and analytics payload shaping.
+
 const { WorkoutLog, SetData, Exercise, Routine } = require('../models');
 const sequelize = require('../config/database');
 const { Op } = require('sequelize');
 
-// Normalize stored media paths into a public URL path.
+/**
+ * Normalizes stored media paths into a public URL path.
+ * @param {string} url - The stored path or URL.
+ * @returns {string|null} Formatted URL.
+ */
 const formatUrl = (url) => {
   if (!url) return null;
   if (url.startsWith('http') || url.startsWith('https')) return url;
@@ -13,13 +17,17 @@ const formatUrl = (url) => {
   return `/storage/${url.startsWith('/') ? url.slice(1) : url}`;
 };
 
-// Shape DB models into the API format used by history/detail pages.
+/**
+ * Transforms a workout log model instance into the API response shape.
+ * @param {Object} log - The workout log model instance.
+ * @returns {Object|null} Transformed workout log data.
+ */
 function transformWorkoutLog(log) {
   if (!log) return null;
   const json = log.toJSON ? log.toJSON() : log;
   
   const rawSets = json.SetData || [];
-  // Map each set row to the response shape expected by frontend history/detail views.
+
   const sets = rawSets.map(s => ({
     id: s.id,
     exercise_id: s.exercise_id,
@@ -40,7 +48,7 @@ function transformWorkoutLog(log) {
     } : null
   }));
 
-  // Aggregate top muscles by computed set volume (weight * reps).
+
   const muscleVol = {};
   rawSets.forEach(s => {
     if (s.Exercise && (s.set_type === 'working' || s.set_type === 'normal')) {
@@ -73,13 +81,18 @@ function transformWorkoutLog(log) {
   };
 }
 
-// Persist one workout and all of its sets in a single transaction.
+
+/**
+ * Stores a new workout log and its associated set data.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.storeWorkout = async (req, res) => {
   const t = await sequelize.transaction();
   try {
     const { routine_id, name, started_at, completed_at, duration_seconds, notes, sets } = req.body;
     
-    // Create the workout log parent row first, then attach set rows using this id.
+
     console.log(`[WorkoutLog] Starting save for user ${req.user.id}, routine ${routine_id || 'manual'}`);
 
     const workoutLog = await WorkoutLog.create({
@@ -94,7 +107,7 @@ exports.storeWorkout = async (req, res) => {
 
     let totalVolume = 0;
     for (const setData of sets) {
-      // Each incoming set payload becomes one persisted SetData row.
+
       const set = await SetData.create({
         exercise_id: setData.exercise_id,
         set_number: setData.set_number,
@@ -108,7 +121,7 @@ exports.storeWorkout = async (req, res) => {
         routine_id: routine_id || null
       }, { transaction: t });
 
-      // PR check: compare current volume against historical max for this user/exercise.
+
       if (set.set_type === 'working' || set.set_type === 'normal') {
         const currentVol = (parseFloat(set.weight_kg) || 0) * (parseInt(set.reps) || 0);
         if (currentVol > 0) {
@@ -155,7 +168,12 @@ exports.storeWorkout = async (req, res) => {
   }
 };
 
-// History endpoint with page/limit pagination on `WorkoutLog` rows.
+
+/**
+ * Retrieves a paginated history of workout logs for the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getHistory = async (req, res) => {
   try {
     const limit = parseInt(req.query.per_page || 15);
@@ -184,7 +202,12 @@ exports.getHistory = async (req, res) => {
   }
 };
 
-// Full workout detail plus derived analytics for charts.
+
+/**
+ * Retrieves details and analytics for a specific workout log.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getWorkout = async (req, res) => {
   try {
     const workoutLog = await WorkoutLog.findOne({
@@ -196,11 +219,11 @@ exports.getWorkout = async (req, res) => {
 
     const transformed = transformWorkoutLog(workoutLog);
 
-    // Build exercise groups and per-muscle totals from set data.
+
     const radar = {};
     const colors = ['#a4d255', '#facc15', '#60a5fa', '#f472b6', '#c084fc', '#34d399', '#fbbf24'];
     
-    // Group sets by exercise id so the UI can render one exercise block with all its sets.
+
     const exercisesMap = {};
     workoutLog.SetData.forEach(set => {
       const ex = set.Exercise;
@@ -224,7 +247,7 @@ exports.getWorkout = async (req, res) => {
       }
     });
 
-    // Convert aggregated muscle volume values into multiple chart-ready arrays.
+
     const radarChart = Object.entries(radar).map(([muscle, volume]) => ({ muscle, volume }));
     const totalVol = Object.values(radar).reduce((a, b) => a + b, 0);
     const doughnutChart = Object.entries(radar).map(([name, value], idx) => ({
@@ -253,7 +276,12 @@ exports.getWorkout = async (req, res) => {
   }
 };
 
-// Deletes one workout row filtered by `id` and authenticated `user_id`.
+
+/**
+ * Deletes a workout log.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.deleteWorkout = async (req, res) => {
   try {
     const workoutLog = await WorkoutLog.findOne({ where: { id: req.params.id, user_id: req.user.id } });
@@ -266,7 +294,12 @@ exports.deleteWorkout = async (req, res) => {
   }
 };
 
-// Return recent sets for one exercise, grouped by workout log id.
+
+/**
+ * Retrieves historical sets for a specific exercise.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getExerciseHistory = async (req, res) => {
   try {
     const exerciseId = req.params.exerciseId;
@@ -283,7 +316,7 @@ exports.getExerciseHistory = async (req, res) => {
       limit: limit * 8
     });
 
-    // Build `{ workoutLogId: SetData[] }` to help client compare sets per session.
+
     const grouped = sets.reduce((acc, set) => {
       const logId = set.workout_log_id;
       if (!acc[logId]) acc[logId] = [];

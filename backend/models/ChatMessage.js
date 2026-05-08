@@ -1,10 +1,11 @@
-// Individual messages in an AI chat session.
+/**
+ * ChatMessage model for individual messages within a coach session.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const ChatMessage = sequelize.define('ChatMessage', {
   id: {
-    // Primary key for one persisted chat message row.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -29,6 +30,9 @@ const ChatMessage = sequelize.define('ChatMessage', {
   underscored: true,
 });
 
+/**
+ * ChatMessage model represents individual messages in an AI chat session.
+ */
 module.exports = ChatMessage;
 
 

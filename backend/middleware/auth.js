@@ -1,28 +1,37 @@
-// Auth guard: read JWT from cookie or Bearer header, then attach the user.
+
+/**
+ * Authentication middleware for protecting routes and verifying email status.
+ */
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 
+/**
+ * Middleware to protect routes by validating JWT tokens.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
 const protect = async (req, res, next) => {
   let token;
 
-  // Accept JWT from API clients that send `Authorization: Bearer <token>`.
+
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   }
-  // Fallback to cookie-based auth flow (ignore 'none' logout tombstone).
+
   else if (req.cookies && req.cookies.token && req.cookies.token !== 'none') {
     token = req.cookies.token;
   }
 
-  // Block request immediately when token is missing.
+
   if (!token) {
     return res.status(401).json({ message: 'Unauthenticated.' });
   }
 
   try {
-    // Validate token signature and extract payload fields.
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // Loads authenticated user row and assigns `req.user`.
+
     req.user = await User.findByPk(decoded.id);
 
     if (!req.user) {
@@ -35,6 +44,12 @@ const protect = async (req, res, next) => {
   }
 };
 
+/**
+ * Middleware to ensure the authenticated user has a verified email.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
 const verified = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Unauthenticated.' });

@@ -1,3 +1,6 @@
+/**
+ * Passport configuration for Google OAuth strategy.
+ */
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { User } = require('../models');
@@ -14,14 +17,14 @@ passport.use(new GoogleStrategy({
     const email = emails[0].value;
 
     try {
-      // 1. Try to find user by google_id
+
       let user = await User.findOne({ where: { google_id: id } });
 
       if (user) {
         return done(null, user);
       }
 
-      // 2. Try to find user by email (Account Linking)
+
       user = await User.findOne({ where: { email } });
       if (user) {
         console.log(`[AUTH] Linking Google ID to existing account: ${email}`);
@@ -32,14 +35,14 @@ passport.use(new GoogleStrategy({
         return done(null, user);
       }
 
-      // 3. Create new user
+
       const hashedPassword = await bcrypt.hash(Math.random().toString(36).slice(-10), 10);
       user = await User.create({
         name: displayName,
         email: email,
         password: hashedPassword,
         google_id: id,
-        email_verified_at: new Date(), // Google emails are already verified
+        email_verified_at: new Date(),
         avatar_url: photos && photos[0] ? photos[0].value : null
       });
 
@@ -50,7 +53,7 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-// Passport boilerplate for session support (though we use JWT)
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });

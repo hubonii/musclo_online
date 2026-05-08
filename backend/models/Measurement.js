@@ -1,10 +1,11 @@
-// Measurement model for longitudinal body metric records.
+/**
+ * Measurement model for tracking user body metrics (weight, body fat, etc).
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Measurement = sequelize.define('Measurement', {
   id: {
-    // Primary key for one measurement entry row.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -48,6 +49,9 @@ const Measurement = sequelize.define('Measurement', {
   paranoid: true,
 });
 
+/**
+ * Measurement model for longitudinal body metric records.
+ */
 module.exports = Measurement;
 
 

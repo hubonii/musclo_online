@@ -1,5 +1,6 @@
-// Offline workout save queue — persists unsaved workout payloads in localStorage
-// and auto-flushes them to the server when connectivity returns.
+/**
+ * Offline workout save queue for persisting and syncing data.
+ */
 import { apiPost } from '../api/axios';
 
 const QUEUE_KEY = 'musclo-pending-workouts';
@@ -14,7 +15,7 @@ export function getPendingWorkouts(userId) {
   try {
     const raw = localStorage.getItem(QUEUE_KEY);
     const allPending = raw ? JSON.parse(raw) : [];
-    if (!userId) return allPending; // Return all if no filter provided (for cleanup)
+
     return allPending.filter(item => item.userId === userId);
   } catch {
     return [];
@@ -75,7 +76,7 @@ export async function flushQueue(userId) {
     }
   }
 
-  // Update storage: keep failed items for this user AND all items for other users
+
   localStorage.setItem(QUEUE_KEY, JSON.stringify([...otherPending, ...failed]));
   return { synced, error: firstError };
 }

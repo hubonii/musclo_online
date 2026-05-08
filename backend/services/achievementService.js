@@ -4,8 +4,14 @@ const sequelize = require('../config/database');
 const { Op } = require('sequelize');
 
 class AchievementService {
+  /**
+   * Evaluates and unlocks new achievements based on user activity.
+   * @param {Object} user - The user model instance.
+   * @param {Object} latestWorkoutLog - The latest completed workout log.
+   * @param {Object} [transaction] - Optional sequelize transaction.
+   * @returns {Promise<Array>} List of newly unlocked achievements.
+   */
   async checkAchievements(user, latestWorkoutLog, transaction) {
-    // Step 1: loads unlocked achievement ids and filters pending achievement rules.
     const unlocked = [];
     const unlockedAchievements = await user.getAchievements({ attributes: ['id'] });
     const unlockedIds = unlockedAchievements.map(a => a.id);
@@ -17,12 +23,12 @@ class AchievementService {
 
     if (achievements.length === 0) return [];
 
-    // 2) Precompute summary stats used by multiple criteria checks.
+
     const totalWorkouts = await WorkoutLog.count({ where: { user_id: user.id } });
     const totalVolume = await WorkoutLog.sum('total_volume', { where: { user_id: user.id } });
     const streak = await this.calculateStreak(user);
 
-    // 3) Gather latest workout details for PR/variety/time-based achievements.
+
     const sets = await latestWorkoutLog.getSetData({ include: ['Exercise'] });
     const hitPrThisWorkout = sets.some(s => s.is_pr);
     const exercisesInWorkout = [...new Set(sets.map(s => s.Exercise?.name.toLowerCase()).filter(Boolean))];
@@ -34,7 +40,7 @@ class AchievementService {
       const type = criteria.type;
       let shouldUnlock = false;
 
-      // Each achievement type maps to one clear boolean condition.
+
       switch (type) {
         case 'workout_count':
           if (totalWorkouts >= (criteria.count_gte || 0)) shouldUnlock = true;
@@ -67,7 +73,7 @@ class AchievementService {
       }
 
       if (shouldUnlock) {
-        // Write unlock timestamp in the pivot table (`UserAchievement`).
+
         await user.addAchievement(achievement, { through: { unlocked_at: new Date() }, transaction });
         unlocked.push(achievement);
       }
@@ -76,9 +82,12 @@ class AchievementService {
     return unlocked;
   }
 
+  /**
+   * Calculates the current consecutive workout day streak for a user.
+   * @param {Object} user - The user model instance.
+   * @returns {Promise<number>} Current streak count in days.
+   */
   async calculateStreak(user) {
-    // Distinct workout days in descending order.
-    // Query unique completed-workout days (latest first).
     const dates = await WorkoutLog.findAll({
       attributes: [[sequelize.fn('DATE', sequelize.col('started_at')), 'workout_date']],
       where: { user_id: user.id, completed_at: { [Op.ne]: null } },
@@ -118,4 +127,7 @@ class AchievementService {
   }
 }
 
+/**
+ * Service for managing achievement rules and unlock logic.
+ */
 module.exports = new AchievementService();

@@ -1,15 +1,23 @@
-// Progress photo controller: list/upload/delete photos using Azure Blob Storage.
+
+/**
+ * Controller for managing user progress photos and visual tracking history.
+ */
 const { ProgressPhoto } = require('../models');
 const azureStorageService = require('../services/azureStorageService');
 
+/**
+ * Retrieves a paginated list of progress photos for the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getPhotos = async (req, res) => {
   try {
-    // Pagination query order: `taken_at DESC`, then `created_at DESC`.
+
     const limit = parseInt(req.query.per_page || 20);
     const page = parseInt(req.query.page || 1);
     const offset = (page - 1) * limit;
 
-    // Query paginated user photos and total row count in one DB call.
+
     const { count, rows: photos } = await ProgressPhoto.findAndCountAll({
       where: { user_id: req.user.id },
       order: [['taken_at', 'DESC'], ['created_at', 'DESC']],
@@ -34,17 +42,22 @@ exports.getPhotos = async (req, res) => {
   }
 };
 
-// Save uploaded photo to Azure Blob Storage and metadata to DB
+
+/**
+ * Uploads a new progress photo to storage and records metadata in the database.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.createPhoto = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'Photo is required' });
     }
     
-    // Upload buffer to Azure Blob Storage using shared service
+
     const photoUrl = await azureStorageService.uploadToAzure(req.file);
 
-    // Persist one photo metadata row linked to uploaded file path.
+
     const photo = await ProgressPhoto.create({
       user_id: req.user.id,
       photo_path: photoUrl,
@@ -65,13 +78,18 @@ exports.createPhoto = async (req, res) => {
   }
 };
 
-// Delete one user-owned photo from DB and Azure
+
+/**
+ * Deletes a progress photo from both the database and cloud storage.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.deletePhoto = async (req, res) => {
   try {
     const photo = await ProgressPhoto.findOne({ where: { id: req.params.id, user_id: req.user.id } });
     if (!photo) return res.status(404).json({ message: 'Photo not found' });
 
-    // Use centralized service to delete from Azure
+
     await azureStorageService.deleteFromAzure(photo.photo_path);
 
     await photo.destroy();

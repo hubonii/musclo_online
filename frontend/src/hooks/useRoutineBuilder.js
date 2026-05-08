@@ -1,4 +1,7 @@
-// Routine builder hook: load/edit routine data and prepare save payloads.
+/**
+ * Hook for managing the state and logic of the routine builder interface.
+ * @returns {Object} Builder state, exercise management handlers, and persistence logic.
+ */
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/axios';
@@ -22,7 +25,7 @@ export function useRoutineBuilder() {
     const [loading, setLoading] = useState(true);
     const [showMobileLibrary, setShowMobileLibrary] = useState(false);
     useEffect(() => {
-        // Load program/routine data needed by the builder screen.
+
         const fetchData = async () => {
             setLoading(true);
             try {
@@ -73,7 +76,7 @@ export function useRoutineBuilder() {
         fetchData();
     }, [programId, routineId]);
     const handleAddExercise = (exercise) => {
-        // Adds one builder row with default targets plus one starter set template.
+
         setExercises(prev => [
             ...prev,
             {
@@ -143,7 +146,7 @@ export function useRoutineBuilder() {
             const oldValue = sourceSet[field];
             sets[setIndex] = { ...sourceSet, [field]: value };
             if (field === 'weight_kg' || field === 'reps' || field === 'duration_seconds' || field === 'rir' || field === 'rpe') {
-                // Propagates field update to subsequent sets with unchanged or null field value.
+
                 for (let i = setIndex + 1; i < sets.length; i++) {
                     const currentSet = sets[i];
                     if (currentSet[field] === oldValue || currentSet[field] === null) {
@@ -181,7 +184,7 @@ export function useRoutineBuilder() {
         }
         setIsSaving(true);
         try {
-            // Keep payload shape aligned with backend routine create/update endpoints.
+
             const payload = {
                 name: routineName.trim(),
                 notes: notes.trim() || undefined,
@@ -206,7 +209,7 @@ export function useRoutineBuilder() {
             };
             const actualProgramId = programId === 'standalone' ? null : programId;
             let endpoint = '';
-            // Create goes through program-scoped route; update goes through routine id route.
+
             if (isNew) {
                 endpoint = actualProgramId ? `/programs/${actualProgramId}/routines` : '/routines';
                 await apiClient.post(endpoint, payload);

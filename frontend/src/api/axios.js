@@ -1,12 +1,15 @@
+/**
+ * Axios instance configuration and API request helpers.
+ */
 import axios from 'axios';
 import { useAuthStore } from '../stores/useAuthStore';
 
-// Ensure the URL in Vercel starts with https://
+
 export const API_URL = import.meta.env.VITE_API_URL || 'https://musclo-nodejs-production.up.railway.app';
 
 export const apiClient = axios.create({
     baseURL: `${API_URL}/api`,
-    withCredentials: true, // Required for sending/receiving cookies/sessions
+    withCredentials: true,
     timeout: 60000,
     headers: {
         Accept: 'application/json',
@@ -26,7 +29,7 @@ apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            // Reset auth state if the session expires
+
             useAuthStore.getState().reset();
             if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
                 window.location.href = '/login';
@@ -34,7 +37,7 @@ apiClient.interceptors.response.use(
         }
 
         if (error.response?.status === 403 && error.response?.data?.needs_verification) {
-            // Redirect to verification page if email is not confirmed
+
             if (window.location.pathname !== '/verify-email') {
                 window.location.href = '/verify-email';
             }
@@ -47,27 +50,56 @@ apiClient.interceptors.response.use(
     }
 );
 
-// Helper functions for API requests
+
+/**
+ * Helper for performing GET requests with simplified data extraction.
+ * @param {string} url - Target API endpoint.
+ * @param {Object} [params] - Query parameters.
+ * @returns {Promise<any>} Extracted data payload.
+ */
 export async function apiGet(url, params) {
     const { data } = await apiClient.get(url, { params });
-    // Returns data.data if wrapped, otherwise returns data directly
+
     return data.data ?? data;
 }
 
+/**
+ * Helper for performing POST requests with simplified data extraction.
+ * @param {string} url - Target API endpoint.
+ * @param {Object} body - Request body payload.
+ * @param {Object} [config] - Axios request configuration.
+ * @returns {Promise<any>} Extracted data payload.
+ */
 export async function apiPost(url, body, config) {
     const { data } = await apiClient.post(url, body, config);
     return data.data ?? data;
 }
 
+/**
+ * Helper for performing PUT requests with simplified data extraction.
+ * @param {string} url - Target API endpoint.
+ * @param {Object} body - Request body payload.
+ * @returns {Promise<any>} Extracted data payload.
+ */
 export async function apiPut(url, body) {
     const { data } = await apiClient.put(url, body);
     return data.data ?? data;
 }
 
+/**
+ * Helper for performing DELETE requests.
+ * @param {string} url - Target API endpoint.
+ * @returns {Promise<void>}
+ */
 export async function apiDelete(url) {
     await apiClient.delete(url);
 }
 
+/**
+ * Extracts validation error messages from an Axios error response.
+ * @param {Error} error - The error object to parse.
+ * @returns {Object|null} Formatted validation errors or null.
+ */
 export function getValidationErrors(error) {
     if (
         axios.isAxiosError(error) &&

@@ -1,5 +1,6 @@
-// Lightweight localStorage cache layer for offline data access.
-// Stores API responses with timestamps so pages can serve cached data when offline.
+/**
+ * Lightweight localStorage cache layer for offline data access.
+ */
 
 const CACHE_PREFIX = 'musclo-cache-';
 
@@ -13,7 +14,7 @@ export function cacheSet(key, data) {
     const entry = { data, ts: Date.now() };
     localStorage.setItem(CACHE_PREFIX + key, JSON.stringify(entry));
   } catch (e) {
-    // Silently fail if storage is full — cache is best-effort.
+
     console.warn('[OfflineCache] Failed to write:', key, e);
   }
 }

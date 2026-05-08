@@ -1,8 +1,10 @@
-// React Query key factory module.
+/**
+ * Factory for React Query cache keys.
+ */
 export const queryKeys = {
     programs: {
         all: ['programs'],
-        // Program detail key format: ['programs', id].
+
         detail: (id) => ['programs', id],
     },
     routines: {
@@ -13,11 +15,11 @@ export const queryKeys = {
         history: ['workouts', 'history'],
         detail: (id) => ['workouts', id],
         stats: ['workouts', 'stats'],
-        // Exercise history is scoped by exercise id.
+
         exerciseHistory: (exerciseId) => ['workouts', 'exercise', exerciseId, 'history'],
     },
     exercises: {
-        // Search key includes full filter object to separate cache entries per query.
+
         search: (params) => ['exercises', params],
         filters: ['exercises', 'filters'],
     },

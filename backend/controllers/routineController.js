@@ -1,12 +1,17 @@
-// Routine controller: create/update routine templates and fetch today's plan.
+
 const { Routine, Program, Exercise, SetData, RoutineExercise, WorkoutLog } = require('../models');
 const sequelize = require('../config/database');
 const { Op } = require('sequelize');
 
+/**
+ * Retrieves the routine scheduled for today based on the current day of the week.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getTodayRoutine = async (req, res) => {
   try {
     // JS getDay() returns 0-6 (Sun-Sat), matching stored day_of_week values.
-    const dayOfWeek = new Date().getDay(); // 0-6 (Sunday-Saturday)
+
     
     const routine = await Routine.findOne({
       where: { user_id: req.user.id, day_of_week: dayOfWeek.toString() },
@@ -21,6 +26,11 @@ exports.getTodayRoutine = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves all routines belonging to a specific program.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getProgramRoutines = async (req, res) => {
   try {
     const routines = await Routine.findAll({
@@ -36,8 +46,13 @@ exports.getProgramRoutines = async (req, res) => {
 };
 
 // Create endpoint that inserts routine row under validated `program_id` ownership.
+/**
+ * Creates a new routine template within a program.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.createRoutine = async (req, res) => {
-  // Uses one DB transaction for routine row, pivot rows, and template set rows.
+
   const t = await sequelize.transaction();
   try {
     const programId = req.params.programId || req.body.program_id;
@@ -73,6 +88,11 @@ exports.createRoutine = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves details for a specific routine template.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getRoutine = async (req, res) => {
   try {
     const routine = await Routine.findOne({
@@ -89,8 +109,13 @@ exports.getRoutine = async (req, res) => {
 };
 
 // Update routine metadata and replace linked exercises/sets when provided.
+/**
+ * Updates an existing routine template, including its exercises and sets.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.updateRoutine = async (req, res) => {
-  // Starts a transaction for routine update and optional exercise/set synchronization.
+
   const t = await sequelize.transaction();
   try {
     const routine = await Routine.findOne({ where: { id: req.params.id, user_id: req.user.id } });
@@ -113,7 +138,12 @@ exports.updateRoutine = async (req, res) => {
   }
 };
 
-// Delete endpoint that removes one routine row filtered by `id` and `user_id`.
+
+/**
+ * Deletes a routine template.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.deleteRoutine = async (req, res) => {
   try {
     const routine = await Routine.findOne({ where: { id: req.params.id, user_id: req.user.id } });
@@ -126,7 +156,11 @@ exports.deleteRoutine = async (req, res) => {
   }
 };
 
-// Converts stored media paths to public URL path format.
+/**
+ * Converts stored media paths to public URL path format.
+ * @param {string} url - The stored path or URL.
+ * @returns {string|null} Formatted URL.
+ */
 const formatUrl = (url) => {
   if (!url) return null;
   if (url.startsWith('http') || url.startsWith('https')) return url;
@@ -136,7 +170,11 @@ const formatUrl = (url) => {
   return `/storage/${url.startsWith('/') ? url.slice(1) : url}`;
 };
 
-// Shape a workout model into the response contract used by routine screens.
+/**
+ * Transforms a workout log model instance into the API response shape.
+ * @param {Object} log - The workout log model instance.
+ * @returns {Object|null} Transformed workout log data.
+ */
 function transformWorkoutLog(log) {
   if (!log) return null;
   const json = log.toJSON ? log.toJSON() : log;
@@ -153,7 +191,11 @@ function transformWorkoutLog(log) {
   };
 }
 
-// Shape routine + joined exercises/sets for the frontend builder/player.
+/**
+ * Transforms a routine model instance into the API response shape.
+ * @param {Object} r - The routine model instance.
+ * @returns {Object|null} Transformed routine data.
+ */
 function transformRoutine(r) {
   if (!r) return null;
   const json = r.toJSON ? r.toJSON() : r;
@@ -192,6 +234,11 @@ function transformRoutine(r) {
   };
 }
 
+/**
+ * Retrieves the most recent workout log for a specific routine.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getLastLog = async (req, res) => {
   try {
     const lastLog = await WorkoutLog.findOne({
@@ -206,8 +253,15 @@ exports.getLastLog = async (req, res) => {
   }
 };
 
+/**
+ * Synchronizes exercises and template sets for a routine.
+ * @param {Object} routine - The routine model instance.
+ * @param {Array} exercises - The list of exercises and their sets.
+ * @param {Object} transaction - Sequelize transaction.
+ * @returns {Promise<void>}
+ */
 async function syncExercisesAndSets(routine, exercises, transaction) {
-  // Rebuilds all routine-exercise pivot rows from request payload order and targets.
+
   await RoutineExercise.destroy({ where: { routine_id: routine.id }, transaction });
   
   const pivotData = (exercises || []).map(ex => ({
@@ -222,7 +276,7 @@ async function syncExercisesAndSets(routine, exercises, transaction) {
   }));
   await RoutineExercise.bulkCreate(pivotData, { transaction });
 
-  // Deletes template set rows where `workout_log_id` is null for this routine id.
+
   await SetData.destroy({ 
     where: { 
       routine_id: routine.id, 
@@ -231,7 +285,7 @@ async function syncExercisesAndSets(routine, exercises, transaction) {
     transaction 
   });
 
-  // Rebuild set templates from the payload in order.
+
   const setsToInsert = [];
   (exercises || []).forEach(ex => {
     if (ex.sets && ex.sets.length > 0) {

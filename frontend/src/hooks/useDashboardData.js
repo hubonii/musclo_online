@@ -1,4 +1,23 @@
-// Composes dashboard data from multiple hooks and computes chart-ready metrics.
+/**
+ * Hook to compose and compute dashboard metrics from multiple data sources.
+ * @returns {{
+ *   workoutsLoading: boolean,
+ *   allWorkouts: Array,
+ *   workoutStats: Object|null,
+ *   measurements: Array,
+ *   progressPhotos: Array,
+ *   todayRoutine: Object|null,
+ *   isChartsLoaded: boolean,
+ *   weightProgress: Array,
+ *   muscleData: Array,
+ *   weeklyVolumeData: Array,
+ *   currentWeight: number,
+ *   startWeight: number,
+ *   weeklyVolumeSum: number,
+ *   recentPrograms: Array,
+ *   recentRoutines: Array
+ * }} Dashboard metrics, charts data, and loading state.
+ */
 import { useMemo } from 'react';
 import { useWorkoutHistory } from './useWorkoutHistory';
 import { useWorkoutStats } from './useWorkoutStats';
@@ -15,7 +34,7 @@ export function useDashboardData() {
     const recentRoutines = workoutStats?.recent_routines || [];
     const isChartsLoaded = !workoutsLoading;
 
-    // Weight trend points used by the line chart.
+
     const weightProgress = useMemo(() => measurements
         .map((m) => ({
         date: new Date(m.date).toLocaleDateString([], { month: 'short', day: 'numeric' }),
@@ -23,13 +42,13 @@ export function useDashboardData() {
     }))
         .filter((m) => m.weight !== null && !isNaN(m.weight))
         .reverse(), [measurements]);
-    // Approximate muscle distribution from recent workouts.
+
     const muscleData = useMemo(() => {
         const muscleVols = {};
         allWorkouts.forEach((w) => {
             if (w.top_muscles && w.top_muscles.length > 0) {
                 w.top_muscles.forEach(m => {
-                    // Legacy record path: adds a fixed volume score per ranked muscle entry.
+
                     muscleVols[m] = (muscleVols[m] || 0) + 1000;
                 });
             }
@@ -59,7 +78,7 @@ export function useDashboardData() {
             .slice(0, 6);
         return mData.length > 0 ? mData : defaultMuscleData;
     }, [allWorkouts]);
-    // Last 7 days volume bars for weekly hero section.
+
     const weeklyVolumeData = useMemo(() => {
         const dayNames = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
         const today = new Date();
@@ -67,7 +86,7 @@ export function useDashboardData() {
         for (let i = 6; i >= 0; i--) {
             const d = new Date(today);
             d.setDate(d.getDate() - i);
-            // Match workouts by YYYY-MM-DD prefix from ISO timestamps.
+
             const dateStr = d.toISOString().split('T')[0];
             const dayStr = d.getDate().toString().padStart(2, '0');
             const dayWorkouts = allWorkouts.filter(w => w.started_at && w.started_at.startsWith(dateStr));

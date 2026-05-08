@@ -1,7 +1,7 @@
 const { EventEmitter } = require('events');
 
 jest.mock('axios', () => jest.fn());
-// --- Module Mocks ---
+
 jest.mock('../../../models', () => ({
   ChatMessage: {
     create: jest.fn(),
@@ -12,7 +12,7 @@ const axios = require('axios');
 const { ChatMessage } = require('../../../models');
 const openRouterService = require('../../../services/openRouterService');
 
-// Unit tests for OpenRouterService — prompt engineering and response streaming.
+
 describe('OpenRouterService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -21,7 +21,7 @@ describe('OpenRouterService', () => {
   // getModel was removed in the single-model refactor as logic moved to constructor.
 
   test('buildSystemPrompt includes current workout and history context', () => {
-    // Prompt should include both active workout data and long-term memory blocks.
+
     const prompt = openRouterService.buildSystemPrompt(
       {
         is_active: true,

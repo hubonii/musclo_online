@@ -1,17 +1,27 @@
-// OpenRouter API client wrapper used by AI coach endpoints.
+
+/**
+ * Service for communicating with the AI LLM via OpenRouter.
+ */
 const axios = require('axios');
 const { ChatMessage } = require('../models');
 
 class OpenRouterService {
   constructor() {
-    // Reads standardized AI engine configuration from environment variables.
+
     this.apiKey = process.env.AI_ENGINE_KEY;
     this.model = process.env.AI_ENGINE_MODEL || 'openai/gpt-oss-120b:free';
     this.baseUrl = process.env.AI_ENGINE_BASE_URL || 'https://openrouter.ai/api/v1';
   }
 
+  /**
+   * Constructs the system prompt with context and performance history.
+   * @param {Object} context - Current workout context.
+   * @param {Array} [historyContext] - Past performance data.
+   * @param {boolean} [isDeepAudit] - Whether to include deep analysis instructions.
+   * @returns {string} The formatted system prompt.
+   */
   buildSystemPrompt(context, historyContext = [], isDeepAudit = false) {
-    // Build one rich system message that mixes behavior rules + workout context.
+
     let base = 'You are Musclo AI Coach, a world-class Sport Scientist and Master Strength Coach. Your expertise is grounded in the most reliable principles of exercise physiology and nutrition. '
       + "You have persistent memory of the user's past workout logs to provide contextual advice. ";
 
@@ -28,7 +38,7 @@ class OpenRouterService {
       + "- **Tone**: Professional, encouraging, and authoritative.\n"
       + "- **Language**: ALWAYS respond in the same language the user writes in. If the user writes in Arabic, respond fully in Arabic (العربية). If they write in English, respond in English. Match their language exactly.";
 
-    // Inject active workout details when the request comes from the live workout screen.
+
     if (context && context.is_active) {
       base += "\n\n--- CURRENT WORKOUT STATUS ---\n";
       base += `Routine: ${context.routine_name || 'Custom'}\n`;
@@ -53,8 +63,25 @@ class OpenRouterService {
     return base;
   }
 
+<<<<<<< HEAD
   async askStream(res, message, context, historyContext, historyMessages, sessionId) {
     // Auto-detect if deep analysis is required based on keyword triggers.
+=======
+  /**
+   * Streams a chat completion response from OpenRouter.
+   * @param {Object} res - Express response object for SSE.
+   * @param {string} message - The user's message.
+   * @param {Object} context - Current workout context.
+   * @param {Array} historyContext - Performance memory data.
+   * @param {Array} historyMessages - Previous chat messages.
+   * @param {string} [image] - Base64 or URL of an attached image.
+   * @param {string} [sessionId] - ID of the chat session to persist response.
+   * @param {string} [modelOverride] - Optional model ID to use.
+   * @returns {Promise<void>}
+   */
+  async askStream(res, message, context, historyContext, historyMessages, image, sessionId, modelOverride) {
+
+>>>>>>> 003-comment-cleanup
     const isDeepAudit = /history|log|trend|progress|audit/i.test(message);
     const systemPrompt = this.buildSystemPrompt(context, historyContext, isDeepAudit);
 
@@ -145,5 +172,8 @@ class OpenRouterService {
   }
 }
 
+/**
+ * Service for interacting with OpenRouter AI models.
+ */
 module.exports = new OpenRouterService();
 

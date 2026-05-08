@@ -1,10 +1,11 @@
-// Completed workout session record (summary + timestamps + totals).
+/**
+ * WorkoutLog model for completed training sessions and aggregate stats.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const WorkoutLog = sequelize.define('WorkoutLog', {
   id: {
-    // Primary key for one logged workout session.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -52,4 +53,7 @@ const WorkoutLog = sequelize.define('WorkoutLog', {
   paranoid: true,
 });
 
+/**
+ * WorkoutLog model represents a completed workout session record.
+ */
 module.exports = WorkoutLog;

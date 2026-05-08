@@ -1,4 +1,4 @@
-// Unit tests for AuthController — login, register, and session management.
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../../../models');
@@ -11,7 +11,7 @@ const {
 } = require('../../../controllers/authController');
 const { createRes } = require('../../helpers/express');
 
-// --- Module Mocks ---
+
 jest.mock('bcryptjs', () => ({
   genSalt: jest.fn(),
   hash: jest.fn(),
@@ -31,7 +31,7 @@ jest.mock('../../../models', () => ({
 
 describe('AuthController', () => {
   beforeEach(() => {
-    // Controller reads secret from env when creating JWT cookies.
+
     process.env.JWT_SECRET = 'test-secret';
     jest.clearAllMocks();
     jwt.sign.mockReturnValue('signed-token');
@@ -59,7 +59,7 @@ describe('AuthController', () => {
     bcrypt.genSalt.mockResolvedValue('salt');
     bcrypt.hash.mockResolvedValue('hashed-password');
 
-    // Mocked model output matches the shape expected by sendTokenResponse.
+
     const createdUser = {
       id: 3,
       name: 'New User',
@@ -110,7 +110,7 @@ describe('AuthController', () => {
   });
 
   test('login rejects incorrect credentials', async () => {
-    // Existing user + failed password compare should still return 401.
+
     User.findOne.mockResolvedValue({ id: 1, email: 'user@example.com', password: 'hashed' });
     bcrypt.compare.mockResolvedValue(false);
 

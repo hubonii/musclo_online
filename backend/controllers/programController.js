@@ -1,12 +1,19 @@
-// Program controller: manage training programs and nested routines.
+
+/**
+ * Controller for managing training programs and their constituent routines.
+ */
 const { Program, Routine, Exercise, SetData } = require('../models');
 
-// Convert a routine model (with joins) to the API contract used by the UI.
+/**
+ * Transforms a routine model instance into the API response shape.
+ * @param {Object} r - The routine model instance.
+ * @returns {Object|null} Transformed routine data.
+ */
 function transformRoutine(r) {
   if (!r) return null;
   const json = r.toJSON ? r.toJSON() : r;
   
-  // Attach exercise-level pivot data and template sets for each routine exercise.
+
   const exercises = (json.Exercises || []).map(ex => ({
     id: ex.id,
     name: ex.name,
@@ -29,7 +36,11 @@ function transformRoutine(r) {
   };
 }
 
-// Convert a program model to a consistent response shape.
+/**
+ * Transforms a program model instance into the API response shape.
+ * @param {Object} p - The program model instance.
+ * @returns {Object|null} Transformed program data.
+ */
 function transformProgram(p) {
   if (!p) return null;
   const json = p.toJSON ? p.toJSON() : p;
@@ -45,9 +56,14 @@ function transformProgram(p) {
   };
 }
 
+/**
+ * Retrieves all training programs for the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getPrograms = async (req, res) => {
   try {
-    // Program query scoped by `user_id` with nested routine exercise id include.
+
     const programs = await Program.findAll({
       where: { user_id: req.user.id },
       include: [{
@@ -58,7 +74,7 @@ exports.getPrograms = async (req, res) => {
       order: [['created_at', 'DESC']]
     });
 
-    // Compute `exercises_count` per routine before final response transform.
+
     const transformed = programs.map(p => {
       const routines = (p.Routines || []).map(r => ({
         ...r.toJSON(),
@@ -73,7 +89,12 @@ exports.getPrograms = async (req, res) => {
   }
 };
 
-// Create a new program owned by the authenticated user.
+
+/**
+ * Creates a new training program for the authenticated user.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.createProgram = async (req, res) => {
   try {
     const { name, description, is_active } = req.body;
@@ -90,9 +111,14 @@ exports.createProgram = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves details for a specific training program.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.getProgram = async (req, res) => {
   try {
-    // Single program details with routines, exercises, and template sets.
+
     const program = await Program.findOne({
       where: { id: req.params.id, user_id: req.user.id },
       include: [{
@@ -110,10 +136,15 @@ exports.getProgram = async (req, res) => {
   }
 };
 
-// Update one user-owned program.
+
+/**
+ * Updates an existing training program.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.updateProgram = async (req, res) => {
   try {
-    // Restrict update to programs owned by current authenticated user.
+
     const program = await Program.findOne({ where: { id: req.params.id, user_id: req.user.id } });
     if (!program) return res.status(404).json({ message: 'Program not found' });
 
@@ -124,10 +155,15 @@ exports.updateProgram = async (req, res) => {
   }
 };
 
-// Delete one user-owned program.
+
+/**
+ * Deletes a training program and its associated routines.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.deleteProgram = async (req, res) => {
   try {
-    // Restrict delete to programs owned by current authenticated user.
+
     const program = await Program.findOne({ where: { id: req.params.id, user_id: req.user.id } });
     if (!program) return res.status(404).json({ message: 'Program not found' });
 

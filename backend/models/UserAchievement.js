@@ -1,10 +1,11 @@
-// Pivot table storing when a user unlocked each achievement.
+/**
+ * UserAchievement join model linking users to their unlocked achievements.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const UserAchievement = sequelize.define('UserAchievement', {
   id: {
-    // Primary key for one user-achievement link row.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -29,6 +30,9 @@ const UserAchievement = sequelize.define('UserAchievement', {
   underscored: true,
 });
 
+/**
+ * UserAchievement model stores when a user unlocked each achievement.
+ */
 module.exports = UserAchievement;
 
 

@@ -1,10 +1,11 @@
-// Program = a named training plan that groups multiple routines.
+/**
+ * Program model for multi-week structured training plans.
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Program = sequelize.define('Program', {
   id: {
-    // Primary key for one training program row.
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
@@ -34,4 +35,7 @@ const Program = sequelize.define('Program', {
   underscored: true,
 });
 
+/**
+ * Program model represents a named training plan that groups multiple routines.
+ */
 module.exports = Program;

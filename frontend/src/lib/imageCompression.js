@@ -10,7 +10,7 @@
  * @returns {Promise<File>} Compressed file
  */
 export async function compressImage(file, { maxWidth = 1024, maxHeight = 1024, quality = 0.7 } = {}) {
-    // Skip if not an image
+
     if (!file.type.startsWith('image/')) return file;
 
     return new Promise((resolve, reject) => {
@@ -24,7 +24,7 @@ export async function compressImage(file, { maxWidth = 1024, maxHeight = 1024, q
                 let width = img.width;
                 let height = img.height;
 
-                // Calculate new dimensions
+
                 if (width > height) {
                     if (width > maxWidth) {
                         height = Math.round((height * maxWidth) / width);

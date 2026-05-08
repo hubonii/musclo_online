@@ -1,4 +1,6 @@
-// Root app shell: providers, error boundary, and router.
+/**
+ * Main application entry point providing providers and root shell.
+ */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
@@ -21,7 +23,7 @@ const queryClient = new QueryClient({
     },
 });
 
-// Global offline status banner component.
+
 function OfflineBanner() {
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [pendingCount, setPendingCount] = useState(getPendingCount());
@@ -61,7 +63,7 @@ function OfflineBanner() {
         };
     }, []);
 
-    // Periodically check pending count.
+
     useEffect(() => {
         const interval = setInterval(() => setPendingCount(getPendingCount()), 5000);
         return () => clearInterval(interval);
@@ -92,7 +94,7 @@ function App() {
     const user = useAuthStore(s => s.user);
     const isAuthenticated = useAuthStore(s => s.isAuthenticated);
 
-    // Total Memory Wipe on Logout: Ensures no data from User A stays in cache for User B.
+
     useEffect(() => {
         if (!isAuthenticated) {
             console.log('[Auth] Clearing global query cache...');
@@ -101,7 +103,7 @@ function App() {
     }, [isAuthenticated]);
 
     useEffect(() => {
-        // Handle Google OAuth callback token from URL
+
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
         if (token) {
@@ -115,13 +117,13 @@ function App() {
 
         const publicPages = ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email'];
 
-        // Restore auth state for protected pages after reload.
+
         if (!publicPages.includes(window.location.pathname)) {
             useAuthStore.getState().fetchUser();
         }
     }, []);
 
-    // Initialize offline workout sync listeners - specifically for the current user.
+
     useEffect(() => {
         if (user?.id) {
             const cleanup = initOfflineSync(user.id);

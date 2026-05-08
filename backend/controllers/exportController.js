@@ -1,20 +1,25 @@
-// Export controller: flatten workout logs and sets into a CSV download.
+
 const { WorkoutLog, SetData, Exercise } = require('../models');
 const { Parser } = require('json2csv');
 
+/**
+ * Exports user workout history as a CSV file.
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 exports.exportCsv = async (req, res) => {
   try {
-    // Loads workout logs with nested set and exercise relations for CSV row mapping.
+
     const logs = await WorkoutLog.findAll({
       where: { user_id: req.user.id },
       include: [{ model: SetData, include: [Exercise] }],
       order: [['started_at', 'DESC']]
     });
 
-    // Flatten nested workout -> set data into one row-based structure for CSV.
+
     const data = [];
     logs.forEach(log => {
-      // Emit one placeholder row when workout has no set records.
+
       if (log.SetData.length === 0) {
         data.push({
           'Workout Date': log.started_at.toISOString().split('T')[0],
@@ -30,7 +35,7 @@ exports.exportCsv = async (req, res) => {
           'Is PR': 'N/A'
         });
       } else {
-        // Emit one CSV row per set to keep set-level detail in exported history.
+
         log.SetData.forEach(set => {
           data.push({
             'Workout Date': log.started_at.toISOString().split('T')[0],
@@ -49,7 +54,7 @@ exports.exportCsv = async (req, res) => {
       }
     });
 
-    // Declares fixed CSV column order for deterministic export output.
+
     const fields = [
       'Workout Date', 'Workout Name', 'Duration (s)', 'Total Volume',
       'Exercise Name', 'Set Number', 'Type', 'Weight', 'Reps', 'RPE', 'Is PR'
@@ -57,7 +62,7 @@ exports.exportCsv = async (req, res) => {
     const json2csvParser = new Parser({ fields });
     const csv = json2csvParser.parse(data);
 
-    // Respond as downloadable CSV file with date-stamped filename.
+
     res.header('Content-Type', 'text/csv');
     res.attachment(`musclo_export_${new Date().toISOString().split('T')[0]}.csv`);
     res.send(csv);
