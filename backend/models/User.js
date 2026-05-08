@@ -39,11 +39,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  is_public: {
-    // Controls whether non-owners can view this profile.
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
+
   remember_token: {
     // Optional token column kept for compatibility with existing schema.
     type: DataTypes.STRING(100),

@@ -4,7 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import ProfilePage from '../../../src/pages/ProfilePage';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuthStore } from '../../../src/stores/useAuthStore';
-import { useAchievements, useProfile, useSharedWorkouts } from '../../../src/hooks/useProfile';
+import { useAchievements, useProfile } from '../../../src/hooks/useProfile';
 
 jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
@@ -18,7 +18,6 @@ jest.mock('../../../src/stores/useAuthStore', () => ({
 jest.mock('../../../src/hooks/useProfile', () => ({
   useProfile: jest.fn(),
   useAchievements: jest.fn(),
-  useSharedWorkouts: jest.fn(),
 }));
 
 jest.mock('framer-motion', () => ({
@@ -47,7 +46,7 @@ jest.mock('../../../src/components/ui/Button', () => ({
   default: ({ children, onClick }) => <button onClick={onClick}>{children}</button>,
 }));
 
-jest.mock('../../../src/components/profile/LevelBadge', () => () => <div>LevelBadge</div>);
+
 jest.mock('../../../src/components/profile/AchievementBadge', () => ({ achievement }) => (
   <div>Achievement {achievement.id}</div>
 ));
@@ -62,7 +61,6 @@ describe('ProfilePage', () => {
     useParams.mockReturnValue({});
     useAuthStore.mockImplementation((selector) => selector({ user: { id: 42 } }));
     useAchievements.mockReturnValue({ data: [], isLoading: false });
-    useSharedWorkouts.mockReturnValue({ data: [], isLoading: false });
   });
 
   test('shows loading state while profile query is pending', () => {
@@ -88,7 +86,6 @@ describe('ProfilePage', () => {
         id: 42,
         name: 'Athlete',
         bio: 'Consistency wins.',
-        level: { number: 3, title: 'Intermediate', progress: 67 },
         stats: { total_workouts: 12, total_volume: 12000, current_streak: 4 },
       },
     });

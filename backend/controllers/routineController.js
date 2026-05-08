@@ -186,7 +186,6 @@ function transformRoutine(r) {
     name: json.name,
     notes: json.notes,
     day_of_week: json.day_of_week,
-    is_public: !!json.is_public,
     exercises: exercises,
     created_at: json.created_at,
     updated_at: json.updated_at

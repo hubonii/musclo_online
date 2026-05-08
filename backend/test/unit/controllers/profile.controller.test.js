@@ -1,5 +1,5 @@
 // Unit tests for ProfileController — user level, stats, and achievements.
-const { getProfile, updateProfile, getAchievements, getUserRoutines } = require('../../../controllers/profileController');
+const { getProfile, updateProfile, getAchievements } = require('../../../controllers/profileController');
 const { User, WorkoutLog, Achievement, Routine } = require('../../../models');
 const achievementService = require('../../../services/achievementService');
 const { createRes } = require('../../helpers/express');
@@ -34,7 +34,7 @@ describe('ProfileController', () => {
 
   describe('getProfile', () => {
     test('returns stats with level for own profile', async () => {
-      const mockUser = { id: 1, name: 'John Doe', email: 'john@example.com', is_public: true };
+      const mockUser = { id: 1, name: 'John Doe', email: 'john@example.com' };
       User.findByPk.mockResolvedValue(mockUser);
       WorkoutLog.count.mockResolvedValue(10);
       WorkoutLog.sum.mockResolvedValue(20000); // Should be Intermediate (level > 5)
@@ -61,8 +61,8 @@ describe('ProfileController', () => {
       });
     });
 
-    test('returns 403 for private non-owned profile', async () => {
-      const mockUser = { id: 2, is_public: false };
+    test('returns 403 for non-owned profile', async () => {
+      const mockUser = { id: 2 };
       User.findByPk.mockResolvedValue(mockUser);
 
       const req = { user: { id: 1 }, params: { userId: 2 } };
@@ -71,7 +71,7 @@ describe('ProfileController', () => {
       await getProfile(req, res);
 
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith({ message: 'This profile is private.' });
+      expect(res.json).toHaveBeenCalledWith({ message: 'Access denied.' });
     });
 
     test('returns 500 on database error', async () => {

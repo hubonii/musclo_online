@@ -53,7 +53,7 @@ class OpenRouterService {
     return base;
   }
 
-  async askStream(res, message, context, historyContext, historyMessages, image, sessionId, modelOverride) {
+  async askStream(res, message, context, historyContext, historyMessages, sessionId) {
     // Auto-detect if deep analysis is required based on keyword triggers.
     const isDeepAudit = /history|log|trend|progress|audit/i.test(message);
     const systemPrompt = this.buildSystemPrompt(context, historyContext, isDeepAudit);
@@ -61,14 +61,7 @@ class OpenRouterService {
     const messages = [{ role: 'system', content: systemPrompt }];
     historyMessages.forEach(msg => messages.push({ role: msg.role, content: msg.content }));
 
-    let userContent = message;
-    if (image) {
-      userContent = [
-        { type: 'text', text: message },
-        { type: 'image_url', image_url: { url: image } }
-      ];
-    }
-    messages.push({ role: 'user', content: userContent });
+    messages.push({ role: 'user', content: message });
 
     try {
       const response = await axios({
@@ -81,7 +74,7 @@ class OpenRouterService {
           'X-Title': 'Musclo AI Coach',
         },
         data: {
-          model: modelOverride || this.model,
+          model: this.model,
           messages,
           temperature: 0.7,
           stream: true

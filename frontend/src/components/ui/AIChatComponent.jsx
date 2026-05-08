@@ -21,7 +21,6 @@ const SUGGESTED_PROMPTS = [
 // Curated models for different tasks.
 const FREE_MODELS = [
     { id: 'openai/gpt-oss-120b:free', name: 'GPT OSS 120B', desc: 'Maximum Reasoning' },
-    { id: 'google/gemma-4-31b-it:free', name: 'Google Gemma 4', desc: 'Best for Photos & Analysis' },
 ];
 
 const DEFAULT_MODEL_ID = FREE_MODELS[0].id;
@@ -29,11 +28,7 @@ const DEFAULT_MODEL_ID = FREE_MODELS[0].id;
 export default function AIChatComponent() {
     const {
         isOpen, messages, isLoading, error, abortController, sessions,
-        currentSessionId, selectedImage, selectedModel, closeChat, toggleChat,
-        addUserMessage, addAssistantMessage, setStreaming,
-        finalizeStreaming, setLoading, setError, setAbortController,
-        fetchSessions, selectSession, createNewSession, deleteSession,
-        setSelectedImage, setSelectedModel
+        setSelectedImage,
     } = useAIChatStore();
 
     const isActive = useWorkoutStore(state => state.isActive);
@@ -43,7 +38,6 @@ export default function AIChatComponent() {
 
     const [input, setInput] = useState('');
     const [showHistory, setShowHistory] = useState(false);
-    const [showModelPicker, setShowModelPicker] = useState(false);
     const messagesEndRef = useRef(null);
     const textareaRef = useRef(null);
     const modelPickerRef = useRef(null);
@@ -65,17 +59,9 @@ export default function AIChatComponent() {
         }
     }, [input]);
 
-    // Close model picker on outside click.
-    useEffect(() => {
-        const handler = (e) => {
-            if (modelPickerRef.current && !modelPickerRef.current.contains(e.target)) setShowModelPicker(false);
-        };
-        document.addEventListener('mousedown', handler);
-        return () => document.removeEventListener('mousedown', handler);
-    }, []);
 
-    // Helper to get the display name for the current model.
-    const currentModelLabel = FREE_MODELS.find(m => m.id === (selectedModel || DEFAULT_MODEL_ID))?.name || '🚀 GPT OSS 120B';
+
+
 
     const handleStop = () => {
         if (abortController) {
@@ -87,35 +73,22 @@ export default function AIChatComponent() {
         }
     };
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSelectedImage(reader.result);
-                // Auto-switch to Vision model if image is uploaded
-                setSelectedModel('google/gemma-4-31b-it:free');
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+
 
     const handleSend = async (msgOverride) => {
         const textToSend = msgOverride || input;
-        if ((!textToSend.trim() && !selectedImage) || isLoading) return;
+        if (!msgOverride) {
+            setInput('');
+        }
+
+        if (!textToSend.trim() || isLoading) return;
 
         if (!isAuthenticated) {
             setError('Authentication required for Musclo AI access.');
             return;
-        }
+        }setError(null);
 
-        const chatImage = selectedImage;
-        if (!msgOverride) {
-            setInput('');
-            setSelectedImage(null);
-        }
-
-        addUserMessage(textToSend, chatImage);
+        addUserMessage(textToSend);
         setLoading(true);
         setError(null);
 
@@ -157,9 +130,7 @@ export default function AIChatComponent() {
                 body: JSON.stringify({
                     message: textToSend,
                     session_id: currentSessionId,
-                    image: chatImage,
-                    workout_context: workoutContext,
-                    model: selectedModel
+                    workout_context: workoutContext
                 })
             });
 
@@ -255,47 +226,7 @@ export default function AIChatComponent() {
                                         </button>
                                     </div>
                                 </div>
-                                {/* Model selector dropdown */}
-                                <div className="relative" ref={modelPickerRef}>
-                                    <button
-                                        onClick={() => setShowModelPicker(!showModelPicker)}
-                                        className="w-full flex items-center gap-2.5 px-4 py-2.5 bg-app shadow-neu-inset rounded-2xl text-left transition-all hover:shadow-neu-sm group border border-divider/10"
-                                    >
-                                        <CpuIcon size={14} className="text-orange flex-shrink-0" />
-                                        <span className="text-[11px] font-black text-text-secondary uppercase tracking-wider truncate flex-1">{currentModelLabel}</span>
-                                        <ChevronDownIcon size={14} className={cn("text-text-muted transition-transform", showModelPicker && "rotate-180")} />
-                                    </button>
-                                    <AnimatePresence>
-                                        {showModelPicker && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: -8 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -8 }}
-                                                transition={{ duration: 0.15 }}
-                                                className="absolute left-0 right-0 top-full mt-2 bg-surface border border-divider rounded-2xl shadow-neu-lg z-50 max-h-72 overflow-y-auto scrollbar-hide"
-                                            >
-                                                {FREE_MODELS.map(m => (
-                                                    <button
-                                                        key={m.id}
-                                                        onClick={() => { setSelectedModel(m.id); setShowModelPicker(false); }}
-                                                        className={cn(
-                                                            "w-full text-left px-4 py-3.5 transition-all flex items-center gap-3",
-                                                            (selectedModel || DEFAULT_MODEL_ID) === m.id
-                                                                ? "text-orange bg-orange/5"
-                                                                : "text-text-secondary hover:text-text-primary hover:bg-app/50"
-                                                        )}
-                                                    >
-                                                        <div className={cn("w-2 h-2 rounded-full flex-shrink-0", (selectedModel || DEFAULT_MODEL_ID) === m.id ? "bg-orange shadow-[0_0_6px_rgba(234,88,12,0.5)]" : "bg-divider")} />
-                                                        <div>
-                                                            <div className="text-[12px] font-black">{m.name}</div>
-                                                            <div className="text-[9px] font-bold text-text-muted mt-0.5 uppercase tracking-wider">{m.desc}</div>
-                                                        </div>
-                                                    </button>
-                                                ))}
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
+
                             </div>
 
                             <div className="flex-1 relative flex overflow-hidden">
@@ -417,19 +348,7 @@ export default function AIChatComponent() {
                             </div>
 
                             <div className="p-6 bg-surface border-t border-divider relative z-20">
-                                {selectedImage && (
-                                    <div className="mb-4 relative w-20 h-20 rounded-2xl overflow-hidden shadow-neu-orange border-4 border-orange">
-                                        <img src={selectedImage} className="w-full h-full object-cover" />
-                                        <button onClick={() => setSelectedImage(null)} className="absolute top-0 right-0 bg-danger text-white rounded-bl-xl p-1.5 shadow-lg active:scale-95 transition-transform"><X size={12} /></button>
-                                    </div>
-                                )}
-
                                 <div className={cn("flex items-end gap-3 bg-app p-3 rounded-[32px] shadow-neu-inset transition-all focus-within:ring-4 focus-within:ring-orange/10", isLoading && "opacity-60")}>
-                                    <button onClick={() => fileInputRef.current?.click()} disabled={isLoading} className={cn("p-3.5 bg-surface shadow-neu-sm text-text-muted hover:text-orange rounded-2xl transition-all active:shadow-neu-inset", isLoading && "pointer-events-none")}>
-                                        <ImageIcon size={22} />
-                                    </button>
-                                    <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
-
                                     <Textarea
                                         ref={textareaRef} value={input}
                                         onChange={(e) => setInput(e.target.value)}
@@ -450,8 +369,8 @@ export default function AIChatComponent() {
                                     ) : (
                                         <button
                                             onClick={() => handleSend()}
-                                            disabled={!input.trim() && !selectedImage}
-                                            className={cn("p-3.5 rounded-2xl flex items-center justify-center transition-all shadow-neu-sm", input.trim() || selectedImage ? "bg-orange text-white shadow-neu-orange" : "bg-app text-text-muted opacity-40")}
+                                            disabled={!input.trim()}
+                                            className={cn("p-3.5 rounded-2xl flex items-center justify-center transition-all shadow-neu-sm", input.trim() ? "bg-orange text-white shadow-neu-orange" : "bg-app text-text-muted opacity-40")}
                                         >
                                             <ArrowUpCircle size={24} strokeWidth={3} />
                                         </button>

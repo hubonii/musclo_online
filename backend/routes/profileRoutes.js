@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { 
     getProfile, updateProfile, updateAvatar, 
-    getAchievements, getUserRoutines,
+    getAchievements,
     requestEmailChange, verifyEmailChange, deleteAccount 
 } = require('../controllers/profileController');
 const { protect, verified } = require('../middleware/auth');
@@ -29,8 +29,7 @@ router.get('/:userId', verified, getProfile);
 
 // Returns full achievement catalog with unlocked state for target user.
 router.get('/:userId/achievements', verified, getAchievements);
-// Inline import keeps route connected to controller export without extra destructuring.
-router.get('/:userId/routines', verified, getUserRoutines);
+
 
 module.exports = router;
 

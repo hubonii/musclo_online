@@ -26,10 +26,7 @@ const Routine = sequelize.define('Routine', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  is_public: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
+
   day_of_week: {
     // Day label/index value used by today-routine queries.
     type: DataTypes.STRING,

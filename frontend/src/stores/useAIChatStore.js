@@ -10,12 +10,9 @@ export const useAIChatStore = create()((set, get) => ({
     isLoading: false,
     error: null,
     abortController: null,
-    selectedModel: 'openai/gpt-oss-120b:free',
-    selectedImage: null,
     openChat: () => set({ isOpen: true }),
     closeChat: () => set({ isOpen: false }),
     toggleChat: () => set({ isOpen: !get().isOpen }),
-    setSelectedImage: (img) => set({ selectedImage: img }),
     // Load chat sessions from the API and normalize local state.
     fetchSessions: async () => {
         try {
@@ -39,7 +36,7 @@ export const useAIChatStore = create()((set, get) => ({
         }
     },
     createNewSession: async () => {
-        set({ messages: [], currentSessionId: null, selectedImage: null });
+        set({ messages: [], currentSessionId: null });
     },
     deleteSession: async (id) => {
         try {
@@ -53,14 +50,13 @@ export const useAIChatStore = create()((set, get) => ({
         catch {
         }
     },
-    addUserMessage: (content, imageUrl) => {
+    addUserMessage: (content) => {
         // Appends user message to local store before request streaming begins.
         set({
             messages: [...get().messages, {
                     id: `u-${Date.now()}`,
                     role: 'user',
                     content,
-                    image_url: imageUrl || undefined,
                     timestamp: new Date().toISOString(),
                 }],
         });
@@ -90,7 +86,6 @@ export const useAIChatStore = create()((set, get) => ({
     setLoading: (loading) => set({ isLoading: loading }),
     setError: (error) => set({ error }),
     setAbortController: (abortController) => set({ abortController }),
-    setSelectedModel: (selectedModel) => set({ selectedModel }),
 }));
 
 

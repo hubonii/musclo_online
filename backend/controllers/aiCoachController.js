@@ -66,7 +66,7 @@ exports.deleteSession = async (req, res) => {
 
 exports.ask = async (req, res) => {
   try {
-    const { message, session_id, image, workout_context, model } = req.body;
+    const { message, session_id, workout_context } = req.body;
     let session;
 
     // Reuse the selected session, or auto-create one if missing.
@@ -86,8 +86,7 @@ exports.ask = async (req, res) => {
     await ChatMessage.create({
       chat_session_id: session.id,
       role: 'user',
-      content: message,
-      image_url: image ? 'embedded' : null
+      content: message
     });
 
     // Loads last 10 messages for model context window construction.
@@ -106,8 +105,7 @@ exports.ask = async (req, res) => {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
-    // Validate model override: only allow free-tier models to prevent cost abuse.
-    const safeModel = (model && model.endsWith(':free')) ? model : undefined;
+
 
     // Delegate prompt assembly + token streaming to OpenRouter service.
     await openRouter.askStream(
@@ -116,9 +114,7 @@ exports.ask = async (req, res) => {
       workout_context,
       latentContext,
       historyMessages,
-      image,
-      session.id,
-      safeModel
+      session.id
     );
   } catch (err) {
     res.status(500).json({ message: err.message });

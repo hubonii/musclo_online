@@ -11,9 +11,9 @@ exports.getProfile = async (req, res) => {
     const user = await User.findByPk(targetUserId);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    // Privacy guard: non-public profile access requires owner id match.
-    if (!user.is_public && req.user.id !== user.id) {
-      return res.status(403).json({ message: 'This profile is private.' });
+    // Privacy guard: only owners can view their profile data.
+    if (req.user.id !== user.id) {
+      return res.status(403).json({ message: 'Access denied.' });
     }
 
     // Aggregate profile stats from workout history tables.
@@ -21,8 +21,7 @@ exports.getProfile = async (req, res) => {
     const totalVolume = await WorkoutLog.sum('total_volume', { where: { user_id: user.id } }) || 0;
     const streak = await achievementService.calculateStreak(user);
 
-    // Level is derived from lifetime lifted volume.
-    const level = calculateLevel(totalVolume);
+
 
     res.json({
       data: {
@@ -31,8 +30,7 @@ exports.getProfile = async (req, res) => {
         email: req.user.id === user.id ? user.email : null,
         bio: user.bio,
         avatar_url: user.avatar_url,
-        is_public: !!user.is_public,
-        level,
+
         stats: {
           total_workouts: totalWorkouts,
           total_volume: totalVolume,
@@ -48,7 +46,7 @@ exports.getProfile = async (req, res) => {
 // Update specific fields for the authenticated user.
 exports.updateProfile = async (req, res) => {
   try {
-    const { name, email, bio, is_public } = req.body;
+    const { name, email, bio } = req.body;
 
     // Validation: if email is being changed, check uniqueness
     if (email && email !== req.user.email) {
@@ -65,7 +63,6 @@ exports.updateProfile = async (req, res) => {
       name: name || req.user.name,
       email: email || req.user.email,
       bio: bio !== undefined ? bio : req.user.bio,
-      is_public: is_public !== undefined ? is_public : req.user.is_public,
       // Reset verification if email changed
       email_verified_at: isEmailChanged ? null : req.user.email_verified_at,
       verification_code: isEmailChanged ? null : req.user.verification_code
@@ -78,7 +75,6 @@ exports.updateProfile = async (req, res) => {
         email: req.user.email,
         bio: req.user.bio,
         avatar_url: req.user.avatar_url,
-        is_public: !!req.user.is_public,
         email_verified_at: req.user.email_verified_at
       }
     });
@@ -144,76 +140,9 @@ exports.getAchievements = async (req, res) => {
   }
 };
 
-exports.getUserRoutines = async (req, res) => {
-  try {
-    const userId = (req.params.userId === 'me' || !req.params.userId) ? req.user.id : req.params.userId;
-    const isOwner = req.user.id.toString() === userId.toString();
-    
-    // Visibility filter: non-owner requests include only `is_public = true` routines.
-    const where = { user_id: userId };
-    if (!isOwner) {
-      where.is_public = true;
-    }
 
-    const routines = await Routine.findAll({
-      where,
-      include: ['Exercises']
-    });
 
-    // Return routine list with compact exercise objects for profile screens.
-    const transformed = routines.map(r => {
-      const json = r.toJSON ? r.toJSON() : r;
-      return {
-        id: json.id,
-        name: json.name,
-        notes: json.notes,
-        is_public: !!json.is_public,
-        exercises_count: json.Exercises?.length || 0,
-        exercises: (json.Exercises || []).map(ex => ({
-          id: ex.id,
-          name: ex.name,
-          muscle_group: ex.muscle_group,
-          pivot: ex.RoutineExercise || {}
-        })),
-        created_at: json.created_at,
-        updated_at: json.updated_at
-      };
-    });
 
-    res.json({ data: transformed });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-// Convert lifetime volume into a tiered level + progress percentage.
-function calculateLevel(totalVolume) {
-  const tiers = [
-    { max: 10000, title: 'Beginner', range: [1, 5] },
-    { max: 50000, title: 'Intermediate', range: [6, 10] },
-    { max: 150000, title: 'Advanced', range: [11, 15] },
-    { max: 500000, title: 'Elite', range: [16, 20] },
-    { max: Infinity, title: 'Legend', range: [21, 25] },
-  ];
-
-  let prevMax = 0;
-  for (const tier of tiers) {
-    if (totalVolume < tier.max) {
-      const progress = (totalVolume - prevMax) / (tier.max - prevMax);
-      const levelRange = tier.range[1] - tier.range[0];
-      const level = tier.range[0] + Math.floor(progress * levelRange);
-
-      return {
-        number: Math.min(level, tier.range[1]),
-        title: tier.title,
-        progress: Math.round(progress * 100 * 10) / 10
-      };
-    }
-    prevMax = tier.max;
-  }
-
-  return { number: 25, title: 'Legend', progress: 100 };
-}
 
 // NEW: Request Email Change (sends code to NEW email)
 exports.requestEmailChange = async (req, res) => {

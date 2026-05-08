@@ -22,7 +22,6 @@ function transformRoutine(r) {
     name: json.name,
     notes: json.notes,
     day_of_week: json.day_of_week,
-    is_public: !!json.is_public,
     exercises: exercises,
     exercises_count: exercises.length > 0 ? exercises.length : (json.exercises_count || 0),
     created_at: json.created_at,
