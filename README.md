@@ -143,9 +143,40 @@ musclo-online/
 
 ## 🧪 Testing Strategy
 We adhere to the **Testing Pyramid** to ensure zero-regression development:
-*   **Unit Tests**: Logic validation for services and utilities using `Jest`.
-*   **Integration Tests**: API endpoint validation with `Supertest` and a dedicated MySQL test database.
-*   **End-to-End (E2E)**: Complete user journey validation using `Playwright`, simulating real device interactions and network transitions.
+
+### **Backend Testing**
+- **Unit Tests**: Logic validation for services and utilities.
+  ```bash
+  cd backend
+  npm run test:unit
+  ```
+- **Integration Tests**: API endpoint validation with `Supertest`.
+  ```bash
+  cd backend
+  npm run test:integration
+  ```
+- **Coverage Reports**:
+  ```bash
+  cd backend
+  npm run test:coverage
+  ```
+
+### **Frontend Testing**
+- **Component & Unit Tests**:
+  ```bash
+  cd frontend
+  npm run test:unit
+  ```
+- **End-to-End (E2E)**: Complete user journey validation using `Playwright`.
+  ```bash
+  cd frontend
+  npm run test:e2e
+  ```
+- **Coverage Reports**:
+  ```bash
+  cd frontend
+  npm run test:coverage
+  ```
 
 ---
 
@@ -186,7 +217,7 @@ npm run dev
 ---
 
 ## 🎓 Graduation Project Governance
-**University**: [Add University Name]  
+**University**: Arab Open University (AOU)  
 **Academic Year**: 2025/2026
 
 ### **Primary Developer**
