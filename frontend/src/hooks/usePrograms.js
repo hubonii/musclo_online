@@ -69,4 +69,22 @@ export function useDeleteProgram() {
     });
 }
 
+/**
+ * Mutation for creating a program from AI-generated structured data.
+ */
+export function useCreateProgramFromAI() {
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+    return useMutation({
+        mutationFn: (data) => apiPost('/programs/ai-create', data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.programs.all });
+            toast('success', 'AI Program saved to your library!');
+        },
+        onError: (err) => {
+            toast('error', err.response?.data?.message || 'Failed to save AI program');
+        },
+    });
+}
+
 

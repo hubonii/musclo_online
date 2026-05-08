@@ -6,10 +6,13 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAIChatStore } from '../../stores/useAIChatStore';
 import { useWorkoutStore } from '../../stores/useWorkoutStore';
+import { useCreateProgramFromAI } from '../../hooks/usePrograms';
 import { cn } from '../../lib/utils';
 import { API_URL } from '../../api/axios';
 import { useAuthStore } from '../../stores/useAuthStore';
 import Textarea from '../ui/Textarea';
+
+const WORKOUT_PLAN_REGEX = /<workout_plan_json>([\s\S]*?)<\/workout_plan_json>/;
 
 const SUGGESTED_PROMPTS = [
     "Analyze my current training volume",
@@ -38,6 +41,8 @@ export default function AIChatComponent() {
     const exercises = useWorkoutStore(state => state.exercises);
     const routineName = useWorkoutStore(state => state.routineName);
     const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+
+    const { mutate: saveAIProgram, isLoading: isSavingProgram } = useCreateProgramFromAI();
 
     const [input, setInput] = useState('');
     const [showHistory, setShowHistory] = useState(false);
@@ -328,8 +333,43 @@ export default function AIChatComponent() {
                                                                         p: ({ node, ...props }) => <p className="mb-4 last:mb-0" {...props} />
                                                                     }}
                                                                 >
-                                                                    {msg.content}
+                                                                    {msg.content.replace(WORKOUT_PLAN_REGEX, '').trim()}
                                                                 </ReactMarkdown>
+                                                                
+                                                                {/* Save Program Button if JSON block detected */}
+                                                                {msg.role === 'assistant' && !msg.isStreaming && msg.content.match(WORKOUT_PLAN_REGEX) && (
+                                                                    <div className="mt-6 p-4 bg-app/50 rounded-3xl border border-white/5 shadow-neu-inset">
+                                                                        <div className="flex items-center justify-between gap-4">
+                                                                            <div className="flex items-center gap-3">
+                                                                                <div className="w-10 h-10 rounded-xl bg-orange/10 text-orange flex items-center justify-center">
+                                                                                    <Dumbbell size={18} />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <p className="text-[11px] font-black uppercase tracking-widest text-text-primary">Workout Plan Detected</p>
+                                                                                    <p className="text-[10px] text-text-muted uppercase font-bold">Save this plan to your library</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <button
+                                                                                onClick={() => {
+                                                                                    try {
+                                                                                        const match = msg.content.match(WORKOUT_PLAN_REGEX);
+                                                                                        if (match) {
+                                                                                            const data = JSON.parse(match[1]);
+                                                                                            saveAIProgram(data);
+                                                                                        }
+                                                                                    } catch (e) {
+                                                                                        console.error('Failed to parse AI program:', e);
+                                                                                    }
+                                                                                }}
+                                                                                disabled={isSavingProgram}
+                                                                                className="px-5 py-2.5 bg-orange text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-neu-orange hover:scale-105 transition-all disabled:opacity-50 disabled:scale-100"
+                                                                            >
+                                                                                {isSavingProgram ? 'Saving...' : 'Save to Programs'}
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
                                                                 {msg.isStreaming && (
                                                                     <span className="inline-block w-[3px] h-[1.1em] bg-orange/80 ml-0.5 align-middle rounded-full" style={{ animation: 'cursorBlink 0.8s steps(1) infinite' }} />
                                                                 )}
