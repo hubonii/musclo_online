@@ -196,9 +196,17 @@ exports.createProgramFromAI = async (req, res) => {
     }, { transaction });
 
     for (const rData of routines) {
+      const dayMap = {
+        'sunday': 0, 'monday': 1, 'tuesday': 2, 'wednesday': 3, 'thursday': 4, 'friday': 5, 'saturday': 6,
+        'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6
+      };
+      const dayIndex = typeof rData.day_of_week === 'string' 
+        ? dayMap[rData.day_of_week.toLowerCase()] 
+        : rData.day_of_week;
+
       const routine = await Routine.create({
         name: rData.name || 'Untitled Routine',
-        day_of_week: rData.day_of_week,
+        day_of_week: dayIndex !== undefined ? dayIndex.toString() : null,
         program_id: program.id,
         user_id: req.user.id
       }, { transaction });
