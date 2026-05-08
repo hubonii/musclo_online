@@ -1,7 +1,7 @@
 <div align="center">
 
-# 🏋️ Musclo Online
-### **The Definitive Intelligent Strength Ecosystem**
+# 🏋️ Musclo
+### **The Intelligent Workout Journal & AI Personal Trainer**
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-007ACC?style=for-the-badge&logo=opensource&logoColor=white)](https://opensource.org/licenses/ISC)
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
@@ -10,7 +10,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Azure](https://img.shields.io/badge/Azure-Media_Storage-0089D6?style=for-the-badge&logo=microsoft-azure&logoColor=white)](https://azure.microsoft.com/)
 
-**Musclo Online** is a state-of-the-art, full-stack fitness platform engineered for high-performance strength training. It transcends traditional logging by integrating **Intelligent Performance Auditing**, **Dynamic Volume Analytics**, and a **Gamified Progression Engine** to transform raw workout data into a strategic roadmap for physical excellence.
+**Musclo** is a state-of-the-art, full-stack **Workout Journal** and **AI Personal Trainer** engineered for high-performance strength training. It transcends traditional logging by integrating **Intelligent Performance Auditing**, **Dynamic Volume Analytics**, and a **Gamified Progression Engine** to transform raw workout data into a strategic roadmap for physical excellence.
 
 [**Explore the Code**](https://github.com/hubonii/musclo_online.git) • [**Report Bug**](https://github.com/hubonii/musclo_online/issues) • [**Request Feature**](https://github.com/hubonii/musclo_online/issues)
 
@@ -35,7 +35,7 @@
 ---
 
 ## 🔍 Project Overview
-**Musclo Online** addresses the critical "Information Gap" in strength training—the void between recording a set and understanding its long-term impact. This platform leverages a **relational core** to maintain strict data integrity while providing a **Fluid React UI** for seamless logging. The system synthesizes lifetime volume, exercise variety, and frequency into a personalized **Intelligent Context**, offering users insights previously reserved for professional athletes.
+**Musclo** addresses the critical "Information Gap" in strength training—the void between recording a set and understanding its long-term impact. This platform leverages a **relational core** to maintain strict data integrity while providing a **Fluid React UI** for seamless logging. The system synthesizes lifetime volume, exercise variety, and frequency into a personalized **Intelligent Context**, offering users insights previously reserved for professional athletes.
 
 ---
 
@@ -114,7 +114,7 @@ erDiagram
 ---
 
 ## 🧠 Intelligent Coaching Logic
-The "Intelligent" component of Musclo Online isn't just a gimmick; it's a multi-layered logic system:
+The "Intelligent" component of Musclo isn't just a gimmick; it's a multi-layered logic system:
 1.  **Latent Memory**: The system periodically consolidates chat history into high-level summaries (`latent_memory`), allowing the coach to remember your goals across weeks.
 2.  **Performance Auditing**: When you ask a question, the system injects your recent volume, PRs, and current workout status into the context.
 3.  **Invisible Intelligence**: The coach uses your history as background intelligence, providing advice that "knows" you've been skipping leg day without you having to mention it.
@@ -201,5 +201,5 @@ npm run dev
 ---
 
 <div align="center">
-  <b>Musclo Online — Engineering the Future of Human Performance.</b>
+  <b>Musclo — Engineering the Future of Human Performance.</b>
 </div>
