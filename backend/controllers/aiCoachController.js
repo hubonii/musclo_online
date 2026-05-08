@@ -15,7 +15,7 @@ exports.getSessions = async (req, res) => {
     const sessions = await ChatSession.findAll({
       where: { user_id: req.user.id },
       order: [['updated_at', 'DESC']],
-      limit: 20
+      limit: 50 // Increased for better history access
     });
     res.json({ data: sessions });
   } catch (err) {
@@ -36,7 +36,7 @@ exports.getMessages = async (req, res) => {
     const messages = await ChatMessage.findAll({
       where: { chat_session_id: session.id },
       order: [['created_at', 'ASC']],
-      limit: 50
+      limit: 100 // Increased for deeper history
     });
     res.json({ data: messages });
   } catch (err) {
@@ -53,7 +53,7 @@ exports.createSession = async (req, res) => {
   try {
     const session = await ChatSession.create({
       user_id: req.user.id,
-      title: 'New Chat'
+      title: 'New Discussion'
     });
     res.status(201).json({ data: session });
   } catch (err) {
@@ -95,7 +95,7 @@ exports.ask = async (req, res) => {
     if (!session) {
       session = await ChatSession.create({
         user_id: req.user.id,
-        title: message.substring(0, 40)
+        title: message.substring(0, 50).trim() + (message.length > 50 ? '...' : '')
       });
     }
 
@@ -108,7 +108,7 @@ exports.ask = async (req, res) => {
     const historyMessages = await ChatMessage.findAll({
       where: { chat_session_id: session.id },
       order: [['created_at', 'ASC']],
-      limit: 30 // Increased further for deeper immediate context
+      limit: 50 // Increased for better AI context memory
     });
 
     const latentContext = await getLatentWorkoutContext(req.user.id, workout_context, session);
