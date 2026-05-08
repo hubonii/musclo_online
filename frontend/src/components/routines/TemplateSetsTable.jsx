@@ -39,8 +39,8 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
                             {/* Set Type */}
                             <div className="col-span-3">
                                 <Select 
-                                    variant="compact" 
-                                    className="bg-transparent border-0 shadow-none text-[10px] font-black uppercase tracking-tight h-8"
+                                    variant="capsule" 
+                                    className="h-10"
                                     value={set.set_type} 
                                     onValueChange={(v) => onUpdateSet(exIndex, setIndex, 'set_type', v)} 
                                     options={[
@@ -60,7 +60,7 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
                                         placeholder="0" 
                                         value={set.weight_kg !== null ? Math.round(set.weight_kg) : ''} 
                                         onChange={(e) => onUpdateSet(exIndex, setIndex, 'weight_kg', e.target.value ? parseInt(e.target.value) : null)} 
-                                        className="w-full bg-app rounded-lg text-center h-8 text-xs font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
+                                        className="w-full bg-app rounded-full text-center h-10 text-sm font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
                                     />
                                 </div>
                             )}
@@ -71,7 +71,7 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
                                     <TimeInput 
                                         value={set.duration_seconds} 
                                         onChange={(v) => onUpdateSet(exIndex, setIndex, 'duration_seconds', v)} 
-                                        className="h-8 text-xs font-black bg-app shadow-neu-inset rounded-lg px-2"
+                                        className="h-10 text-sm font-black bg-app shadow-neu-inset rounded-full px-4"
                                     />
                                 ) : (
                                     <input 
@@ -79,7 +79,7 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
                                         placeholder="0" 
                                         value={set.reps ?? ''} 
                                         onChange={(e) => onUpdateSet(exIndex, setIndex, 'reps', e.target.value ? parseInt(e.target.value) : null)} 
-                                        className="w-full bg-app rounded-lg text-center h-8 text-xs font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
+                                        className="w-full bg-app rounded-full text-center h-10 text-sm font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
                                     />
                                 )}
                             </div>
@@ -91,7 +91,7 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
                                     placeholder="-" 
                                     value={set.rir ?? ''} 
                                     onChange={(e) => onUpdateSet(exIndex, setIndex, 'rir', e.target.value ? parseInt(e.target.value) : null)} 
-                                    className="w-full bg-app rounded-lg text-center h-8 text-xs font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
+                                    className="w-full bg-app rounded-full text-center h-10 text-sm font-black text-text-primary outline-none shadow-neu-inset focus:shadow-neu-inset-focused transition-all"
                                 />
                             </div>
 

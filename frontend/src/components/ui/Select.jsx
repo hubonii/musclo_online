@@ -5,18 +5,19 @@ import { cn } from '../../lib/utils';
 export default function Select({ value, onValueChange, options, placeholder = 'Select...', label, className, variant = 'default' }) {
     // Trigger class variants used by form, compact, and inline select layouts.
     const triggerVariants = {
-        default: 'bg-surface border-divider hover:bg-surface shadow-sm',
-        'neu-inset': 'bg-surface shadow-neu-inset border-none focus-within:ring-1 focus-within:ring-orange/30',
-        'neu-flat': 'bg-surface shadow-neu border-none hover:shadow-neu-sm transition-colors',
-        'ghost-orange': 'bg-transparent text-orange font-black border-none hover:bg-orange/5 px-1 h-auto',
-        compact: 'bg-surface h-[38px] px-2 text-xs border-none shadow-neu-inset'
+        default: 'bg-surface border-divider hover:bg-surface shadow-sm rounded-xl',
+        'neu-inset': 'bg-surface shadow-neu-inset border-none focus-within:ring-1 focus-within:ring-orange/30 rounded-xl',
+        'neu-flat': 'bg-surface shadow-neu border-none hover:shadow-neu-sm transition-colors rounded-xl',
+        'ghost-orange': 'bg-transparent text-orange font-black border-none hover:bg-orange/5 px-1 h-auto rounded-xl',
+        compact: 'bg-surface h-[38px] px-2 text-xs border-none shadow-neu-inset rounded-xl',
+        capsule: 'bg-surface h-[38px] px-4 text-xs border-none shadow-neu-inset rounded-full'
     };
 return (<div className={className}>
             {label && (<label className="block text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-1.5 ml-1">
                     {label}
                 </label>)}
             <RadixSelect.Root value={value} onValueChange={onValueChange}>
-                <RadixSelect.Trigger className={cn('inline-flex items-center justify-between w-full h-[46px] px-4 rounded-xl transition-all outline-none', 'text-text-primary text-sm font-black uppercase tracking-tight', triggerVariants[variant], 'data-[placeholder]:text-text-muted')}>
+                <RadixSelect.Trigger className={cn('inline-flex items-center justify-between w-full h-[46px] px-4 transition-all outline-none', 'text-text-primary text-sm font-black uppercase tracking-tight', triggerVariants[variant], 'data-[placeholder]:text-text-muted')}>
                     <RadixSelect.Value placeholder={placeholder}/>
                     <RadixSelect.Icon>
                         <ChevronDown size={variant === 'compact' ? 12 : 16} className={cn(variant === 'ghost-orange' ? "text-orange" : "text-text-muted", "ml-1")}/>
