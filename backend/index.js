@@ -111,7 +111,9 @@ const startServer = async () => {
         
         console.log('Seeding baseline data...');
         const seedExercises = require('./seeders/detectAnatomySplit');
+        const seedAchievements = require('./seeders/seedAchievements');
         await seedExercises();
+        await seedAchievements();
       } catch (err) {
         console.error('Background startup task failed:', err);
       }

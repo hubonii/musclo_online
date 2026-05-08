@@ -9,6 +9,7 @@ import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 
 import AchievementBadge from '../components/profile/AchievementBadge';
+import LevelBadge from '../components/profile/LevelBadge';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import Avatar from '../components/ui/Avatar';
 // ChangePasswordModal removed - now integrated in settings
@@ -82,12 +83,13 @@ export default function ProfilePage() {
                         />
                     </div>
 
-                    <div className="flex-1 text-center md:text-left relative z-10 w-full">
-                        <h1 className="text-2xl md:text-3xl font-black text-text-primary tracking-tight break-words">{profile.name}</h1>
-                        <p className="text-sm text-text-secondary mt-1 max-w-md mx-auto md:mx-0 break-words line-clamp-4">{profile.bio || 'This lifter prefers to let their weights do the talking.'}</p>
-
-
-                    </div>
+                        <div className="flex-1 text-center md:text-left relative z-10 w-full">
+                            <h1 className="text-2xl md:text-3xl font-black text-text-primary tracking-tight break-words">{profile.name}</h1>
+                            {profile.username && (
+                                <p className="text-sm font-bold text-orange uppercase tracking-[0.2em] mt-0.5">@{profile.username}</p>
+                            )}
+                            <p className="text-sm text-text-secondary mt-2 max-w-md mx-auto md:mx-0 break-words line-clamp-4">{profile.bio || 'This lifter prefers to let their weights do the talking.'}</p>
+                        </div>
 
                     <div className="flex flex-col gap-3 relative z-10 w-full md:w-auto">
                         {isOwnProfile && (
@@ -101,28 +103,36 @@ export default function ProfilePage() {
                 </Card>
 
                 {/* High-level stats strip */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
-                    <Card className="flex flex-col items-center justify-center text-center p-6 md:p-8">
-                        <Dumbbell className="text-tertiary mb-2 md:mb-3 opacity-80" size={24} />
-                        <h3 className="text-3xl md:text-5xl font-black text-text-primary tracking-tighter mb-1 truncate w-full">
-                            {profile.stats?.total_workouts || 0}
-                        </h3>
-                        <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-text-secondary">Total Workouts</p>
-                    </Card>
-                    <Card className="flex flex-col items-center justify-center text-center p-6 md:p-8">
-                        <TrendingUp className="text-emerald mb-2 md:mb-3 opacity-80" size={24} />
-                        <h3 className="text-3xl md:text-5xl font-black text-text-primary tracking-tighter mb-1 truncate w-full">
-                            {((profile.stats?.total_volume || 0) / 1000).toFixed(1)} <span className="text-xl md:text-2xl text-text-muted">t</span>
-                        </h3>
-                        <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-text-secondary">Lifetime Volume</p>
-                    </Card>
-                    <Card className="flex flex-col items-center justify-center text-center p-6 md:p-8">
-                        <CalendarDays className="text-tertiary mb-2 md:mb-3 opacity-80" size={24} />
-                        <h3 className="text-3xl md:text-5xl font-black text-text-primary tracking-tighter mb-1 truncate w-full">
-                            {profile.stats?.current_streak || 0} <span className="text-xl md:text-2xl text-text-muted">🔥</span>
-                        </h3>
-                        <p className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-text-secondary">Current Streak</p>
-                    </Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-3">
+                        <Card className="flex flex-col items-center justify-center text-center p-4">
+                            <Dumbbell className="text-tertiary mb-1 opacity-80" size={20} />
+                            <h3 className="text-xl font-black text-text-primary tracking-tighter">
+                                {profile.stats?.total_workouts || 0}
+                            </h3>
+                            <p className="text-[9px] font-bold uppercase tracking-widest text-text-secondary">Logs</p>
+                        </Card>
+                        <Card className="flex flex-col items-center justify-center text-center p-4">
+                            <TrendingUp className="text-emerald mb-1 opacity-80" size={20} />
+                            <h3 className="text-xl font-black text-text-primary tracking-tighter">
+                                {((profile.stats?.total_volume || 0) / 1000).toFixed(1)}t
+                            </h3>
+                            <p className="text-[9px] font-bold uppercase tracking-widest text-text-secondary">Volume</p>
+                        </Card>
+                        <Card className="flex flex-col items-center justify-center text-center p-4">
+                            <CalendarDays className="text-tertiary mb-1 opacity-80" size={20} />
+                            <h3 className="text-xl font-black text-text-primary tracking-tighter">
+                                {profile.stats?.current_streak || 0}d
+                            </h3>
+                            <p className="text-[9px] font-bold uppercase tracking-widest text-text-secondary">Streak</p>
+                        </Card>
+                    </div>
+
+                    <LevelBadge 
+                        level={profile.level?.number || 1} 
+                        title={profile.level?.title || 'Beginner'} 
+                        progress={profile.level?.progress || 0} 
+                    />
                 </div>
 
                 {/* Achievement gallery */}
