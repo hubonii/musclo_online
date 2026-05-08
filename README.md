@@ -20,6 +20,7 @@
 
 ## 📖 Table of Contents
 - [🔍 Project Overview](#-project-overview)
+- [🏋️ Training Methodology](#️-training-methodology--scientific-foundation)
 - [✨ Core Capabilities](#-core-capabilities)
 - [🏗️ Technical Architecture](#️-technical-architecture)
 - [📊 Database Schema](#-database-schema)
@@ -31,6 +32,25 @@
 - [⚙️ Local Synchronization](#️-local-synchronization)
 - [🎮 Gamification Mechanics](#-gamification-mechanics)
 - [🎓 Graduation Project Governance](#-graduation-project-governance)
+
+---
+
+## 🏋️ Training Methodology & Scientific Foundation
+Musclo is architected around the fundamental principles of exercise science, ensuring that every feature serves a biological purpose in the user's fitness journey.
+
+### **1. Hypertrophy-Centric Architecture**
+The system is optimized for **Muscle Hypertrophy** (growth). By tracking specific muscle group volume and frequency through the `SetData` model, Musclo provides an anatomical breakdown of your training. This allows users to identify under-trained muscle groups and optimize their split for maximum sarcoplasmic and myofibrillar adaptation.
+
+### **2. Automated Progressive Overload**
+Progressive overload is the cornerstone of strength adaptation. Musclo's **Intelligent Logging System** tracks:
+- **Load Progression**: Incremental weight increases across sessions.
+- **Volume Density**: Total tonnage moved per muscle group.
+- **Intensity Metrics**: Tracking AMRAP (As Many Reps As Possible) sets and RPE (Rate of Perceived Exertion) to push biological limits.
+
+### **3. The High-Integrity Logging System**
+The technical core of the platform is a sophisticated **Dual-Layer Logging Engine**:
+- **Template Layer (Routines)**: Defines the "Intent" of the workout (targets, rest times, and exercise selection).
+- **Execution Layer (Logs)**: Captures the "Reality" of the session. The relational link between `WorkoutLog` and `SetData` ensures that every rep is recorded with sub-second precision, providing the clean data needed for our **Intelligent Performance Audits**.
 
 ---
 
