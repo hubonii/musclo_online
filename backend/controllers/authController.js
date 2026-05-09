@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const mailService = require('../services/mailService');
-const crypto = require('crypto');
 const { Op } = require('sequelize');
 
 /**

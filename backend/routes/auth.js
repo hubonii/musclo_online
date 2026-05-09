@@ -3,7 +3,7 @@
  */
 const express = require('express');
 const router = express.Router();
-const { register, login, logout, getMe, getCsrfCookie, forgotPassword, resetPassword, verifyEmail, resendVerification, changePassword } = require('../controllers/authController');
+const { register, login, logout, getMe, forgotPassword, resetPassword, verifyEmail, resendVerification, changePassword } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
 

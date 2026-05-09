@@ -54,9 +54,9 @@ export const useWorkoutStore = create()(persist((set, get) => ({
                             previousWeight: null,
                             previousReps: null,
                             previousDurationSeconds: null,
-                            targetWeightKg: null,
-                            targetReps: null,
-                            targetDurationSeconds: null,
+                            // targetWeightKg: null,
+                            // targetReps: null,
+                            // targetDurationSeconds: null,
                         }],
                 }],
         });
@@ -89,9 +89,9 @@ export const useWorkoutStore = create()(persist((set, get) => ({
                             previousWeight: null,
                             previousReps: null,
                             previousDurationSeconds: null,
-                            targetWeightKg: lastSet?.targetWeightKg ?? null,
-                            targetReps: lastSet?.targetReps ?? null,
-                            targetDurationSeconds: lastSet?.targetDurationSeconds ?? null,
+                            // targetWeightKg: lastSet?.targetWeightKg ?? null,
+                            // targetReps: lastSet?.targetReps ?? null,
+                            // targetDurationSeconds: lastSet?.targetDurationSeconds ?? null,
                         }],
                 };
             }),
@@ -195,9 +195,9 @@ export const useWorkoutStore = create()(persist((set, get) => ({
                             previousWeight: prev?.weight ?? null,
                             previousReps: prev?.reps ?? null,
                             previousDurationSeconds: prev?.duration_seconds ?? null,
-                            targetWeightKg: null,
-                            targetReps: null,
-                            targetDurationSeconds: null,
+                            // targetWeightKg: null,
+                            // targetReps: null,
+                            // targetDurationSeconds: null,
                         };
                     }
                 });

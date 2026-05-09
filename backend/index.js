@@ -56,7 +56,6 @@ app.use('/storage', (req, res, next) => {
 }, express.static('public/storage'));
 app.use('/uploads', express.static('uploads'));
 
-const authController = require('./controllers/authController');
 const authRoutes = require('./routes/auth');
 const { protect, verified } = require('./middleware/auth');
 
@@ -109,11 +108,22 @@ const startServer = async () => {
           await sequelize.sync();
         }
         
-        console.log('Seeding baseline data...');
-        const seedExercises = require('./seeders/detectAnatomySplit');
-        const seedAchievements = require('./seeders/seedAchievements');
-        await seedExercises();
-        await seedAchievements();
+        console.log('Checking baseline data...');
+        const { Exercise, Achievement } = require('./models');
+        const exerciseCount = await Exercise.count();
+        const achievementCount = await Achievement.count();
+
+        if (exerciseCount === 0) {
+          console.log('Seeding exercises (table is empty)...');
+          const seedExercises = require('./seeders/detectAnatomySplit');
+          await seedExercises();
+        }
+
+        if (achievementCount === 0) {
+          console.log('Seeding achievements (table is empty)...');
+          const seedAchievements = require('./seeders/seedAchievements');
+          await seedAchievements();
+        }
       } catch (err) {
         console.error('Background startup task failed:', err);
       }

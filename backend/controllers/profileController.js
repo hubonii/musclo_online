@@ -1,7 +1,7 @@
 /**
  * Controller for managing user profile, achievements, and account actions.
  */
-const { User, WorkoutLog, Achievement, Routine, ProgressPhoto, Exercise } = require('../models');
+const { User, WorkoutLog, Achievement, Routine, ProgressPhoto } = require('../models');
 const achievementService = require('../services/achievementService');
 const azureStorageService = require('../services/azureStorageService');
 const mailService = require('../services/mailService');
