@@ -37,6 +37,8 @@ export const useWorkoutStore = create()(persist((set, get) => ({
                     muscleGroup: exercise.muscleGroup,
                     type: exercise.type,
                     targetMetric: exercise.target_metric,
+                    thumbnailUrl: exercise.thumbnail_url || exercise.thumbnailUrl,
+                    rawExercise: exercise.rawExercise || exercise,
                     restTimerSeconds: null,
                     sets: [{
                             id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),

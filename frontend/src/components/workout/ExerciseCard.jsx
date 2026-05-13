@@ -7,13 +7,20 @@ import Button from '../ui/Button';
 import Select from '../ui/Select';
 import SetRow from './SetRow';
 // Renders one exercise block with editable set rows inside active workout page.
-const ExerciseCard = memo(({ exercise, eIdx, isImperial, activeSetId, profileWeight, onUpdateExerciseConfig, onRemoveExercise, onAddSet, onRemoveSet, onUpdateSet, onCompleteSet }) => {
+const ExerciseCard = memo(({ exercise, eIdx, isImperial, activeSetId, profileWeight, onUpdateExerciseConfig, onRemoveExercise, onAddSet, onRemoveSet, onUpdateSet, onCompleteSet, onViewExercise }) => {
 return (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.1 }}>
             <Card className="overflow-visible">
                 <div className="flex items-start justify-between mb-4">
                     <div className="flex gap-3">
-                        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-divider/10 text-text-secondary flex-shrink-0">
-                            <span className="font-bold">{eIdx + 1}</span>
+                        <div 
+                            className={`flex items-center justify-center ${exercise.thumbnailUrl ? 'w-12 h-12' : 'w-10 h-10'} rounded-lg bg-divider/10 text-text-secondary flex-shrink-0 overflow-hidden border border-divider/20 hover:border-orange transition-colors ${onViewExercise && exercise.rawExercise ? 'cursor-pointer' : ''}`}
+                            onClick={() => onViewExercise && exercise.rawExercise && onViewExercise(exercise.rawExercise)}
+                        >
+                            {exercise.thumbnailUrl ? (
+                                <img src={exercise.thumbnailUrl} alt={exercise.exerciseName} className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal" />
+                            ) : (
+                                <span className="font-bold">{eIdx + 1}</span>
+                            )}
                         </div>
                         <div>
                             <h3 className="font-bold text-lg text-text-primary text-balance leading-tight">{exercise.exerciseName}</h3>

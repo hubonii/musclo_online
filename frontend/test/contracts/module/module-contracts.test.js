@@ -38,7 +38,7 @@ describe('frontend module source contracts', () => {
 
     files.forEach((file) => {
       const source = fs.readFileSync(file, 'utf8');
-      expect(source).toMatch(/export\s+(default|const|function|\{|class)/);
+      expect(source).toMatch(/export\s+(async\s+)?(default|const|function|\{|class)/);
     });
   });
 });

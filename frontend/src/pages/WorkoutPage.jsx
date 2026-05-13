@@ -28,6 +28,7 @@ import WorkoutHeader from '../components/workout/WorkoutHeader';
 import ExerciseCard from '../components/workout/ExerciseCard';
 import WorkoutFinishDialog from '../components/workout/WorkoutFinishDialog';
 import { useAuthStore } from '../stores/useAuthStore';
+import ExerciseDetailModal from '../components/exercises/ExerciseDetailModal';
 
 export default function WorkoutPage() {
     const user = useAuthStore(state => state.user);
@@ -85,6 +86,7 @@ export default function WorkoutPage() {
     const [isLoadingRoutine, setIsLoadingRoutine] = useState(false);
     const [recentRoutines, setRecentRoutines] = useState([]);
     const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+    const [detailExercise, setDetailExercise] = useState(null);
 
     useEffect(() => {
         if (routineId && routineId !== 'undefined' && !isActive && !pendingRoutine && !isLoadingRoutine) {
@@ -181,7 +183,7 @@ export default function WorkoutPage() {
     }, [completeSet]);
 
     const handleAddExercise = useCallback((exercise) => {
-        addExercise({ id: exercise.id, name: exercise.name, muscleGroup: exercise.muscle_group, type: exercise.type, target_metric: exercise.target_metric });
+        addExercise({ id: exercise.id, name: exercise.name, muscleGroup: exercise.muscle_group, type: exercise.type, target_metric: exercise.target_metric, thumbnail_url: exercise.thumbnail_url, rawExercise: exercise });
         setIsPickerOpen(false);
         toast('success', `Added ${exercise.name}`);
     }, [addExercise, toast]);
@@ -204,6 +206,8 @@ export default function WorkoutPage() {
             const initialExercises = pendingRoutine.exercises.map((ex) => ({
                 exerciseId: ex.id,
                 exerciseName: ex.name,
+                thumbnailUrl: ex.thumbnail_url,
+                rawExercise: ex,
                 muscleGroup: ex.muscle_group,
                 type: ex.pivot?.override_type || (ex.equipment === 'Body Weight' ? 'Bodyweight' : 'Weights'),
                 targetMetric: ex.pivot?.override_metric || 'Reps',
@@ -347,7 +351,7 @@ export default function WorkoutPage() {
                 <div className="px-4 md:px-8 space-y-6 max-w-4xl mx-auto w-full">
                     <AnimatePresence>
                         {exercises?.map((exercise, eIdx) => (
-                            <ExerciseCard key={exercise.exerciseId} exercise={exercise} eIdx={eIdx} isImperial={isImperial} activeSetId={activeSetId} profileWeight={profileWeight} onUpdateExerciseConfig={handleUpdateExerciseConfig} onRemoveExercise={handleRemoveExercise} onAddSet={handleAddSet} onRemoveSet={handleRemoveSet} onUpdateSet={handleUpdateSet} onCompleteSet={handleCompleteSet}/>
+                            <ExerciseCard key={exercise.exerciseId} exercise={exercise} eIdx={eIdx} isImperial={isImperial} activeSetId={activeSetId} profileWeight={profileWeight} onUpdateExerciseConfig={handleUpdateExerciseConfig} onRemoveExercise={handleRemoveExercise} onAddSet={handleAddSet} onRemoveSet={handleRemoveSet} onUpdateSet={handleUpdateSet} onCompleteSet={handleCompleteSet} onViewExercise={(ex) => setDetailExercise(ex)}/>
                         ))}
                     </AnimatePresence>
 
@@ -378,6 +382,10 @@ export default function WorkoutPage() {
             <ConfirmDialog open={cancelModalOpen} onOpenChange={setCancelModalOpen} title="Discard Workout" description="Are you sure you want to discard this workout? Progress will not be saved." confirmLabel="DISCARD" variant="danger" onConfirm={handleCancel}/>
 
             <WorkoutFinishDialog open={finishModalOpen} onOpenChange={setFinishModalOpen} completedSetsCount={completedSetsCount()} onConfirm={handleFinish}/>
+
+            {detailExercise && (
+                <ExerciseDetailModal exercise={detailExercise} onClose={() => setDetailExercise(null)} />
+            )}
         </div>
     );
 }

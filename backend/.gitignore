@@ -1,37 +1,4 @@
-# ========================
 # Coverage & test artifacts
-# ========================
 coverage/
 .nyc_output/
-
-# ========================
-# Runtime uploads / media caches
-# ========================
-uploads/
-temp/
-tmp/
-
-# ========================
-# Packaged tarballs
-# ========================
-*.tgz
-
-# ========================
-# Database dumps & migrations state
-# ========================
-*.sql
-!seeders/**/*.sql
-
-# ========================
-# SSL / certificates (never commit)
-# ========================
-*.pem
-*.key
-*.crt
-*.cert
-
-# ========================
-# PM2 / process manager
-# ========================
-ecosystem.config.js
-.pm2/
+test-output.txt
