@@ -4,9 +4,9 @@ import { Folder, Trash2 } from 'lucide-react';
 import Card from '../ui/Card';
 import Badge from '../ui/Badge';
 import { MOTION } from '../../lib/motion';
-export default function ProgramCard({ program, onClick, onDelete }) {
+export default function ProgramCard({ program, onClick, onDelete, inset = false }) {
 return (<motion.div variants={MOTION.staggerItem}>
-            <Card className="p-0 overflow-hidden shadow-neu-inset bg-surface">
+            <Card className={`p-0 overflow-hidden ${inset ? 'shadow-neu-inset' : 'shadow-neu'} bg-surface`}>
                 <div className="p-6 cursor-pointer hover:bg-divider/5 transition-colors" onClick={onClick}>
                     <div className="flex items-start justify-between">
                         <div className="flex items-start gap-4">

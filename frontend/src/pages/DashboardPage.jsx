@@ -59,7 +59,7 @@ return (<motion.div initial="hidden" animate="visible" variants={containerVarian
                         </div>
                         <div className="flex gap-4 pb-4 snap-x overflow-x-auto hide-scrollbar -mx-2 px-2">
                             {recentPrograms.map(program => (<div key={program.id} className="w-80 shrink-0 snap-start">
-                                    <ProgramCard program={program} onClick={() => navigate(`/programs/${program.id}`)} onDelete={() => { }}/>
+                                    <ProgramCard program={program} onClick={() => navigate(`/programs/${program.id}`)} onDelete={() => { }} inset/>
                                 </div>))}
                         </div>
                     </div>)}
@@ -74,7 +74,7 @@ return (<motion.div initial="hidden" animate="visible" variants={containerVarian
                         </div>
                         <div className="flex gap-4 pb-4 snap-x overflow-x-auto hide-scrollbar -mx-2 px-2">
                             {recentRoutines.map(routine => (<div key={routine.id} className="w-72 shrink-0 snap-start">
-                                    <RoutineCard routine={routine} onLog={() => navigate(routine.id ? `/workout/${routine.id}` : '/workout')} onDelete={() => { }}/>
+                                    <RoutineCard routine={routine} onLog={() => navigate(routine.id ? `/workout/${routine.id}` : '/workout')} onDelete={() => { }} inset/>
                                 </div>))}
                         </div>
                     </div>)}

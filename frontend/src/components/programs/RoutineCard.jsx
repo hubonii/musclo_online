@@ -17,7 +17,7 @@ function formatLastPerformed(dateStr) {
 }
 
 // Displays one routine summary card with edit/delete/log-session actions.
-export default function RoutineCard({ routine, lastPerformed, onEdit, onDelete, onLog }) {
+export default function RoutineCard({ routine, lastPerformed, onEdit, onDelete, onLog, inset = false }) {
     const exercises = routine?.exercises || [];
 
 return (
@@ -25,7 +25,7 @@ return (
             layout 
             initial={{ opacity: 0, scale: 0.95 }} 
             animate={{ opacity: 1, scale: 1 }} 
-            className="bg-surface rounded-2xl p-6 shadow-neu-inset flex flex-col transition-colors group h-full"
+            className={`bg-surface rounded-2xl p-6 ${inset ? 'shadow-neu-inset' : 'shadow-neu'} flex flex-col transition-colors group h-full`}
         >
             <div className="flex justify-between items-start mb-6">
                 <div>
