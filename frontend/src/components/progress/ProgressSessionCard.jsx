@@ -19,7 +19,7 @@ export default function ProgressSessionCard({
     compact = false,
 }) {
     const poses = ['front', 'side', 'back'];
-return (<motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="space-y-3 md:space-y-4">
+return (<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="space-y-3 md:space-y-4">
             <div className="flex flex-wrap items-end justify-between gap-4 border-b border-divider/50 pb-2 px-2 flex-col sm:flex-row w-full mb-3">
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Clock size={14} className="text-tertiary shrink-0"/>
