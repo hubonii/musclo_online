@@ -8,86 +8,138 @@ require('dotenv').config();
 
 async function seed() {
     try {
-        console.log('--- STARTING FINAL RECOVERY SEEDING ---');
+        console.log('--- STARTING HIGH-FIDELITY PPL SEEDING WITH REAL ASSETS ---');
 
         const user = await User.findOne({ where: { email: 'huboony@gmail.com' } });
         if (!user) throw new Error('User not found');
         const userId = user.id;
 
-        console.log('Cleaning up user history...');
-        await ProgressPhoto.destroy({ where: { user_id: userId } });
-        await Measurement.destroy({ where: { user_id: userId } });
-        
-        const userWorkouts = await WorkoutLog.findAll({ where: { user_id: userId } });
-        const workoutIds = userWorkouts.map(w => w.id);
-        if (workoutIds.length > 0) {
-            await SetData.destroy({ where: { workout_log_id: { [Op.in]: workoutIds } } });
-        }
-        await WorkoutLog.destroy({ where: { user_id: userId } });
-        
-        const userRoutines = await Routine.findAll({ where: { user_id: userId } });
-        const routineIds = userRoutines.map(r => r.id);
-        if (routineIds.length > 0) {
-            await RoutineExercise.destroy({ where: { routine_id: { [Op.in]: routineIds } } });
-        }
-        await Routine.destroy({ where: { user_id: userId } });
-        await Program.destroy({ where: { user_id: userId } });
+        console.log('Clearing old data...');
+        await sequelize.query(`DELETE FROM progress_photos WHERE user_id = ${userId}`);
+        await sequelize.query(`DELETE FROM measurements WHERE user_id = ${userId}`);
+        await sequelize.query(`DELETE FROM set_data WHERE workout_log_id IN (SELECT id FROM workout_logs WHERE user_id = ${userId})`);
+        await WorkoutLog.destroy({ where: { user_id: userId }, force: true });
+        await sequelize.query(`DELETE FROM routine_exercise WHERE routine_id IN (SELECT id FROM routines WHERE user_id = ${userId})`);
+        await Routine.destroy({ where: { user_id: userId }, force: true });
+        await Program.destroy({ where: { user_id: userId }, force: true });
 
-        const sasUrl = process.env.AZURE_STORAGE_SAS_URL;
-        const [baseUrl, sasToken] = sasUrl.split('?');
-        const workingBlobs = ['Aesthetic Wallpaper for iPhone and android.jpg', 'Duck Rich.jpg', 'New Wallpaper.jpg', 'The Green Explorer.jpg', 'download (1).jpg'];
-        const getUrlForBlob = (name) => `${baseUrl}/${encodeURIComponent(name)}?${sasToken}`;
+        // New Base URL provided by user
+        const baseUrl = 'https://muscloasset2.blob.core.windows.net/progressphotos';
+        const sasToken = process.env.AZURE_STORAGE_SAS_URL ? process.env.AZURE_STORAGE_SAS_URL.split('?')[1] : '';
 
-        const exercises = await Exercise.findAll({ limit: 5 });
-        const chestEx = exercises[0];
+        // Exact filenames provided by user
+        const realBlobs = [
+            '1778661995847-FB_IMG_1693317954251.jpg',
+            'Aesthetic Wallpaper for iPhone and android.jpg',
+            'Asparagus Cartoon Character in Casual Street Style.jpg',
+            'BTS (방탄소년단) \'Dynamite\' Official MV.jpg',
+            'New Wallpaper.jpg',
+            'The Green Explorer.jpg',
+            'Wallpaper papel de parede 4k 8k.jpg',
+            'download (10).jpg',
+            'download (4).jpg',
+            'download (6).jpg',
+            'download (7).jpg',
+            'download (8).jpg',
+            'download.jpg',
+            'illustration character.jpg',
+            'Duck Rich.jpg',
+            'download (1).jpg',
+            'download (11).jpg',
+            'download (12).jpg',
+            'download (2).jpg',
+            'download (3).jpg',
+            'download (5).jpg',
+            'download (9).jpg',
+            'Копилка дизайна 💌.jpg'
+        ];
 
-        console.log('Rebuilding Mock Database...');
-        const program = await Program.create({ user_id: userId, name: 'Evolution Phase 1', description: 'Elite Mock Data' });
-        const push = await Routine.create({ user_id: userId, program_id: program.id, name: 'Push Protocol', day_of_week: '2' });
-        
-        await RoutineExercise.create({ routine_id: push.id, exercise_id: chestEx.id, order: 1, target_sets: 4, target_reps: '12' });
+        const getUrl = (name) => `${baseUrl}/${encodeURIComponent(name)}${sasToken ? '?' + sasToken : ''}`;
 
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - 14);
+        const allEx = await Exercise.findAll();
+        const findE = (n) => allEx.find(e => e.name.toLowerCase().includes(n.toLowerCase())) || allEx[0];
 
-        for (let i = 0; i <= 14; i += 7) {
-            const dateStr = new Date(startDate.getTime() + (i * 86400000)).toISOString().split('T')[0];
-            const m = await Measurement.create({ user_id: userId, date: dateStr, weight_kg: 85 - (i/7) });
+        const bp = findE('bench press');
+        const sp = findE('shoulder press');
+        const tr = findE('tricep');
+        const lp = findE('lat pulldown');
+        const row = findE('row');
+        const curl = findE('bicep');
+        const sq = findE('squat');
+        const lpr = findE('leg press');
+
+        console.log('Building Elite 6-Day Program...');
+        const prog = await Program.create({ user_id: userId, name: 'Evolution: PPL + Swimming', description: 'Optimal 6-day split with swimming recovery.' });
+
+        const pull = await Routine.create({ user_id: userId, program_id: prog.id, name: 'Pull Protocol', day_of_week: '1' });
+        const push = await Routine.create({ user_id: userId, program_id: prog.id, name: 'Push Protocol', day_of_week: '2' });
+        const legs = await Routine.create({ user_id: userId, program_id: prog.id, name: 'Leg Protocol', day_of_week: '3' });
+        const swim = await Routine.create({ user_id: userId, program_id: prog.id, name: 'Swimming Recovery', day_of_week: '7' });
+
+        await RoutineExercise.bulkCreate([
+            { routine_id: pull.id, exercise_id: lp.id, sort_order: 0, target_sets: 3, target_reps: 10 },
+            { routine_id: pull.id, exercise_id: row.id, sort_order: 1, target_sets: 3, target_reps: 10 },
+            { routine_id: push.id, exercise_id: bp.id, sort_order: 0, target_sets: 3, target_reps: 10 },
+            { routine_id: push.id, exercise_id: sp.id, sort_order: 1, target_sets: 3, target_reps: 10 },
+            { routine_id: legs.id, exercise_id: sq.id, sort_order: 0, target_sets: 3, target_reps: 8 },
+            { routine_id: legs.id, exercise_id: lpr.id, sort_order: 1, target_sets: 3, target_reps: 12 }
+        ]);
+
+        const cycle = ['pull', 'push', 'legs', 'rest', 'pull', 'push', 'cardio'];
+        const start = new Date();
+        start.setDate(start.getDate() - 42); 
+
+        let blobIdx = 0;
+        console.log('Seeding 6 weeks of realistic history...');
+
+        for (let d = 0; d < 42; d++) {
+            const cur = new Date(start.getTime() + (d * 86400000));
+            const ds = cur.toISOString().split('T')[0];
+            const type = cycle[d % 7];
+
+            // Weekly measurement with unique photos
+            if (d % 7 === 0) {
+                const m = await Measurement.create({ 
+                    user_id: userId, 
+                    date: ds, 
+                    weight_kg: 90 - (d/7)*0.5, 
+                    height_cm: 164 
+                });
+                await ProgressPhoto.create({ 
+                    user_id: userId, 
+                    measurement_id: m.id, 
+                    pose: 'front', 
+                    photo_path: getUrl(realBlobs[blobIdx % realBlobs.length]), 
+                    taken_at: `${ds}T09:00:00Z` 
+                });
+                blobIdx++;
+            }
+
+            if (type === 'rest') continue;
+            const r = type === 'pull' ? pull : type === 'push' ? push : type === 'legs' ? legs : swim;
             
-            await ProgressPhoto.create({
-                user_id: userId,
-                measurement_id: m.id,
-                pose: 'front',
-                photo_path: getUrlForBlob(workingBlobs[i % workingBlobs.length]),
-                taken_at: `${dateStr}T10:00:00Z`
+            const w = await WorkoutLog.create({
+                user_id: userId, routine_id: r.id, name: r.name,
+                started_at: `${ds}T18:00:00Z`, completed_at: `${ds}T19:30:00Z`, duration_seconds: 5400,
+                total_volume: type === 'cardio' ? 0 : 5000 + (d*200)
             });
 
-            const workout = await WorkoutLog.create({
-                user_id: userId,
-                routine_id: push.id,
-                name: 'Push Protocol Session',
-                started_at: `${dateStr}T10:00:00Z`,
-                completed_at: `${dateStr}T11:00:00Z`,
-                total_volume: 3000 + (i * 200)
-            });
-
-            await SetData.create({
-                workout_log_id: workout.id,
-                exercise_id: chestEx.id,
-                set_number: 1,
-                reps: 12,
-                weight_kg: 70 + (i/7),
-                set_type: 'working'
-            });
+            if (type !== 'cardio') {
+                const res = await RoutineExercise.findAll({ where: { routine_id: r.id } });
+                for (const re of res) {
+                    let base = 40;
+                    if (type === 'push') base = re.sort_order === 0 ? 50 : 35;
+                    if (type === 'pull') base = re.sort_order === 0 ? 45 : 40;
+                    if (type === 'legs') base = re.sort_order === 0 ? 70 : 110;
+                    
+                    const weight = base + (Math.floor(d/7) * 2.5);
+                    for (let s = 1; s <= 3; s++) {
+                        await SetData.create({ workout_log_id: w.id, exercise_id: re.exercise_id, set_number: s, reps: 10, weight_kg: weight });
+                    }
+                }
+            }
         }
-
-        console.log('--- ALL SYSTEMS GREEN ---');
-
-    } catch (err) {
-        console.error('FINAL SEED FAILED:', err);
-    } finally {
-        await sequelize.close();
-    }
+        console.log('--- HIGH-FIDELITY SEEDING COMPLETE ---');
+    } catch (err) { console.error(err); } finally { await sequelize.close(); }
 }
-
 seed();
