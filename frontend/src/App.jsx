@@ -16,9 +16,10 @@ import { WifiOff } from 'lucide-react';
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: 5 * 60 * 1000, // 5 minutes
+            staleTime: 0, // Data is considered stale immediately, triggering background refetching
             retry: 1,
-            refetchOnWindowFocus: false,
+            refetchOnWindowFocus: true, // Auto-sync when user switches back to the app tab
+            refetchOnReconnect: true, // Auto-sync when internet connection is restored
         },
     },
 });
