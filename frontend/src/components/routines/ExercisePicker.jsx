@@ -162,7 +162,7 @@ return (<div className="flex flex-col h-full w-full overflow-hidden bg-app outli
 
                 </div>
 
-                <div className="flex gap-2  pb-2 scrollbar-hide">
+                <div className="flex gap-2 pb-2 overflow-x-auto hide-scrollbar touch-pan-x">
                     <Badge variant={bodyPart === null ? 'accent' : 'default'} className="cursor-pointer shrink-0" onClick={() => setBodyPart(null)}>
                         All
                     </Badge>
