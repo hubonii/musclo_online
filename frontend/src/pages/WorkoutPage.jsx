@@ -26,10 +26,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '../api/queryKeys';
 import WorkoutHeader from '../components/workout/WorkoutHeader';
 import ExerciseCard from '../components/workout/ExerciseCard';
-import LibraryExerciseCard from '../components/exercises/ExerciseCard';
 import WorkoutFinishDialog from '../components/workout/WorkoutFinishDialog';
-import { useAuthStore } from '../stores/useAuthStore';
 import ExerciseDetailModal from '../components/exercises/ExerciseDetailModal';
+import { useAuthStore } from '../stores/useAuthStore';
 
 export default function WorkoutPage() {
     const user = useAuthStore(state => state.user);
@@ -82,13 +81,12 @@ export default function WorkoutPage() {
     const [cancelModalOpen, setCancelModalOpen] = useState(false);
     const [finishModalOpen, setFinishModalOpen] = useState(false);
     const [isPickerOpen, setIsPickerOpen] = useState(false);
+    const [detailExercise, setDetailExercise] = useState(null);
     const [elapsed, setElapsed] = useState(0);
     const [pendingRoutine, setPendingRoutine] = useState(null);
     const [isLoadingRoutine, setIsLoadingRoutine] = useState(false);
     const [recentRoutines, setRecentRoutines] = useState([]);
     const [isLoadingHistory, setIsLoadingHistory] = useState(false);
-    const [previewExercise, setPreviewExercise] = useState(null);
-    const [detailExercise, setDetailExercise] = useState(null);
 
     useEffect(() => {
         if (routineId && routineId !== 'undefined' && !isActive && !pendingRoutine && !isLoadingRoutine) {
@@ -185,7 +183,15 @@ export default function WorkoutPage() {
     }, [completeSet]);
 
     const handleAddExercise = useCallback((exercise) => {
-        addExercise({ id: exercise.id, name: exercise.name, muscleGroup: exercise.muscle_group, type: exercise.type, target_metric: exercise.target_metric, thumbnail_url: exercise.thumbnail_url, rawExercise: exercise });
+        addExercise({ 
+            id: exercise.id, 
+            name: exercise.name, 
+            muscleGroup: exercise.muscle_group, 
+            type: exercise.type, 
+            target_metric: exercise.target_metric,
+            thumbnail_url: exercise.thumbnail_url,
+            rawExercise: exercise
+        });
         setIsPickerOpen(false);
         toast('success', `Added ${exercise.name}`);
     }, [addExercise, toast]);
@@ -208,11 +214,11 @@ export default function WorkoutPage() {
             const initialExercises = pendingRoutine.exercises.map((ex) => ({
                 exerciseId: ex.id,
                 exerciseName: ex.name,
-                thumbnailUrl: ex.thumbnail_url,
-                rawExercise: ex,
                 muscleGroup: ex.muscle_group,
                 type: ex.pivot?.override_type || (ex.equipment === 'Body Weight' ? 'Bodyweight' : 'Weights'),
                 targetMetric: ex.pivot?.override_metric || 'Reps',
+                thumbnailUrl: ex.thumbnail_url,
+                rawExercise: ex,
                 hasFetchedHistory: false,
                 restTimerSeconds: ex.pivot?.rest_timer_seconds ?? null,
                 sets: (ex.sets?.length ? ex.sets : Array(ex.pivot?.target_sets || 1).fill({})).map((s, i) => ({
@@ -353,7 +359,7 @@ export default function WorkoutPage() {
                 <div className="px-4 md:px-8 space-y-6 max-w-4xl mx-auto w-full">
                     <AnimatePresence>
                         {exercises?.map((exercise, eIdx) => (
-                            <ExerciseCard key={exercise.exerciseId} exercise={exercise} eIdx={eIdx} isImperial={isImperial} activeSetId={activeSetId} profileWeight={profileWeight} onUpdateExerciseConfig={handleUpdateExerciseConfig} onRemoveExercise={handleRemoveExercise} onAddSet={handleAddSet} onRemoveSet={handleRemoveSet} onUpdateSet={handleUpdateSet} onCompleteSet={handleCompleteSet} onViewExercise={(ex) => setPreviewExercise(ex)}/>
+                            <ExerciseCard key={exercise.exerciseId} exercise={exercise} eIdx={eIdx} isImperial={isImperial} activeSetId={activeSetId} profileWeight={profileWeight} onUpdateExerciseConfig={handleUpdateExerciseConfig} onRemoveExercise={handleRemoveExercise} onAddSet={handleAddSet} onRemoveSet={handleRemoveSet} onUpdateSet={handleUpdateSet} onCompleteSet={handleCompleteSet} onViewExercise={(ex) => setDetailExercise(ex)}/>
                         ))}
                     </AnimatePresence>
 
@@ -381,27 +387,16 @@ export default function WorkoutPage() {
                 </div>
             </Modal>
 
+            {detailExercise && (
+                <ExerciseDetailModal 
+                    exercise={detailExercise} 
+                    onClose={() => setDetailExercise(null)} 
+                />
+            )}
+
             <ConfirmDialog open={cancelModalOpen} onOpenChange={setCancelModalOpen} title="Discard Workout" description="Are you sure you want to discard this workout? Progress will not be saved." confirmLabel="DISCARD" variant="danger" onConfirm={handleCancel}/>
 
             <WorkoutFinishDialog open={finishModalOpen} onOpenChange={setFinishModalOpen} completedSetsCount={completedSetsCount()} onConfirm={handleFinish}/>
-
-            <Modal open={!!previewExercise} onOpenChange={() => setPreviewExercise(null)} shellClassName="bg-transparent shadow-none border-none overflow-visible" showClose={false} className="p-0">
-                {previewExercise && (
-                    <div className="w-full max-w-sm mx-auto">
-                        <LibraryExerciseCard 
-                            exercise={previewExercise} 
-                            onClick={(ex) => {
-                                setPreviewExercise(null);
-                                setDetailExercise(ex);
-                            }} 
-                        />
-                    </div>
-                )}
-            </Modal>
-
-            {detailExercise && (
-                <ExerciseDetailModal exercise={detailExercise} onClose={() => setDetailExercise(null)} />
-            )}
         </div>
     );
 }
