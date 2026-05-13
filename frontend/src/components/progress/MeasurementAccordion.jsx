@@ -19,7 +19,7 @@ export default function MeasurementAccordion({ isOpen, onToggle, measurementForm
         { key: 'calves_cm', label: 'Calves (cm)' },
         { key: 'body_fat_percent', label: 'Body Fat (%)' },
     ];
-return (<Card className="overflow-hidden">
+return (<Card className="w-full overflow-hidden">
             <button onClick={onToggle} className="w-full flex items-center justify-between p-3 md:p-6 bg-transparent hover:bg-divider/10 transition-colors" type="button">
                 <div className="flex items-center gap-2">
                     <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-app shadow-neu flex items-center justify-center text-orange">
