@@ -26,6 +26,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '../api/queryKeys';
 import WorkoutHeader from '../components/workout/WorkoutHeader';
 import ExerciseCard from '../components/workout/ExerciseCard';
+import LibraryExerciseCard from '../components/exercises/ExerciseCard';
 import WorkoutFinishDialog from '../components/workout/WorkoutFinishDialog';
 import { useAuthStore } from '../stores/useAuthStore';
 import ExerciseDetailModal from '../components/exercises/ExerciseDetailModal';
@@ -86,6 +87,7 @@ export default function WorkoutPage() {
     const [isLoadingRoutine, setIsLoadingRoutine] = useState(false);
     const [recentRoutines, setRecentRoutines] = useState([]);
     const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+    const [previewExercise, setPreviewExercise] = useState(null);
     const [detailExercise, setDetailExercise] = useState(null);
 
     useEffect(() => {
@@ -351,7 +353,7 @@ export default function WorkoutPage() {
                 <div className="px-4 md:px-8 space-y-6 max-w-4xl mx-auto w-full">
                     <AnimatePresence>
                         {exercises?.map((exercise, eIdx) => (
-                            <ExerciseCard key={exercise.exerciseId} exercise={exercise} eIdx={eIdx} isImperial={isImperial} activeSetId={activeSetId} profileWeight={profileWeight} onUpdateExerciseConfig={handleUpdateExerciseConfig} onRemoveExercise={handleRemoveExercise} onAddSet={handleAddSet} onRemoveSet={handleRemoveSet} onUpdateSet={handleUpdateSet} onCompleteSet={handleCompleteSet} onViewExercise={(ex) => setDetailExercise(ex)}/>
+                            <ExerciseCard key={exercise.exerciseId} exercise={exercise} eIdx={eIdx} isImperial={isImperial} activeSetId={activeSetId} profileWeight={profileWeight} onUpdateExerciseConfig={handleUpdateExerciseConfig} onRemoveExercise={handleRemoveExercise} onAddSet={handleAddSet} onRemoveSet={handleRemoveSet} onUpdateSet={handleUpdateSet} onCompleteSet={handleCompleteSet} onViewExercise={(ex) => setPreviewExercise(ex)}/>
                         ))}
                     </AnimatePresence>
 
@@ -382,6 +384,20 @@ export default function WorkoutPage() {
             <ConfirmDialog open={cancelModalOpen} onOpenChange={setCancelModalOpen} title="Discard Workout" description="Are you sure you want to discard this workout? Progress will not be saved." confirmLabel="DISCARD" variant="danger" onConfirm={handleCancel}/>
 
             <WorkoutFinishDialog open={finishModalOpen} onOpenChange={setFinishModalOpen} completedSetsCount={completedSetsCount()} onConfirm={handleFinish}/>
+
+            <Modal open={!!previewExercise} onOpenChange={() => setPreviewExercise(null)} shellClassName="bg-transparent shadow-none border-none overflow-visible" showClose={false} className="p-0">
+                {previewExercise && (
+                    <div className="w-full max-w-sm mx-auto">
+                        <LibraryExerciseCard 
+                            exercise={previewExercise} 
+                            onClick={(ex) => {
+                                setPreviewExercise(null);
+                                setDetailExercise(ex);
+                            }} 
+                        />
+                    </div>
+                )}
+            </Modal>
 
             {detailExercise && (
                 <ExerciseDetailModal exercise={detailExercise} onClose={() => setDetailExercise(null)} />

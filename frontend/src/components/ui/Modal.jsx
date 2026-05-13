@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { MOTION } from '../../lib/motion';
 import LoadingOverlay from './LoadingOverlay';
-export default function Modal({ open, onOpenChange, title, description, children, className, showClose = true, isLoading, loadingMessage, }) {
+export default function Modal({ open, onOpenChange, title, description, children, className, shellClassName, showClose = true, isLoading, loadingMessage, }) {
 return (<Dialog.Root open={open} onOpenChange={onOpenChange}>
             <AnimatePresence>
                 {open && (<Dialog.Portal forceMount>
@@ -17,7 +17,7 @@ return (<Dialog.Root open={open} onOpenChange={onOpenChange}>
             // Overrides default auto-focus handling for modal content mount.
             }}>
                             <motion.div className={cn('fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none')} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                                 <motion.div className="w-full max-w-lg max-h-[90vh] flex flex-col pointer-events-auto relative rounded-3xl bg-surface shadow-neu overflow-hidden" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.1 }}>
+                                 <motion.div className={cn("w-full max-w-lg max-h-[90vh] flex flex-col pointer-events-auto relative rounded-3xl bg-surface shadow-neu overflow-hidden", shellClassName)} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.1 }}>
                                     {/* Blocks interaction while async modal actions are in progress. */}
                                     {isLoading && <LoadingOverlay message={loadingMessage}/>}
                                     
