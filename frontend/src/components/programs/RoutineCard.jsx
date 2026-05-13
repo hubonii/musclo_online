@@ -25,7 +25,7 @@ return (
             layout 
             initial={{ opacity: 0, scale: 0.95 }} 
             animate={{ opacity: 1, scale: 1 }} 
-            className="bg-surface rounded-2xl p-6 shadow-neu flex flex-col transition-colors group h-full"
+            className="bg-surface rounded-2xl p-6 shadow-neu-inset flex flex-col transition-colors group h-full"
         >
             <div className="flex justify-between items-start mb-6">
                 <div>
@@ -67,7 +67,7 @@ return (
                         <span className="text-text-secondary font-medium truncate pr-4">
                             {ex.pivot?.target_sets ?? 0}x {ex.name}
                         </span>
-                        <span className="text-xs font-bold text-text-muted bg-app px-2 py-1 rounded-lg shrink-0">
+                        <span className="text-xs font-bold text-text-muted bg-app shadow-neu-inset px-2 py-1 rounded-lg shrink-0">
                             {ex.muscle_group}
                         </span>
                     </div>

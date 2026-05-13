@@ -6,7 +6,7 @@ import Badge from '../ui/Badge';
 import { MOTION } from '../../lib/motion';
 export default function ProgramCard({ program, onClick, onDelete }) {
 return (<motion.div variants={MOTION.staggerItem}>
-            <Card className="p-0 overflow-hidden shadow-neu bg-surface">
+            <Card className="p-0 overflow-hidden shadow-neu-inset bg-surface">
                 <div className="p-6 cursor-pointer hover:bg-divider/5 transition-colors" onClick={onClick}>
                     <div className="flex items-start justify-between">
                         <div className="flex items-start gap-4">
@@ -21,7 +21,7 @@ return (<motion.div variants={MOTION.staggerItem}>
                                         </p>)}
                                 </div>
                                 <div className="flex items-center gap-3 mt-4">
-                                    <Badge variant="accent" className="shadow-neu-orange/10 font-black px-3 py-1 text-[10px] uppercase tracking-widest outline-none">
+                                    <Badge variant="accent" className="shadow-neu-inset font-black px-3 py-1 text-[10px] uppercase tracking-widest outline-none">
                                         {/* Optional chaining keeps card stable when routines are not populated yet. */}
                                         {program.routines?.length || 0} PROTOCOLS
                                     </Badge>
