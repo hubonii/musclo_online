@@ -13,6 +13,8 @@ export const useProfile = (userId) => {
     return useQuery({
         queryKey: queryKeys.profile.detail(id),
         queryFn: () => apiGet(`/profile/${id}`),
+        staleTime: 0,
+        refetchOnMount: 'always'
     });
 };
 
@@ -21,6 +23,8 @@ export const useAchievements = (userId) => {
     return useQuery({
         queryKey: queryKeys.profile.achievements(id),
         queryFn: () => apiGet(`/profile/${id}/achievements`),
+        staleTime: 0,
+        refetchOnMount: 'always'
     });
 };
 

@@ -26,10 +26,17 @@ if (storedVersion !== APP_VERSION) {
     localStorage.clear();
     sessionStorage.clear();
     
-    // Clear IndexedDB (used by some libraries or service workers)
+    // Clear IndexedDB
     if (window.indexedDB && window.indexedDB.databases) {
         window.indexedDB.databases().then(dbs => {
             dbs.forEach(db => window.indexedDB.deleteDatabase(db.name));
+        });
+    }
+
+    // Clear CacheStorage (Service Worker Cache)
+    if (window.caches) {
+        window.caches.keys().then(keys => {
+            keys.forEach(key => window.caches.delete(key));
         });
     }
 
