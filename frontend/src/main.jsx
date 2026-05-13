@@ -20,14 +20,24 @@ if (theme === 'system') {
 // Version Guard: Forces cache clearance and reload if the app version has changed.
 const storedVersion = localStorage.getItem('musclo_app_version');
 if (storedVersion !== APP_VERSION) {
-    console.log(`[VersionGuard] Updating from ${storedVersion} to ${APP_VERSION}. Clearing cache...`);
-    clearAllCache();
-    localStorage.clear(); // Nuclear option for persisted stores (Zustand)
+    console.log(`[VersionGuard] Updating from ${storedVersion} to ${APP_VERSION}. Nuclear cache purge...`);
+    
+    // Clear all possible web storage types
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Clear IndexedDB (used by some libraries or service workers)
+    if (window.indexedDB && window.indexedDB.databases) {
+        window.indexedDB.databases().then(dbs => {
+            dbs.forEach(db => window.indexedDB.deleteDatabase(db.name));
+        });
+    }
+
     localStorage.setItem('musclo_app_version', APP_VERSION);
     
-    // Only reload if this wasn't the first time setting the version
+    // Force a hard reload to fetch new JS bundles
     if (storedVersion) {
-        window.location.reload();
+        window.location.href = window.location.origin + window.location.pathname + '?v=' + APP_VERSION;
     }
 }
 
