@@ -29,7 +29,8 @@ export function cn(...inputs) {
  * @returns {string} Formatted weight string.
  */
 export function formatWeight(kg, unit = 'kg') {
-    const val = unit === 'lbs' ? (kg * 2.20462) : kg;
+    const numKg = Number(kg || 0);
+    const val = unit === 'lbs' ? (numKg * 2.20462) : numKg;
     
 
     if (val >= 1000) {
