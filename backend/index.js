@@ -31,7 +31,7 @@ const defaultOrigins = ['https://musclo.tech', 'https://musclo.tech'];
 const envOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
 const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
 
-// Unified CORS configuration
+// Unified CORS configurations covering formal origins and secure credentials
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow server-to-server or programmatic requests lacking an origin header
@@ -47,13 +47,10 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-// Bind main CORS handler
+// Bind main CORS handler globally across all incoming request pipelines
 app.use(cors(corsOptions));
 
-// Handle global preflight OPTIONS requests using path-to-regexp compatible route definition
-app.options('(.*)', cors(corsOptions));
-
-// Direct fallback header injection rule to bypass proxy level preflight dropouts
+// Explicit manual implementation of wildcard preflight headers without relying on string expressions
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -63,13 +60,14 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
   res.header('Access-Control-Allow-Credentials', 'true');
   
+  // Safely intercept and respond to automatic browser OPTIONS checks instantly
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
   next();
 });
 
-// Fix to intercept accidental double slashes (//) sent from client routes without redirection
+// Intercept accidental double slashes (//) sent from client routes safely
 app.use((req, res, next) => {
   if (req.url.startsWith('//')) {
     req.url = req.url.replace(/\/\/+/g, '/');
