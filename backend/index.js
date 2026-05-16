@@ -140,9 +140,8 @@ if (require.main === module) {
 }
 const cors = require('cors');
 
-// اسمح للويبسايت بتاعك بالاتصال
 app.use(cors({
-  origin: '*', // أو ضع رابط الويبسايت الخاص بك تحديداً لأمان أعلى
+  origin: 'musclo.tech', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
