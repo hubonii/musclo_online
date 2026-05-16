@@ -116,7 +116,7 @@ function App() {
             useAuthStore.getState().fetchUser();
         }
 
-        const publicPages = ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email'];
+        const publicPages = ['/', '/home', '/login', '/register', '/forgot-password', '/reset-password', '/verify-email'];
 
 
         if (!publicPages.includes(window.location.pathname)) {
