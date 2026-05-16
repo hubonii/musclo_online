@@ -138,3 +138,11 @@ module.exports = app;
 if (require.main === module) {
   startServer();
 }
+const cors = require('cors');
+
+// اسمح للويبسايت بتاعك بالاتصال
+app.use(cors({
+  origin: '*', // أو ضع رابط الويبسايت الخاص بك تحديداً لأمان أعلى
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
