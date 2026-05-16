@@ -1,4 +1,4 @@
-// Dashboard page that composes summary cards, recent entities, and workout entry actions.
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
@@ -34,6 +34,20 @@ export default function DashboardPage() {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 }
     };
+
+    // Global keyboard shortcut for power users
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Shift + N to start a new empty workout
+            if (e.shiftKey && e.key.toLowerCase() === 'n') {
+                e.preventDefault();
+                navigate('/workout');
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [navigate]);
+
 return (<motion.div initial="hidden" animate="visible" variants={containerVariants} className="bg-app pb-24 md:pb-8 w-full px-4 md:px-8 pt-6 max-w-5xl mx-auto">
             <WeeklyVolumeHero weeklyVolumeData={weeklyVolumeData} weeklyVolumeSum={weeklyVolumeSum} itemVariants={itemVariants} loading={workoutsLoading}/>
 
@@ -93,7 +107,7 @@ return (<motion.div initial="hidden" animate="visible" variants={containerVarian
                 {/* Primary call-to-action when user wants to start immediately. */}
                 <div className="flex flex-col sm:flex-row items-center gap-4 justify-center mt-12 mb-16 px-4">
                     <Button variant="primary" size="lg" className="w-full sm:w-auto min-w-[200px]" icon={<Play size={20} className="fill-current"/>} onClick={() => navigate('/workout')}>
-                        Start Empty Workout
+                        Start Empty Workout <span className="opacity-50 text-[10px] ml-2 tracking-widest hidden sm:inline">(SHIFT+N)</span>
                     </Button>
                 </div>
 

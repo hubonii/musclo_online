@@ -39,7 +39,8 @@ const LandingHero = () => {
                 to="/register"
                 className="group flex items-center justify-center gap-3 px-10 py-5 bg-primary text-white text-[11px] font-black uppercase tracking-widest hover:bg-zinc-950 dark:hover:bg-white dark:hover:text-zinc-950 transition-all font-display rounded-2xl shadow-lg hover:shadow-neu"
               >
-                Initialize
+                <span className="group-hover:hidden">Initialize</span>
+                <span className="hidden group-hover:inline">Create Account</span>
                 <ChevronRight size={16} />
               </Link>
               <Link
@@ -66,7 +67,10 @@ const LandingHero = () => {
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               className="absolute top-10 -left-6 z-20 px-4 py-2 bg-app dark:bg-zinc-900 border border-divider flex items-center gap-3 rounded-2xl shadow-neu-sm"
             >
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_var(--accent-primary)]" />
+              <div className="relative flex items-center justify-center w-2 h-2">
+                <div className="absolute inset-0 rounded-full bg-primary blur-[4px] animate-pulse opacity-75" />
+                <div className="relative w-2 h-2 rounded-full bg-primary" />
+              </div>
               <span className="text-[10px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-display">System Sync</span>
             </motion.div>
 
@@ -91,8 +95,10 @@ const LandingHero = () => {
                     <Activity className="text-primary" size={20} />
                   </div>
                   <div className="aspect-square bg-zinc-950/50 border border-white/5 flex flex-col items-center justify-center p-10 rounded-[2.5rem] shadow-neu-inset">
-                    <div className="w-full h-full rounded-full border border-primary border-dashed animate-spin-slow flex items-center justify-center shadow-[0_0_30px_var(--accent-primary)]">
-                      <Target className="text-primary" size={32} />
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <div className="absolute inset-0 rounded-full border border-primary border-dashed animate-spin-slow" />
+                      <div className="absolute inset-0 rounded-full bg-primary/10 blur-[15px]" />
+                      <Target className="text-primary relative z-10" size={32} />
                     </div>
                     <span className="mt-10 text-[10px] font-black text-primary uppercase tracking-[0.3em] font-display">Biometry Active</span>
                   </div>
