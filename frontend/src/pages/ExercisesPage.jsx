@@ -144,20 +144,20 @@ export default function ExercisesPage() {
                 {/* Quick muscle/category chips + advanced filter button */}
                 <div className="w-full hide-scrollbar flex items-center justify-between gap-3 md:gap-6 px-2 md:px-4 py-4 select-none">
                     {[ 
-                        { name: 'Cardio', icon: `${API_URL}/storage/exercises/icons/ic_cardio.svg` },
-                        { name: 'Chest', icon: `${API_URL}/storage/exercises/icons/ic_chest.svg` },
-                        { name: 'Back', icon: `${API_URL}/storage/exercises/icons/ic_back.svg` },
-                        { name: 'Biceps', icon: `${API_URL}/storage/exercises/icons/ic_biceps.svg` },
-                        { name: 'Triceps', icon: `${API_URL}/storage/exercises/icons/ic_triceps.svg` },
-                        { name: 'Quadriceps', icon: `${API_URL}/storage/exercises/icons/ic_quadriceps.svg` },
-                        { name: 'Hamstrings', icon: `${API_URL}/storage/exercises/icons/ic_hamstrings.svg` },
-                        { name: 'Shoulders', icon: `${API_URL}/storage/exercises/icons/ic_shoulders.svg` },
-                        { name: 'Hips', icon: `${API_URL}/storage/exercises/icons/ic_hips.svg` },
-                        { name: 'Waist', icon: `${API_URL}/storage/exercises/icons/ic_abs.svg` },
-                        { name: 'Upper Arms', icon: `${API_URL}/storage/exercises/icons/ic_biceps.svg` },
-                        { name: 'Calves', icon: `${API_URL}/storage/exercises/icons/ic_calves.svg` },
-                        { name: 'Forearms', icon: `${API_URL}/storage/exercises/icons/ic_forearms.svg` },
-                        { name: 'Neck', icon: `${API_URL}/storage/exercises/icons/ic_neck.svg` }
+                        { name: 'Cardio', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_cardio.svg` },
+                        { name: 'Chest', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_chest.svg` },
+                        { name: 'Back', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_back.svg` },
+                        { name: 'Biceps', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_biceps.svg` },
+                        { name: 'Triceps', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_triceps.svg` },
+                        { name: 'Quadriceps', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_quadriceps.svg` },
+                        { name: 'Hamstrings', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_hamstrings.svg` },
+                        { name: 'Shoulders', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_shoulders.svg` },
+                        { name: 'Hips', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_hips.svg` },
+                        { name: 'Waist', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_abs.svg` },
+                        { name: 'Upper Arms', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_biceps.svg` },
+                        { name: 'Calves', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_calves.svg` },
+                        { name: 'Forearms', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_forearms.svg` },
+                        { name: 'Neck', icon: `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_neck.svg` }
                     ].map((cat, idx) => (
                         <button 
                             key={`quick-filter-${cat.name}-${idx}`} 
