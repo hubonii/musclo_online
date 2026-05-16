@@ -45,11 +45,12 @@ useEffect(() => {
             try {
                 const { data } = await apiClient.get('/exercises/filters');
                 
-                // Only keep equipment types explicitly requested by the user for a cleaner UX.
-                const allowedEquipment = ['dumbbell', 'barbell', 'cable', 'machine', 'leverage machine', 'smith machine', 'body weight', 'bodyweight'];
-                const filteredEquipment = (data.data.equipment || []).filter(eq => 
-                    allowedEquipment.includes(eq.toLowerCase())
-                );
+                // Show a curated list of common equipment for a clean UX, but ensure we match against DB values correctly.
+                const equipmentKeywords = ['dumbbell', 'barbell', 'cable', 'machine', 'smith', 'body weight', 'bodyweight', 'band', 'kettlebell', 'ball', 'bench', 'rope', 'weighted'];
+                const filteredEquipment = (data.data.equipment || []).filter(eq => {
+                    const l = eq.toLowerCase();
+                    return equipmentKeywords.some(k => l.includes(k));
+                });
                 
                 setBodyPartList(data.data.body_parts || []);
                 setEquipmentList(filteredEquipment);
