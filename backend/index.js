@@ -31,7 +31,7 @@ const defaultOrigins = ['https://musclo.tech', 'https://musclo.tech'];
 const envOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
 const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
 
-// Unified CORS and explicit preflight routing configuration
+// Unified CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow server-to-server or programmatic requests lacking an origin header
@@ -47,9 +47,11 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-// Bind main CORS handler and handle global preflight OPTIONS requests uniformly
+// Bind main CORS handler
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+
+// Handle global preflight OPTIONS requests using path-to-regexp compatible route definition
+app.options('(.*)', cors(corsOptions));
 
 // Direct fallback header injection rule to bypass proxy level preflight dropouts
 app.use((req, res, next) => {
