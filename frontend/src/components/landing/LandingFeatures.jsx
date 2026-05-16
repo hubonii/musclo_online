@@ -1,24 +1,42 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Zap, BarChart3, Trophy, Shield, Smartphone } from 'lucide-react';
+import { Brain, Shield, Gauge, Cpu, Layers, Zap } from 'lucide-react';
 
-const FeatureCard = ({ icon: Icon, title, description, delay }) => (
+const FeatureCard = ({ icon: Icon, title, description, index }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ delay, duration: 0.5 }}
-    className="group p-8 bg-[#F0F0F3] rounded-[2rem] shadow-neu hover:shadow-neu-inset transition-all duration-500"
+    transition={{ delay: index * 0.1, duration: 0.6 }}
+    whileHover={{ y: -8 }}
+    className="group relative p-8 rounded-[32px] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800/50 shadow-xl shadow-zinc-200/50 dark:shadow-none hover:border-orange/50 dark:hover:border-orange/50 transition-all duration-500 overflow-hidden"
   >
-    <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#EA580C] mb-6 group-hover:scale-110 transition-transform duration-500">
-      <Icon size={24} />
+    {/* Animated Inner Accent */}
+    <div className="absolute top-0 right-0 w-24 h-24 bg-orange/5 dark:bg-orange/10 rounded-bl-full translate-x-12 -translate-y-12 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-700" />
+    
+    <div className="relative z-10">
+      <div className="w-14 h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-950 dark:text-white group-hover:bg-orange group-hover:text-white transition-all duration-500 mb-8 shadow-inner">
+        <Icon size={24} />
+      </div>
+      
+      <h3 className="text-xl font-black text-zinc-950 dark:text-white mb-4 tracking-tight uppercase">
+        {title}
+      </h3>
+      
+      <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
+        {description}
+      </p>
     </div>
-    <h3 className="text-xl font-black uppercase tracking-tight text-zinc-900 mb-3">
-      {title}
-    </h3>
-    <p className="text-sm text-zinc-500 leading-relaxed font-medium">
-      {description}
-    </p>
+
+    {/* Technical Detail Corner */}
+    <div className="absolute bottom-6 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+      <div className="flex items-center gap-2">
+        <span className="text-[8px] font-black uppercase tracking-[0.2em] text-orange">
+          Active Protocol
+        </span>
+        <div className="w-4 h-[1px] bg-orange" />
+      </div>
+    </div>
   </motion.div>
 );
 
@@ -26,66 +44,66 @@ const LandingFeatures = () => {
   const features = [
     {
       icon: Brain,
-      title: 'Contextual AI',
-      description: 'The coach who knows your history. Adaptive volume and intensity based on your actual physiological recovery.',
-      delay: 0.1,
+      title: "Contextual Logic",
+      description: "Neural-pattern recognition that understands your specific biomechanical limits and adapts in real-time."
     },
     {
-      icon: Zap,
-      title: 'Real-time Velocity',
-      description: 'Track not just weights, but intent. Our system monitors rest periods and RPE for maximum hypertrophy.',
-      delay: 0.2,
-    },
-    {
-      icon: BarChart3,
-      title: 'Deep Analytics',
-      description: 'Transform raw data into growth. Progressive overload visualized through proprietary fatigue-management charts.',
-      delay: 0.3,
-    },
-    {
-      icon: Trophy,
-      title: 'Global Ranks',
-      description: 'Gamified progression engine. Earn status through consistency, volume, and raw strength increases.',
-      delay: 0.4,
+      icon: Gauge,
+      title: "Tactile Precision",
+      description: "High-resolution data capture ensuring every rep, set, and rest interval is optimized for peak performance."
     },
     {
       icon: Shield,
-      title: 'Offline Sync',
-      description: 'Zero data loss. Log your heaviest sets in dead zones; we sync automatically when you reconnect.',
-      delay: 0.5,
+      title: "Adaptive Safety",
+      description: "Dynamic fatigue monitoring prevents overtraining by analyzing biometric trends and recovery markers."
     },
     {
-      icon: Smartphone,
-      title: 'Mobile First',
-      description: 'Engineered for the gym floor. Large targets, high contrast, and zero-friction logging experience.',
-      delay: 0.6,
+      icon: Cpu,
+      title: "Core Processing",
+      description: "High-speed analytics engine built to handle massive data streams without latency or interruption."
     },
+    {
+      icon: Layers,
+      title: "Modular Scaling",
+      description: "Architect your training with custom protocols that evolve as your physical capabilities expand."
+    },
+    {
+      icon: Zap,
+      title: "Instant Feedback",
+      description: "Direct-to-athlete communication channels providing corrective adjustments during active sets."
+    }
   ];
 
   return (
-    <section id="features" className="py-24 bg-[#F0F0F3]">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-20">
-          <motion.p 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EA580C] mb-4"
+    <section id="features" className="py-32 bg-zinc-50 dark:bg-zinc-950 transition-colors duration-700 relative overflow-hidden">
+      {/* Background Typography */}
+      <div className="absolute top-0 left-0 text-[20vw] font-black text-zinc-950/5 dark:text-white/5 select-none pointer-events-none -translate-x-1/4 -translate-y-1/4 uppercase">
+        SYSTEM
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="mb-20">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center gap-4 mb-6"
           >
-            The Core Engine
-          </motion.p>
-          <motion.h2 
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-zinc-900"
-          >
-            Smarter. Heavier. <br />
-            <span className="text-zinc-400">Better.</span>
-          </motion.h2>
+            <div className="w-12 h-[1px] bg-orange" />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-orange">
+              Capability Matrix
+            </span>
+          </motion.div>
+          
+          <h2 className="text-5xl md:text-7xl font-black text-zinc-950 dark:text-white tracking-tighter leading-none mb-6">
+            CORE PROTOCOLS. <br />
+            UNMATCHED CONTROL.
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, idx) => (
-            <FeatureCard key={idx} {...feature} />
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, i) => (
+            <FeatureCard key={i} {...feature} index={i} />
           ))}
         </div>
       </div>

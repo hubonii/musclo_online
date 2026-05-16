@@ -1,105 +1,115 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Target, Activity, Database } from 'lucide-react';
+import { Activity, BarChart2, Cpu, Globe, Search, Terminal } from 'lucide-react';
+
+const DataLine = ({ label, value, progress, color = "orange" }) => (
+  <div className="mb-6">
+    <div className="flex justify-between items-end mb-2">
+      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500">{label}</span>
+      <span className="text-sm font-bold text-zinc-950 dark:text-white tabular-nums">{value}</span>
+    </div>
+    <div className="h-1 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+      <motion.div 
+        initial={{ width: 0 }}
+        whileInView={{ width: `${progress}%` }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.5, ease: "circOut" }}
+        className={`h-full bg-${color}`}
+      />
+    </div>
+  </div>
+);
 
 const LandingIntelligence = () => {
   return (
-    <section id="intelligence" className="py-24 bg-white overflow-hidden">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col lg:flex-row items-center gap-20">
+    <section id="intelligence" className="py-32 bg-white dark:bg-zinc-950 transition-colors duration-700 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
           
-          {/* Visual Side */}
-          <div className="flex-1 relative order-2 lg:order-1">
-             <motion.div 
-               initial={{ opacity: 0, x: -50 }}
-               whileInView={{ opacity: 1, x: 0 }}
-               viewport={{ once: true }}
-               className="relative z-10"
-             >
-                <div className="p-8 md:p-12 bg-[#F0F0F3] rounded-[3rem] shadow-2xl">
-                   <div className="flex items-center gap-4 mb-12">
-                      <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-lg">
-                         <Activity size={24} />
-                      </div>
-                      <div>
-                         <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Contextual Audit</p>
-                         <p className="text-xl font-black uppercase tracking-tight text-zinc-900">Physiological Load</p>
-                      </div>
-                   </div>
+          {/* Intelligence Visual: Lab UI */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="order-2 lg:order-1 relative p-8 rounded-[40px] bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden"
+          >
+            {/* UI Header */}
+            <div className="flex items-center justify-between mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-6">
+              <div className="flex items-center gap-3">
+                <Terminal size={18} className="text-orange" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-950 dark:text-white">Neural.Diagnostics</span>
+              </div>
+              <div className="flex gap-1">
+                {[1, 2, 3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />)}
+              </div>
+            </div>
 
-                   <div className="space-y-6">
-                      {[
-                        { label: 'Muscle Fatigue', value: 78, color: '#EA580C' },
-                        { label: 'CNS Readiness', value: 92, color: '#22C55E' },
-                        { label: 'Volume Recovery', value: 45, color: '#F59E0B' },
-                      ].map((stat, i) => (
-                        <div key={i} className="space-y-2">
-                           <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-zinc-500">
-                              <span>{stat.label}</span>
-                              <span>{stat.value}%</span>
-                           </div>
-                           <div className="h-2 w-full bg-zinc-200 rounded-full overflow-hidden">
-                              <motion.div 
-                                initial={{ width: 0 }}
-                                whileInView={{ width: `${stat.value}%` }}
-                                transition={{ delay: 0.5 + (i * 0.1), duration: 1 }}
-                                className="h-full rounded-full"
-                                style={{ backgroundColor: stat.color }}
-                              />
-                           </div>
-                        </div>
-                      ))}
-                   </div>
+            {/* Live Readouts */}
+            <div className="grid grid-cols-2 gap-8 mb-12">
+              <div className="p-6 rounded-3xl bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800">
+                <Search size={16} className="text-orange mb-4" />
+                <div className="text-[8px] font-black uppercase tracking-widest text-zinc-400 mb-1">Pattern recognition</div>
+                <div className="text-2xl font-black text-zinc-950 dark:text-white italic">ACTIVE</div>
+              </div>
+              <div className="p-6 rounded-3xl bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800">
+                <Globe size={16} className="text-orange mb-4" />
+                <div className="text-[8px] font-black uppercase tracking-widest text-zinc-400 mb-1">Network Sync</div>
+                <div className="text-2xl font-black text-zinc-950 dark:text-white italic">100%</div>
+              </div>
+            </div>
 
-                   <div className="mt-12 p-6 bg-white rounded-2xl shadow-sm border border-zinc-100">
-                      <p className="text-sm font-bold text-zinc-800 mb-2 italic">"Current fatigue profile suggests prioritizing eccentric control over raw volume for this session."</p>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-orange-600">— Musclo AI Assistant</p>
-                   </div>
+            {/* Performance Graphs */}
+            <div className="space-y-4">
+              <DataLine label="Biomechanical Efficiency" value="94.2%" progress={94} />
+              <DataLine label="Neuromuscular Drive" value="88.7%" progress={88} />
+              <DataLine label="Recovery Acceleration" value="72.1%" progress={72} />
+            </div>
+
+            {/* Decorative Background Elements */}
+            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-orange/5 rounded-full blur-[80px]" />
+          </motion.div>
+
+          {/* Content Column */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="order-1 lg:order-2"
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-[1px] bg-orange" />
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-orange">
+                Contextual Engine
+              </span>
+            </div>
+
+            <h2 className="text-5xl md:text-7xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.95] mb-8 uppercase">
+              Beyond <br />
+              Standard <br />
+              <span className="text-orange">Logics.</span>
+            </h2>
+
+            <p className="text-lg text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed mb-10">
+              Musclo doesn't just record data—it interprets it. Our proprietary neural core analyzes your training history, biometric feedback, and performance curves to generate a living training protocol.
+            </p>
+
+            <div className="space-y-6">
+              {[
+                { icon: Activity, text: "Real-time biometric synchronization" },
+                { icon: BarChart2, text: "Predictive fatigue modeling" },
+                { icon: Cpu, text: "Automated protocol adjustments" }
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-orange/10 flex items-center justify-center text-orange">
+                    <item.icon size={20} />
+                  </div>
+                  <span className="text-sm font-black text-zinc-950 dark:text-white uppercase tracking-wider">
+                    {item.text}
+                  </span>
                 </div>
-             </motion.div>
-
-             {/* Background Accents */}
-             <div className="absolute -top-10 -left-10 w-40 h-40 bg-orange-100 rounded-full blur-3xl opacity-50 -z-10" />
-             <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-blue-50 rounded-full blur-3xl opacity-50 -z-10" />
-          </div>
-
-          {/* Text Side */}
-          <div className="flex-1 order-1 lg:order-2">
-             <motion.div
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-             >
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#EA580C] mb-4 inline-block">The Brain</span>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-tight text-zinc-900 mb-8">
-                   Intelligence <br />
-                   Built into <br />
-                   <span className="text-zinc-400">the Iron.</span>
-                </h2>
-                
-                <div className="space-y-8">
-                   <div className="flex gap-6">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#F0F0F3] shadow-neu flex items-center justify-center text-zinc-900">
-                         <Database size={20} />
-                      </div>
-                      <div>
-                         <h4 className="text-lg font-black uppercase tracking-tight text-zinc-900 mb-2">Memory-First Coaching</h4>
-                         <p className="text-sm text-zinc-500 leading-relaxed font-medium">Musclo remembers every set, every failure, and every RPE. It uses this history to predict your next peak.</p>
-                      </div>
-                   </div>
-
-                   <div className="flex gap-6">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-[#F0F0F3] shadow-neu flex items-center justify-center text-zinc-900">
-                         <Target size={20} />
-                      </div>
-                      <div>
-                         <h4 className="text-lg font-black uppercase tracking-tight text-zinc-900 mb-2">Adaptive Progression</h4>
-                         <p className="text-sm text-zinc-500 leading-relaxed font-medium">No more static percentages. Our engine adjusts intensity in real-time based on your session velocity.</p>
-                      </div>
-                   </div>
-                </div>
-             </motion.div>
-          </div>
+              ))}
+            </div>
+          </motion.div>
 
         </div>
       </div>
