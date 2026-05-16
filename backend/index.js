@@ -5,7 +5,6 @@
  */
 
 const express = require('express');
-const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
@@ -26,48 +25,7 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
-// Compile full whitelist of authorized client domains
-const defaultOrigins = ['https://musclo.tech', 'https://musclo.tech'];
-const envOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
-const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
-
-// Unified CORS configurations covering formal origins and secure credentials
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow server-to-server or programmatic requests lacking an origin header
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  credentials: true,
-  optionsSuccessStatus: 200
-};
-
-// Bind main CORS handler globally across all incoming request pipelines
-app.use(cors(corsOptions));
-
-// Explicit manual implementation of wildcard preflight headers without relying on string expressions
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  // Safely intercept and respond to automatic browser OPTIONS checks instantly
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
-
-// Intercept accidental double slashes (//) sent from client routes safely
+// Fix to intercept accidental double slashes (//) sent from client routes safely
 app.use((req, res, next) => {
   if (req.url.startsWith('//')) {
     req.url = req.url.replace(/\/\/+/g, '/');
