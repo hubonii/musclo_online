@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useAuthStore } from '../stores/useAuthStore';
 
 
-export const API_URL = import.meta.env.VITE_API_URL || 'https://musclo-online-huboony-5837s-projects.vercel.app/';
+export const API_URL = import.meta.env.VITE_API_URL || 'https://musclo-online-huboony-5837s-projects.vercel.app';
 
 export const apiClient = axios.create({
     baseURL: `${API_URL}/api`,
