@@ -16,7 +16,7 @@ return (<div className="sticky top-0 z-30 bg-surface p-4 safe-area-top shadow-ne
                         <div className="text-lg font-bold text-text-primary tabular-nums tracking-tight" aria-live="polite" aria-label={`Duration: ${formatDuration(elapsed)}`}>
                             {formatDuration(elapsed)}
                         </div>
-                        <div className="text-[11px] text-orange font-black tracking-[0.2em] uppercase">
+                        <div className="text-[11px] text-primary font-black tracking-[0.2em] uppercase">
                             Operational
                         </div>
                     </div>

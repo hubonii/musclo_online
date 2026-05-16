@@ -26,14 +26,14 @@ export default function WeeklyVolumeHero({ weeklyVolumeData, weeklyVolumeSum, it
                 <div>
                     <p className="text-[10px] md:text-xs font-bold text-text-primary tracking-wide uppercase mb-1">TOTAL VOLUME PER WEEK</p>
                     <div className="flex items-baseline gap-2">
-                        <h1 className="text-3xl md:text-5xl font-extrabold text-orange tracking-tighter">
+                        <h1 className="text-3xl md:text-5xl font-extrabold text-primary tracking-tighter">
                             <NumberTicker value={Math.round(weeklyVolumeSum)} />
                         </h1>
                         <span className="text-base md:text-lg font-bold text-text-muted">kg</span>
                     </div>
                     <p className="text-xs md:text-sm text-text-secondary mt-2 font-medium">
 
-                        Strategic Average: {Math.round(weeklyVolumeSum / 7)} kg <span className="ml-4 md:float-right font-black text-orange uppercase tracking-widest text-[10px]">Target: {Math.round((weeklyVolumeSum / 7) * 1.2)} kg</span>
+                        Strategic Average: {Math.round(weeklyVolumeSum / 7)} kg <span className="ml-4 md:float-right font-black text-primary uppercase tracking-widest text-[10px]">Target: {Math.round((weeklyVolumeSum / 7) * 1.2)} kg</span>
                     </p>
                 </div>
             </div>
@@ -44,10 +44,10 @@ export default function WeeklyVolumeHero({ weeklyVolumeData, weeklyVolumeSum, it
                     <BarChart data={weeklyVolumeData} barSize={24}>
                         <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={10} tickLine={false} axisLine={false} tick={{ fontWeight: 800 }} />
                         <RechartsTooltip cursor={{ fill: 'rgba(0,0,0,0.02)' }} contentStyle={{ backgroundColor: 'var(--bg-surface)', borderRadius: '24px', border: 'none', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', color: 'var(--text-primary)', fontWeight: 'bold' }} />
-                        <Bar dataKey="volume" radius={[8, 8, 8, 8]} fill="var(--accent-orange)">
+                        <Bar dataKey="volume" radius={[8, 8, 8, 8]} fill="var(--accent-primary)">
 
                             {weeklyVolumeData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill="var(--accent-orange)" fillOpacity={1} />
+                                <Cell key={`cell-${index}`} fill="var(--accent-primary)" fillOpacity={1} />
                             ))}
                         </Bar>
                     </BarChart>

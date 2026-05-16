@@ -6,7 +6,7 @@ import { MOTION } from '../../lib/motion';
 import LoadingSpinner from './LoadingSpinner';
 
 const variantStyles = {
-    primary: 'bg-orange text-white shadow-neu-sm hover:shadow-neu hover:brightness-110 active:shadow-neu-inset active:scale-95 transition-colors font-bold uppercase tracking-widest',
+    primary: 'bg-primary text-white shadow-neu-sm hover:shadow-neu hover:brightness-110 active:shadow-neu-inset active:scale-95 transition-colors font-bold uppercase tracking-widest',
     secondary: 'bg-app text-text-primary shadow-neu-sm hover:shadow-neu hover:bg-surface active:shadow-neu-inset active:scale-95 transition-colors font-bold uppercase tracking-widest',
     outline: 'bg-app border border-divider/10 text-text-primary shadow-neu hover:shadow-neu-lg hover:-translate-y-0.5 active:shadow-neu-inset active:translate-y-0 font-bold',
     ghost: 'text-text-primary hover:text-text-primary hover:bg-app/50 transition-colors active:shadow-neu-inset rounded-xl font-bold',
@@ -26,7 +26,7 @@ return (
             ref={ref} 
             className={cn(
                 'inline-flex items-center justify-center transition-colors duration-100 relative overflow-hidden', 
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald focus-visible:ring-offset-2 focus-visible:ring-offset-app', 
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-app', 
                 'disabled:opacity-50 disabled:pointer-events-none cursor-pointer', 
                 variantStyles[variant], 
                 sizeStyles[size], 

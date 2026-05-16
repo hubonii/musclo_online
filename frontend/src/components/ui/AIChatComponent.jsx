@@ -203,7 +203,7 @@ export default function AIChatComponent() {
                     initial={{ scale: 0 }} animate={{ scale: 1 }}
                     whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
                     onClick={toggleChat} aria-label="Musclo AI" type="button"
-                    className="fixed bottom-24 right-6 md:bottom-8 md:right-8 w-16 h-16 bg-orange text-white rounded-[24px] shadow-neu-orange flex items-center justify-center z-50 transition-all border-4 border-white/10"
+                    className="fixed bottom-24 right-6 md:bottom-8 md:right-8 w-16 h-16 bg-primary text-white rounded-[24px] shadow-neu-primary flex items-center justify-center z-50 transition-all border-4 border-white/10"
                 >
                     <BrainCircuit size={28} />
                 </motion.button>
@@ -221,7 +221,7 @@ export default function AIChatComponent() {
                             <div className="p-5 flex flex-col gap-3 border-b border-divider bg-surface z-20">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
-                                        <button onClick={() => setShowHistory(!showHistory)} className="p-3 bg-app shadow-neu-sm rounded-2xl transition-all text-text-muted hover:text-orange active:shadow-neu-inset">
+                                        <button onClick={() => setShowHistory(!showHistory)} className="p-3 bg-app shadow-neu-sm rounded-2xl transition-all text-text-muted hover:text-primary active:shadow-neu-inset">
                                             <HistoryIcon size={20} />
                                         </button>
                                         <div>
@@ -229,13 +229,13 @@ export default function AIChatComponent() {
                                                 {currentSessionId ? sessions.find(s => s.id === currentSessionId)?.title : 'Bodybuilding AI'}
                                             </h2>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <div className="w-2 h-2 rounded-full bg-orange shadow-[0_0_8px_rgba(234,88,12,0.6)] animate-pulse" />
-                                                <span className="text-[10px] text-orange font-black uppercase tracking-widest">AI Online</span>
+                                                <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(0,0,238,0.6)] animate-pulse" />
+                                                <span className="text-[10px] text-primary font-black uppercase tracking-widest">AI Online</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <button onClick={createNewSession} title="New Chat" className="p-3 bg-app shadow-neu-sm text-text-muted hover:text-orange rounded-2xl transition-all active:shadow-neu-inset">
+                                        <button onClick={createNewSession} title="New Chat" className="p-3 bg-app shadow-neu-sm text-text-muted hover:text-primary rounded-2xl transition-all active:shadow-neu-inset">
                                             <Plus size={20} />
                                         </button>
                                         <button onClick={closeChat} className="p-3 bg-app shadow-neu-sm text-text-muted hover:text-danger rounded-2xl active:shadow-neu-inset transition-all">
@@ -282,7 +282,7 @@ export default function AIChatComponent() {
                                                         <div key={s.id} className="group relative">
                                                             <button
                                                                 onClick={() => { selectSession(s.id); setShowHistory(false); }}
-                                                                className={cn("w-full text-left p-4 rounded-2xl text-[11px] font-bold transition-all truncate pr-10 shadow-neu-sm", currentSessionId === s.id ? "bg-orange text-white shadow-neu-orange scale-[1.02]" : "bg-app text-text-secondary hover:shadow-neu-inset hover:scale-[1.01]")}
+                                                                className={cn("w-full text-left p-4 rounded-2xl text-[11px] font-bold transition-all truncate pr-10 shadow-neu-sm", currentSessionId === s.id ? "bg-primary text-white shadow-neu-primary scale-[1.02]" : "bg-app text-text-secondary hover:shadow-neu-inset hover:scale-[1.01]")}
                                                             >
                                                                 {s.title || 'Untitled Session'}
                                                             </button>
@@ -303,11 +303,11 @@ export default function AIChatComponent() {
                                 <div className="flex-1 overflow-y-auto px-6 md:px-10 py-8 space-y-10 scrollbar-hide bg-app/30">
                                     {messages.length === 0 && (
                                         <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-8">
-                                            <div className="w-24 h-24 rounded-[40px] bg-orange text-white flex items-center justify-center shadow-neu-orange border-4 border-white/10">
+                                            <div className="w-24 h-24 rounded-[40px] bg-primary text-white flex items-center justify-center shadow-neu-primary border-4 border-white/10">
                                                 <BrainCircuit size={48} />
                                             </div>
                                             <div>
-                                                <h3 className="text-3xl font-black text-text-primary tracking-tighter uppercase">MUSCLO <span className="text-orange">AI</span></h3>
+                                                <h3 className="text-3xl font-black text-text-primary tracking-tighter uppercase">MUSCLO <span className="text-primary">AI</span></h3>
                                                 <p className="text-sm text-text-secondary mt-3 leading-relaxed font-medium uppercase tracking-wide opacity-70">
                                                     Your personal bodybuilding assistant.
                                                 </p>
@@ -325,7 +325,7 @@ export default function AIChatComponent() {
                                     {messages.map((msg) => (
                                         <motion.div key={msg.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={cn("flex flex-col gap-4 w-full", msg.role === 'user' ? "items-end" : "items-start")}>
                                             <div className={cn("flex gap-5 max-w-[88%] min-w-0", msg.role === 'user' ? "flex-row-reverse" : "flex-row")}>
-                                                <div className={cn("w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-neu-sm", msg.role === 'user' ? "bg-orange text-white shadow-neu-orange" : "bg-surface text-orange border border-divider/10")}>
+                                                <div className={cn("w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center shadow-neu-sm", msg.role === 'user' ? "bg-primary text-white shadow-neu-primary" : "bg-surface text-primary border border-divider/10")}>
                                                     {msg.role === 'user' ? <UserIcon size={24} /> : <BrainCircuit size={24} />}
                                                 </div>
                                                 <div className="flex flex-col gap-4 flex-1 min-w-0">
@@ -335,7 +335,7 @@ export default function AIChatComponent() {
                                                         </div>
                                                     )}
 
-                                                    <div className={cn("p-6 rounded-[32px] text-[15px] leading-[1.8] shadow-neu-sm overflow-hidden", msg.role === 'user' ? "bg-orange text-white" : "bg-surface text-text-primary font-medium border border-white/5")}>
+                                                    <div className={cn("p-6 rounded-[32px] text-[15px] leading-[1.8] shadow-neu-sm overflow-hidden", msg.role === 'user' ? "bg-primary text-white" : "bg-surface text-text-primary font-medium border border-white/5")}>
                                                         {/* Thinking indicator */}
                                                         {msg.role === 'assistant' && msg.isStreaming && !msg.content && (
                                                             <div className="flex items-center gap-3 py-2 px-1">
@@ -449,7 +449,7 @@ export default function AIChatComponent() {
                                         <button
                                             onClick={() => handleSend()}
                                             disabled={!input.trim()}
-                                            className={cn("p-3.5 rounded-2xl flex items-center justify-center transition-all shadow-neu-sm", input.trim() ? "bg-orange text-white shadow-neu-orange" : "bg-app text-text-muted opacity-40")}
+                                            className={cn("p-3.5 rounded-2xl flex items-center justify-center transition-all shadow-neu-sm", input.trim() ? "bg-primary text-white shadow-neu-primary" : "bg-app text-text-muted opacity-40")}
                                         >
                                             <ArrowUpCircle size={24} strokeWidth={3} />
                                         </button>

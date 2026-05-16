@@ -70,7 +70,7 @@ export default function Sidebar({ className }) {
                         className={({ isActive }) => cn(
                             'flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-100',
                             isActive
-                                ? 'bg-app shadow-neu-inset text-orange'
+                                ? 'bg-app shadow-neu-inset text-primary'
                                 : 'text-text-secondary hover:text-text-primary hover:bg-app/50 hover:shadow-neu-sm hover:-translate-y-0.5'
                         )}
                     >
@@ -87,7 +87,7 @@ export default function Sidebar({ className }) {
                     to="/profile"
                     className={({ isActive }) => cn(
                         'flex items-center gap-3 mb-4 px-2 py-2 rounded-lg transition-colors cursor-pointer',
-                        isActive ? 'bg-orange/10 text-orange' : 'hover:bg-app'
+                        isActive ? 'bg-primary/10 text-primary' : 'hover:bg-app'
                     )}
                 >
                     {/* Avatar block reflects current auth user data from store state. */}

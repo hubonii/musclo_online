@@ -46,12 +46,12 @@ return (
                 {/* Page header */}
                 <div className="flex items-center justify-between mb-4 md:mb-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-app shadow-neu flex items-center justify-center text-orange hidden md:flex shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-app shadow-neu flex items-center justify-center text-blue-600 hidden md:flex shrink-0">
                             <ImageIcon size={20}/>
                         </div>
                         <div>
-                            <h1 className="text-xl md:text-3xl font-black text-text-primary tracking-tight">Progress Timeline</h1>
-                            <p className="text-xs md:text-sm text-text-secondary mt-0.5">Track your body stats and photos</p>
+                            <h1 className="text-2xl md:text-5xl font-black text-text-primary tracking-tight">Progress Timeline</h1>
+                            <p className="text-sm md:text-base text-text-secondary mt-1">Track your body stats and photos</p>
                         </div>
                     </div>
                     <Button variant="outline" size="sm" className="hidden sm:flex rounded-full uppercase tracking-widest text-[10px] font-black">

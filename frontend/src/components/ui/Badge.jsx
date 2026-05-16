@@ -2,10 +2,10 @@
 import { cn } from '../../lib/utils';
 const variantStyles = {
     default: 'bg-divider/50 text-text-secondary',
-    success: 'bg-orange/10 text-orange border border-orange/10',
-    warning: 'bg-orange/20 text-orange font-bold uppercase tracking-widest',
+    success: 'bg-success/10 text-success border border-success/10',
+    warning: 'bg-warning/20 text-warning font-bold uppercase tracking-widest',
     danger: 'bg-danger/15 text-danger',
-    accent: 'bg-orange text-white font-black uppercase tracking-tighter',
+    accent: 'bg-primary text-white font-black uppercase tracking-tighter',
     outline: 'border border-divider text-text-secondary bg-transparent',
 };
 

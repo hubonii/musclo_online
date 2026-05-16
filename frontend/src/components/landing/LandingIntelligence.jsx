@@ -2,23 +2,46 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Activity, BarChart2, Cpu, Globe, Search, Terminal } from 'lucide-react';
 
-const DataLine = ({ label, value, progress, color = "orange" }) => (
-  <div className="mb-6">
-    <div className="flex justify-between items-end mb-2">
-      <span className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500">{label}</span>
-      <span className="text-sm font-bold text-zinc-950 dark:text-white tabular-nums">{value}</span>
+const DataLine = ({ label, value, progress, delay = 0 }) => {
+  const [displayValue, setDisplayValue] = React.useState(value);
+
+  React.useEffect(() => {
+    if (typeof value === 'string' && value.includes('.')) {
+      const interval = setInterval(() => {
+        const num = parseFloat(value);
+        const variance = num * 0.005; // 0.5% variance
+        const newValue = (num + (Math.random() * variance * 2 - variance)).toFixed(1);
+        setDisplayValue(newValue + (value.endsWith('%') ? '%' : ''));
+      }, 2000 + Math.random() * 3000);
+      return () => clearInterval(interval);
+    }
+  }, [value]);
+
+  return (
+    <div className="mb-6">
+      <div className="flex justify-between items-end mb-2">
+        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500 font-display">{label}</span>
+        <span className="text-sm font-black text-blue-600 font-mono tabular-nums">{displayValue}</span>
+      </div>
+      <div 
+        className="h-[3px] w-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden rounded-full"
+        role="progressbar"
+        aria-valuenow={progress}
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-label={label}
+      >
+        <motion.div 
+          initial={{ width: 0 }}
+          whileInView={{ width: `${progress}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.5, ease: "circOut", delay }}
+          className="h-full bg-blue-600 rounded-full"
+        />
+      </div>
     </div>
-    <div className="h-1 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-      <motion.div 
-        initial={{ width: 0 }}
-        whileInView={{ width: `${progress}%` }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.5, ease: "circOut" }}
-        className={`h-full bg-${color}`}
-      />
-    </div>
-  </div>
-);
+  );
+};
 
 const LandingIntelligence = () => {
   return (
@@ -31,42 +54,42 @@ const LandingIntelligence = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="order-2 lg:order-1 relative p-8 rounded-[40px] bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden"
+            className="order-2 lg:order-1 relative p-12 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 overflow-hidden rounded-[2.5rem] shadow-neu"
           >
             {/* UI Header */}
-            <div className="flex items-center justify-between mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-6">
-              <div className="flex items-center gap-3">
-                <Terminal size={18} className="text-orange" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-950 dark:text-white">Neural.Diagnostics</span>
+            <div className="flex items-center justify-between mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-8">
+              <div className="flex items-center gap-4">
+                <Terminal size={20} className="text-blue-600" />
+                <span className="text-[11px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-display">Neural.Diagnostics</span>
               </div>
-              <div className="flex gap-1">
-                {[1, 2, 3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />)}
+              <div className="flex gap-2">
+                {[1, 2, 3].map(i => <div key={i} className="w-2 h-2 rounded-full bg-zinc-300 dark:bg-zinc-700" />)}
               </div>
             </div>
 
             {/* Live Readouts */}
             <div className="grid grid-cols-2 gap-8 mb-12">
-              <div className="p-6 rounded-3xl bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800">
-                <Search size={16} className="text-orange mb-4" />
-                <div className="text-[8px] font-black uppercase tracking-widest text-zinc-400 mb-1">Pattern recognition</div>
-                <div className="text-2xl font-black text-zinc-950 dark:text-white italic">ACTIVE</div>
+              <div className="p-8 bg-zinc-100 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm">
+                <Search size={18} className="text-blue-600 mb-6" />
+                <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2 font-display">Pattern recognition</div>
+                <div className="text-3xl font-black text-zinc-950 dark:text-white font-display">ACTIVE</div>
               </div>
-              <div className="p-6 rounded-3xl bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800">
-                <Globe size={16} className="text-orange mb-4" />
-                <div className="text-[8px] font-black uppercase tracking-widest text-zinc-400 mb-1">Network Sync</div>
-                <div className="text-2xl font-black text-zinc-950 dark:text-white italic">100%</div>
+              <div className="p-8 bg-zinc-100 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm">
+                <Globe size={18} className="text-blue-600 mb-6" />
+                <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2 font-display">Network Sync</div>
+                <div className="text-3xl font-black text-zinc-950 dark:text-white font-mono italic">100%</div>
               </div>
             </div>
 
             {/* Performance Graphs */}
-            <div className="space-y-4">
-              <DataLine label="Biomechanical Efficiency" value="94.2%" progress={94} />
-              <DataLine label="Neuromuscular Drive" value="88.7%" progress={88} />
-              <DataLine label="Recovery Acceleration" value="72.1%" progress={72} />
+            <div className="space-y-6">
+              <DataLine label="Biomechanical Efficiency" value="94.2%" progress={94} delay={0.2} />
+              <DataLine label="Neuromuscular Drive" value="88.7%" progress={88} delay={0.4} />
+              <DataLine label="Recovery Acceleration" value="72.1%" progress={72} delay={0.6} />
             </div>
 
             {/* Decorative Background Elements */}
-            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-orange/5 rounded-full blur-[80px]" />
+            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-blue-600/5 blur-[80px]" />
           </motion.div>
 
           {/* Content Column */}
@@ -76,41 +99,40 @@ const LandingIntelligence = () => {
             viewport={{ once: true }}
             className="order-1 lg:order-2"
           >
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-[1px] bg-orange" />
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-orange">
+            <div className="flex items-center gap-6 mb-8">
+              <div className="w-16 h-[1px] bg-blue-600" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-blue-600 font-display">
                 Contextual Engine
               </span>
             </div>
 
-            <h2 className="text-5xl md:text-7xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.95] mb-8 uppercase">
+            <h2 className="text-6xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.85] mb-10 uppercase font-display">
               Beyond <br />
               Standard <br />
-              <span className="text-orange">Logics.</span>
+              <span className="text-blue-600">Logics.</span>
             </h2>
 
-            <p className="text-lg text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed mb-10">
+            <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 font-medium font-sans leading-relaxed mb-12">
               Musclo doesn't just record data—it interprets it. Our proprietary neural core analyzes your training history, biometric feedback, and performance curves to generate a living training protocol.
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               {[
                 { icon: Activity, text: "Real-time biometric synchronization" },
                 { icon: BarChart2, text: "Predictive fatigue modeling" },
                 { icon: Cpu, text: "Automated protocol adjustments" }
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-orange/10 flex items-center justify-center text-orange">
-                    <item.icon size={20} />
+                <div key={i} className="flex items-center gap-6 group">
+                  <div className="w-14 h-14 bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-400 group-hover:bg-blue-600 group-hover:text-white transition-all border border-zinc-100 dark:border-zinc-800 group-hover:border-blue-600 rounded-2xl shadow-neu-sm">
+                    <item.icon size={24} />
                   </div>
-                  <span className="text-sm font-black text-zinc-950 dark:text-white uppercase tracking-wider">
+                  <span className="text-base font-black text-zinc-950 dark:text-white uppercase tracking-widest font-display">
                     {item.text}
                   </span>
                 </div>
               ))}
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>

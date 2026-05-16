@@ -9,15 +9,16 @@ import RootRedirect from '../components/auth/RootRedirect';
 const PageLoader = () => (
     <div className="min-h-screen bg-app flex items-center justify-center">
         <div className="flex flex-col items-center gap-6">
-            <div className="w-20 h-20 rounded-[32px] bg-surface shadow-neu flex items-center justify-center animate-pulse border border-orange/10">
-                <div className="w-10 h-10 rounded-full bg-orange shadow-[0_0_20px_rgba(234,88,12,0.4)]" />
+            <div className="w-20 h-20 rounded-[32px] bg-surface shadow-neu flex items-center justify-center animate-pulse border border-blue-600/10">
+                <div className="w-10 h-10 rounded-full bg-blue-600 shadow-[0_0_20px_rgba(0,0,238,0.4)]" />
             </div>
-            <p className="text-[10px] font-black text-text-secondary uppercase tracking-[0.3em] animate-pulse">
+            <p className="text-[12px] font-black text-text-secondary uppercase tracking-[0.3em] animate-pulse">
                 Initializing Intelligence
             </p>
         </div>
     </div>
 );
+
 
 const LandingPage = lazy(() => import('../pages/landing/LandingPage'));
 const LoginPage = lazy(() => import('../pages/LoginPage'));

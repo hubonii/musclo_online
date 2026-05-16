@@ -1,0 +1,20 @@
+{
+  "id": "ef11e8b2",
+  "phase": "variants_ready",
+  "pageUrl": null,
+  "sourceFile": null,
+  "expectedVariants": 0,
+  "arrivedVariants": 0,
+  "visibleVariant": null,
+  "paramValues": {},
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 0,
+  "activeOwner": null,
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [],
+  "updatedAt": "2026-05-16T08:39:38.730Z"
+}

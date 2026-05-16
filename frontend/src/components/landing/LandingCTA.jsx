@@ -5,47 +5,46 @@ import { ChevronRight } from 'lucide-react';
 
 const LandingCTA = () => {
   return (
-    <section className="py-32 bg-[#F0F0F3] overflow-hidden relative">
+    <section className="py-32 bg-white dark:bg-zinc-950 overflow-hidden relative">
       <div className="container mx-auto px-6 text-center relative z-10">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto p-12 md:p-20 bg-[#F0F0F3] rounded-[4rem] shadow-neu relative"
+          className="max-w-5xl mx-auto p-10 md:p-24 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 relative rounded-[3.5rem] shadow-neu"
         >
-          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#EA580C] mb-8 inline-block">
-            Ready to Begin?
+
+          <span className="text-[11px] font-black uppercase tracking-widest text-blue-600 mb-10 inline-block font-display">
+            Final Protocol
           </span>
-          <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none text-zinc-900 mb-10">
+          <h2 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.85] text-zinc-950 dark:text-white mb-10 font-display">
             Stop Guessing. <br />
-            <span className="text-zinc-400">Start Engineering.</span>
+            <span className="text-blue-600">Start Engineering.</span>
           </h2>
-          <p className="max-w-xl mx-auto text-sm md:text-base text-zinc-500 font-medium leading-relaxed mb-12">
+          <p className="max-w-xl mx-auto text-base md:text-lg text-zinc-500 dark:text-zinc-400 font-medium font-sans leading-relaxed mb-12">
             Join thousands of data-driven athletes who have moved beyond the basic workout log. Your first engineered session is waiting.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link 
               to="/register"
-              className="group relative px-10 py-5 bg-[#EA580C] text-white rounded-[2rem] font-bold uppercase tracking-widest text-sm shadow-xl shadow-orange-500/20 active:scale-95 transition-transform overflow-hidden"
+              className="group relative px-12 py-6 bg-blue-600 text-white font-black uppercase tracking-widest text-[11px] hover:bg-blue-700 transition-all font-display rounded-2xl shadow-neu-blue"
             >
-              <div className="relative z-10 flex items-center gap-2">
-                Join the Elite <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </div>
-              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              Initialize System
             </Link>
             <Link 
               to="/login"
-              className="px-10 py-5 bg-[#F0F0F3] text-zinc-600 rounded-[2rem] font-bold uppercase tracking-widest text-sm shadow-neu hover:shadow-neu-inset transition-all"
+              className="px-12 py-6 bg-zinc-50 dark:bg-zinc-900 text-zinc-950 dark:text-white border border-zinc-100 dark:border-zinc-800 font-black uppercase tracking-widest text-[11px] hover:border-blue-600 transition-all font-display rounded-2xl shadow-neu-sm"
             >
-              Sign In
+              Access Account
             </Link>
           </div>
         </motion.div>
       </div>
 
       {/* Background Decorative Element */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-100/30 rounded-full blur-[120px] -z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/5 blur-[120px] -z-0" />
+
     </section>
   );
 };

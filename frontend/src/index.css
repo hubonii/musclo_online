@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800;900&family=Geist:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -39,85 +39,62 @@
 }
 
 :root {
-    /* Global Backgrounds & Surfaces - Standard Soft UI White */
-    --bg-app: #F0F0F3;      /* The 'Gold Standard' for Light Neumorphism */
-    --bg-surface: #F0F0F3;
-    --border-divider: rgba(0, 0, 0, 0.05);
+    /* Technical Rawness: Core Tokens */
+    --bg-app: #FFFFFF;
+    --bg-surface: #F4F4F5;
+    --border-divider: #E4E4E7;
 
-    /* Surface Gradients (Surface becomes 'curved') */
-    --neu-grad-light: linear-gradient(145deg, #ffffff, #d8d8db);
-    --neu-grad-light-active: linear-gradient(145deg, #d8d8db, #ffffff);
-
-    /* Typography */
-    --text-primary: #1A1A1A;
-    --text-secondary: #4A4A4A;
-    --text-muted: #7C7C80;
-
-    /* Interactive Elements */
-    --accent-orange: #EA580C;
-    --orange-rgb: 234, 88, 12;
-    --accent-emerald: #EA580C; /* Mapped to orange for branding consistency */
-    --emerald-rgb: 234, 88, 12;
-    --accent-tertiary: #52525B; /* Zinc theme for tertiary elements */
+    /* High-Voltage Accents */
+    --accent-blue: #0000EE;   /* True Blue */
+    --accent-primary: var(--accent-blue);
     
-    /* Text on Interactive */
-    --text-on-primary: #FFFFFF;
-    --text-on-secondary: #FFFFFF;
+    /* Typography */
+    --text-primary: #09090B;
+    --text-secondary: #52525B;
+    --text-muted: #A1A1AA;
+    
+    /* System States */
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    
+    /* Neumorphism: Core Tokens */
+    --neu-dark-base: rgba(163, 163, 163, 0.3);
+    --neu-light-base: rgba(255, 255, 255, 0.9);
+    --neu-dark-sm: rgba(163, 163, 163, 0.2);
+    --neu-light-sm: rgba(255, 255, 255, 0.7);
+    --neu-dark-lg: rgba(163, 163, 163, 0.4);
+    --neu-light-lg: rgba(255, 255, 255, 1);
+    
+    --neu-grad-light: linear-gradient(145deg, #f8f8f9, #dddddf);
+    --neu-grad-light-active: linear-gradient(145deg, #dddddf, #f8f8f9);
 
-    /* Semantic States */
-    --success: #EA580C; /* Rebranded success to Orange as per platform standard */
-    --warning: #F38A3F;
-    --danger: #ef4444;
-
-    /* Bold Neumorphism Shadows for White Mode */
-    --neu-dark-base: rgba(174, 174, 192, 0.6);   /* Deeper contrast */
-    --neu-light-base: #FFFFFF;
-    --neu-dark-sm: rgba(174, 174, 192, 0.4);
-    --neu-light-sm: #FFFFFF;
-    --neu-dark-lg: rgba(174, 174, 192, 0.8);
-    --neu-light-lg: #FFFFFF;
+    /* Layout */
+    --radius-sharp: 8px;
+    --radius-soft: 20px;
+    --grid-unit: 4px;
   }
 
   .dark {
     color-scheme: dark;
-    /* Global Backgrounds & Surfaces - Midnight Black Mode */
-    --bg-app: #121214;
-    --bg-surface: #121214;
-    --border-divider: rgba(255, 255, 255, 0.06);
+    --bg-app: #09090B;      /* Midnight Ink */
+    --bg-surface: #18181B;
+    --border-divider: #27272A;
 
-    /* Surface Gradients */
-    --neu-grad-dark: linear-gradient(145deg, #131315, #101012);
-    --neu-grad-dark-active: linear-gradient(145deg, #101012, #131315);
-
-    /* Typography */
     --text-primary: #FFFFFF;
-    --text-secondary: #D1D1D6;
-    --text-muted: #8E8E93;
+    --text-secondary: #A1A1AA;
+    --text-muted: #52525B;
 
-    /* Interactive Elements */
-    --accent-orange: #F97316;
-    --orange-rgb: 249, 115, 22;
-    --accent-emerald: #F97316;
-    --emerald-rgb: 249, 115, 22;
-    --accent-tertiary: #3F3F46;
+    /* Neumorphism: Dark Mode Tokens */
+    --neu-dark-base: rgba(0, 0, 0, 0.4);
+    --neu-light-base: rgba(255, 255, 255, 0.05);
+    --neu-dark-sm: rgba(0, 0, 0, 0.3);
+    --neu-light-sm: rgba(255, 255, 255, 0.03);
+    --neu-dark-lg: rgba(0, 0, 0, 0.5);
+    --neu-light-lg: rgba(255, 255, 255, 0.07);
 
-    /* Text on Interactive */
-    --text-on-primary: #000000;
-    --text-on-secondary: #000000;
-    --text-on-accent: #FFFFFF;
-
-    /* Semantic States */
-    --success: #F97316;
-    --warning: #FF9F5B;
-    --danger: #ef4444;
-
-    /* Bold Neumorphism Shadows for Black Mode */
-    --neu-dark-base: rgba(0, 0, 0, 0.9);
-    --neu-light-base: rgba(255, 255, 255, 0.07);
-    --neu-dark-sm: rgba(0, 0, 0, 0.8);
-    --neu-light-sm: rgba(255, 255, 255, 0.05);
-    --neu-dark-lg: rgba(0, 0, 0, 1);
-    --neu-light-lg: rgba(255, 255, 255, 0.1);
+    --neu-grad-dark: linear-gradient(145deg, #1e1e22, #08080a);
+    --neu-grad-dark-active: linear-gradient(145deg, #08080a, #1e1e22);
   }
 
   html, body, #root {
@@ -125,35 +102,35 @@
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
     width: 100%;
+    @apply bg-white dark:bg-zinc-950 text-zinc-950 dark:text-white transition-colors duration-300;
   }
 
   body {
-    background-color: var(--bg-app);
-    color: var(--text-primary);
-    @apply font-sans antialiased text-[15px] leading-relaxed;
-    /* Prevent overall scroll cut-offs */
+    @apply antialiased text-[17px] leading-relaxed;
+    font-family: 'Geist', sans-serif;
     min-height: 100vh;
-    min-height: 100dvh;
   }
 
+
+  /* Brutalist Typography System */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight text-text-primary uppercase;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    @apply font-black tracking-tighter uppercase leading-[0.9];
   }
 
-  h1 { @apply text-4xl lg:text-5xl font-extrabold; }
-  h2 { @apply text-2xl lg:text-3xl font-extrabold; }
-  h3 { @apply text-xl lg:text-2xl; }
-  h4 { @apply text-lg lg:text-xl; }
+  h1 { @apply text-6xl md:text-9xl; }
+  h2 { @apply text-4xl md:text-6xl; }
+  h3 { @apply text-2xl md:text-4xl; }
 
   ::selection {
-    background-color: var(--accent-orange);
+    background-color: var(--accent-primary);
     color: #FFFFFF;
   }
 
-  /* Minimal scrollbar */
+  /* Sharp Industrial Scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 10px;
+    height: 10px;
   }
 
   ::-webkit-scrollbar-track {
@@ -162,12 +139,13 @@
 
   ::-webkit-scrollbar-thumb {
     background-color: var(--border-divider);
-    border-radius: 9999px;
+    border: 2px solid var(--bg-app);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--text-muted);
+    background-color: var(--accent-primary);
   }
+
 }
 
 @layer utilities {
@@ -203,16 +181,22 @@
       -20px -20px 40px var(--neu-light-lg);
   }
 
-  .shadow-neu-orange {
+  .shadow-neu-blue {
     box-shadow:
-      8px 8px 16px rgba(234, 88, 12, 0.3),
+      8px 8px 16px rgba(0, 0, 238, 0.3),
       -8px -8px 16px rgba(255, 255, 255, 0.8);
   }
-  .dark .shadow-neu-orange {
+  .dark .shadow-neu-blue {
     box-shadow:
       8px 8px 16px rgba(0, 0, 0, 0.8),
-      -8px -8px 16px rgba(249, 115, 22, 0.15);
+      -8px -8px 16px rgba(0, 0, 238, 0.15);
   }
+
+  /* Legacy alias for compatibility during migration */
+  .shadow-neu-primary {
+    @apply shadow-neu-blue;
+  }
+
 
   /* Surface Gradient Utilities */
   .bg-neu {

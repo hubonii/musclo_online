@@ -54,8 +54,8 @@ return (
         <div className="p-4 md:p-8 space-y-8 max-w-5xl mx-auto pb-24">
             <motion.div className="flex flex-col md:flex-row md:items-center justify-between gap-4" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-black tracking-tight text-text-primary">Programs</h1>
-                    <p className="text-sm text-text-secondary mt-0.5">Organize your workouts into training phases.</p>
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tight text-text-primary uppercase">Programs</h1>
+                    <p className="text-base md:text-lg text-text-secondary mt-1">Organize your workouts into training phases.</p>
                 </div>
                 <Button variant="primary" className="shrink-0 shadow-neu-sm" onClick={() => setIsCreateModalOpen(true)} isLoading={createProgram.isPending}>
                     <Plus size={20} className="mr-2"/>

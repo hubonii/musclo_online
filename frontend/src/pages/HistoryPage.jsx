@@ -41,8 +41,8 @@ export default function HistoryPage() {
 return (
         <div className="p-4 md:p-8 space-y-6 max-w-4xl mx-auto pb-24">
             <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-text-primary">History</h1>
-                <p className="text-sm text-text-secondary mt-0.5">Review your past workouts and progress.</p>
+                <h1 className="text-3xl md:text-5xl font-black tracking-tight text-text-primary uppercase">History</h1>
+                <p className="text-sm md:text-base text-text-secondary mt-1">Review your past workouts and progress.</p>
             </motion.div>
 
             {loading ? (
@@ -54,7 +54,7 @@ return (
                     {/* Render one month section containing workout cards for that month. */}
                     {Object.entries(groupedWorkouts).map(([month, monthWorkouts]) => (
                         <div key={month} className="space-y-6">
-                            <h2 className="text-lg md:text-xl font-black text-orange sticky top-4 mx-auto w-max px-5 py-1.5 bg-surface rounded-xl shadow-neu z-10">
+                            <h2 className="text-xl md:text-2xl font-black text-blue-600 sticky top-4 mx-auto w-max px-6 py-2 bg-surface rounded-xl shadow-neu z-10 uppercase tracking-widest">
                                 {month}
                             </h2>
 
@@ -74,12 +74,12 @@ return (
                                                 </div>
 
                                                 <div>
-                                                    <h3 className="font-bold text-lg text-text-primary group-hover:text-orange transition-colors">
+                                                    <h3 className="font-bold text-xl text-text-primary group-hover:text-blue-600 transition-colors">
                                                         {workout.name || 'Workout'}
                                                     </h3>
-                                                    <div className="flex items-center gap-4 text-xs font-semibold text-text-secondary mt-1.5">
-                                                        <span className="flex items-center gap-1 bg-divider/5 px-2 py-0.5 rounded-md">
-                                                            <Clock size={12} className="text-orange"/> 
+                                                    <div className="flex items-center gap-4 text-[11px] font-bold text-text-secondary mt-2">
+                                                        <span className="flex items-center gap-1 bg-divider/5 px-2.5 py-1 rounded-md">
+                                                            <Clock size={14} className="text-blue-600"/> 
                                                             {formatDuration(workout.duration_seconds)}
                                                         </span>
                                                         <span className="flex items-center gap-1 bg-divider/5 px-2 py-0.5 rounded-md">
@@ -101,8 +101,8 @@ return (
                                                         {workout.sets?.length || 0} Sets
                                                     </Badge>
                                                 </div>
-                                                <div className="w-8 h-8 rounded-lg bg-divider/10 flex items-center justify-center group-hover:bg-orange text-text-muted group-hover:text-white transition-colors duration-100 shadow-neu-inset">
-                                                    <ChevronRight size={16}/>
+                                                <div className="w-10 h-10 rounded-lg bg-divider/10 flex items-center justify-center group-hover:bg-blue-600 text-text-muted group-hover:text-white transition-colors duration-100 shadow-neu-inset">
+                                                    <ChevronRight size={20}/>
                                                 </div>
                                             </div>
                                         </Card>

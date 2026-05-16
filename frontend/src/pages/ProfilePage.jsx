@@ -78,11 +78,11 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="flex-1 text-center md:text-left relative z-10 w-full">
-                        <h1 className="text-2xl md:text-3xl font-black text-text-primary tracking-tight break-words">{profile.name}</h1>
+                        <h1 className="text-3xl md:text-5xl font-black text-text-primary tracking-tight break-words">{profile.name}</h1>
                         {profile.username && (
-                            <p className="text-sm font-bold text-orange uppercase tracking-[0.2em] mt-0.5">@{profile.username}</p>
+                            <p className="text-base font-bold text-blue-600 uppercase tracking-[0.2em] mt-1">@{profile.username}</p>
                         )}
-                        <p className="text-sm text-text-secondary mt-2 max-w-md mx-auto md:mx-0 break-words line-clamp-4">{profile.bio || 'This lifter prefers to let their weights do the talking.'}</p>
+                        <p className="text-base text-text-secondary mt-3 max-w-md mx-auto md:mx-0 break-words line-clamp-4 leading-relaxed">{profile.bio || 'This lifter prefers to let their weights do the talking.'}</p>
                     </div>
 
                     <div className="flex flex-col gap-3 relative z-10 w-full md:w-auto">
@@ -133,10 +133,10 @@ export default function ProfilePage() {
                 <Card>
                     <div className="flex items-center justify-between border-b border-divider/10 pb-4 mb-6">
                         <div className="flex items-center gap-3">
-                            <TrophyIcon className="text-orange" size={22} />
-                            <h2 className="font-black text-text-primary text-xl uppercase tracking-tighter">Achievements</h2>
+                            <TrophyIcon className="text-blue-600" size={24} />
+                            <h2 className="font-black text-text-primary text-2xl uppercase tracking-tighter">Achievements</h2>
                         </div>
-                        <span className="text-[10px] font-black bg-orange/10 px-2 py-1 rounded-md text-orange uppercase tracking-widest">
+                        <span className="text-[11px] font-black bg-blue-600/10 px-3 py-1.5 rounded-md text-blue-600 uppercase tracking-widest">
                             {achievements.length} Total
                         </span>
                     </div>

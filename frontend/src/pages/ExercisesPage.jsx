@@ -137,7 +137,7 @@ export default function ExercisesPage() {
                         placeholder="Search for exercises" 
                         value={search} 
                         onChange={(e) => setSearch(e.target.value)} 
-                        className="w-full h-14 pl-14 pr-6 bg-app rounded-xl text-text-primary text-sm shadow-neu-inset focus:outline-none focus:ring-2 focus:ring-orange/30 transition-all placeholder:text-text-muted font-medium"
+                        className="w-full h-16 pl-14 pr-6 bg-app rounded-xl text-text-primary text-base shadow-neu-inset focus:outline-none focus:ring-2 focus:ring-blue-600/30 transition-all placeholder:text-text-muted font-medium"
                     />
                 </div>
 
@@ -164,20 +164,20 @@ export default function ExercisesPage() {
                             onClick={() => setSelectedCategory(selectedCategory === cat.name ? null : cat.name)} 
                             className={cn("flex flex-col items-center gap-2 transition-all duration-300", selectedCategory === cat.name ? "opacity-100 scale-110" : "hover:-translate-y-1 opacity-70 hover:opacity-100")}
                         >
-                            <div className={cn("w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-xl transition-all", selectedCategory === cat.name ? "bg-orange/10 shadow-neu-inset scale-105" : "")}>
+                            <div className={cn("w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl transition-all", selectedCategory === cat.name ? "bg-blue-600/10 shadow-neu-inset scale-105" : "")}>
                                 <img 
                                     src={cat.icon} 
                                     alt={cat.name} 
                                     className={cn(
-                                        "w-7 h-7 md:w-8 md:h-8 object-contain transition-all duration-300", 
+                                        "w-8 h-8 md:w-10 md:h-10 object-contain transition-all duration-300", 
                                         selectedCategory === cat.name 
-                                            ? "grayscale-0 brightness-100 [filter:sepia(1)_saturate(15)_hue-rotate(335deg)]" 
+                                            ? "grayscale-0 brightness-100 [filter:invert(13%)_sepia(100%)_saturate(8000%)_hue-rotate(240deg)]" 
                                             : "grayscale brightness-75 contrast-125 opacity-60"
                                     )} 
                                     loading="lazy" 
                                 />
                             </div>
-                            <span className={cn("text-[9px] md:text-[10px] font-black tracking-widest uppercase whitespace-nowrap transition-colors", selectedCategory === cat.name ? "text-orange" : "text-text-muted")}>
+                            <span className={cn("text-[11px] md:text-[12px] font-black tracking-widest uppercase whitespace-nowrap transition-colors", selectedCategory === cat.name ? "text-blue-600" : "text-text-muted")}>
                                 {cat.name}
                             </span>
                         </button>
@@ -187,10 +187,10 @@ export default function ExercisesPage() {
                         onClick={() => setIsFilterModalOpen(true)} 
                         className={cn("flex flex-col items-center justify-center gap-2 transition-all duration-200", (selectedBodyPart || selectedEquipment) ? "opacity-100 scale-110" : "hover:-translate-y-1 opacity-70 hover:opacity-100")}
                     >
-                        <div className={cn("w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-xl bg-app shadow-neu", (selectedBodyPart || selectedEquipment) ? "text-orange bg-orange/5 shadow-neu-inset ring-1 ring-orange/20" : "text-text-secondary")}>
-                            <SlidersHorizontal size={18}/>
+                        <div className={cn("w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl bg-app shadow-neu", (selectedBodyPart || selectedEquipment) ? "text-blue-600 bg-blue-600/5 shadow-neu-inset ring-1 ring-blue-600/20" : "text-text-secondary")}>
+                            <SlidersHorizontal size={20}/>
                         </div>
-                        <span className={cn("text-[9px] md:text-[10px] font-black uppercase tracking-widest", (selectedBodyPart || selectedEquipment) ? "text-orange" : "text-text-muted")}>
+                        <span className={cn("text-[11px] md:text-[12px] font-black uppercase tracking-widest", (selectedBodyPart || selectedEquipment) ? "text-blue-600" : "text-text-muted")}>
                             Filters
                         </span>
                     </button>

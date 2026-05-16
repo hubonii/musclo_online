@@ -2,24 +2,25 @@
 name: Musclo
 description: Intelligent Workout Journal & AI Personal Trainer
 colors:
-  primary: "#EA580C"
-  neutral-bg: "#F0F0F3"
+  primary: "#0000EE"
+  neutral-bg: "#F4F4F5"
   text-primary: "#1A1A1A"
   text-secondary: "#4A4A4A"
   text-muted: "#7C7C80"
   border-divider: "rgba(0, 0, 0, 0.05)"
 typography:
   display:
-    fontFamily: "Inter, sans-serif"
-    fontSize: "clamp(2.5rem, 8vw, 4rem)"
+    fontFamily: "Bricolage Grotesque, sans-serif"
+    fontSize: "clamp(3.5rem, 12vw, 8rem)"
     fontWeight: 900
-    lineHeight: 1
-    letterSpacing: "-0.02em"
+    lineHeight: 0.85
+    letterSpacing: "-0.04em"
   body:
-    fontFamily: "Inter, sans-serif"
-    fontSize: "15px"
+    fontFamily: "Geist, sans-serif"
+    fontSize: "17px"
     fontWeight: 400
     lineHeight: 1.6
+    letterSpacing: "-0.01em"
 rounded:
   sm: "12px"
   md: "24px"
@@ -51,17 +52,18 @@ Musclo is a high-performance environment where the rigor of exercise science mee
 
 ## 2. Colors
 
-The palette is a "Gold Standard" Soft UI White, avoiding the coldness of pure greys by tinting neutrals toward a warm, clinical tone.
+The palette is a high-contrast industrial system. We utilize "True Blue" as a signal of high-voltage performance, paired with "Midnight Ink" (dark) and "Zinc White" (light) surfaces.
 
 ### Primary
-- **Musclo Orange** (#EA580C): The signal of energy, success, and active performance. Used for CTAs, active set tracking, and achievements.
+- **True Blue** (#0000EE): The signal of precision, athletic intelligence, and active synchronization. Used for CTAs, live readouts, and active states.
 
 ### Neutral
-- **Soft UI Base** (#F0F0F3): The foundational surface for both light and dark modes (rebranded for dark as Midnight Black).
-- **Onyx Text** (#1A1A1A): Deep, high-contrast primary text for maximum readability under strain.
-- **Zinc Secondary** (#4A4A4A): Muted hierarchy for supporting data and labels.
+- **Zinc Surface** (#F4F4F5): The foundational surface for light mode.
+- **Midnight Ink** (#09090B): The foundational surface for dark mode.
+- **Onyx Text** (#09090B): Deep, high-contrast primary text.
+- **Zinc Secondary** (#52525B): Hierarchy for supporting data.
 
-**The Rarity Rule.** The primary orange accent is used on ≤10% of any given screen. Its rarity makes it an authoritative signal of action.
+**The Rarity Rule.** The True Blue accent is used on ≤15% of any given screen. Its rarity makes it an authoritative signal of performance.
 
 ## 3. Typography
 
@@ -107,9 +109,9 @@ Musclo explicitly rejects flat design. Depth is conveyed through **Dual-Shadow N
 ### Do:
 - **Do** use uppercase for all headers and labels to maintain authoritative tone.
 - **Do** apply `shadow-neu` to all primary containers to maintain the "Tactile Lab" theme.
-- **Do** respect the 10% Orange rule; keep the interface primarily neutral.
+- **Do** use `rounded-[2.5rem]` or larger for primary containers to signal "Industrial Precision."
 
 ### Don't:
-- **Don't** use Glassmorphism or background blurs; Musclo is built on solid, grounded surfaces.
-- **Don't** use generic SaaS blue or neon gradients; these dilute the scientific brand.
-- **Don't** use "Side-stripe" borders as accents; use background depth instead.
+- **Don't** use Glassmorphism or background blurs for primary containers; use solid, grounded surfaces.
+- **Don't** use generic corporate blues; our Blue (#0000EE) is high-voltage.
+- **Don't** use "Side-stripe" borders as accents; use background depth or True Blue outlines.

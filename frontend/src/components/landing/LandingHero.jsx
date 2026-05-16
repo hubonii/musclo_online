@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight, ArrowUpRight, Target, Activity, Zap } from 'lucide-react';
+import { ChevronRight, ArrowUpRight, Target, Activity, Zap, ArrowRight } from 'lucide-react';
+
 import { Link } from 'react-router-dom';
 
 const LandingHero = () => {
@@ -23,32 +24,33 @@ const LandingHero = () => {
           >
 
 
-            <h1 className="text-5xl md:text-8xl font-black text-zinc-950 dark:text-white leading-[0.9] tracking-tighter mb-8 uppercase">
+            <h1 className="text-6xl md:text-8xl font-black text-zinc-950 dark:text-white leading-[0.85] tracking-tighter mb-8 uppercase font-display">
               Pro <br className="hidden md:block" />
-              <span className="text-orange">Athletic</span> <br />
+              <span className="text-blue-600">Athletic</span> <br />
               Intelligence
             </h1>
 
-            <p className="text-base md:text-xl text-zinc-600 dark:text-zinc-400 max-w-lg mb-10 mx-auto lg:mx-0 font-medium">
-              Elite-level biomechanical tracking for dedicated athletes. Experience precision that transforms.
+            <p className="text-base md:text-lg text-zinc-600 dark:text-zinc-400 max-w-lg mb-10 mx-auto lg:mx-0 font-medium font-sans leading-relaxed">
+              Elite-level biomechanical tracking for dedicated athletes. Experience precision that transforms your performance through technical rawness.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link 
                 to="/register"
-                className="group flex items-center justify-center gap-3 px-8 py-5 rounded-2xl bg-orange text-white text-[10px] font-black uppercase tracking-widest hover:bg-zinc-950 dark:hover:bg-white dark:hover:text-zinc-950 transition-all shadow-2xl shadow-orange/20"
+                className="group flex items-center justify-center gap-3 px-10 py-5 bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest hover:bg-zinc-950 dark:hover:bg-white dark:hover:text-zinc-950 transition-all font-display rounded-2xl shadow-neu-blue"
               >
-                Initialize
+                Initialize System
                 <ChevronRight size={16} />
               </Link>
               <Link 
                 to="/login"
-                className="flex items-center justify-center gap-3 px-8 py-5 rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white text-[10px] font-black uppercase tracking-widest border border-zinc-200 dark:border-zinc-800"
+                className="flex items-center justify-center gap-3 px-10 py-5 bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white text-[11px] font-black uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 font-display rounded-2xl shadow-neu-sm hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
               >
                 Sign In
-                <ArrowUpRight size={16} />
+                <ArrowRight size={16} />
               </Link>
             </div>
+
           </motion.div>
 
           {/* Visual Column: Smartphone + Mobile HUD */}
@@ -62,19 +64,19 @@ const LandingHero = () => {
             <motion.div 
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-10 -left-6 z-20 px-3 py-2 bg-white dark:bg-zinc-900 shadow-xl border border-zinc-100 dark:border-zinc-800 rounded-2xl flex items-center gap-2"
+              className="absolute top-10 -left-6 z-20 px-4 py-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center gap-3 rounded-2xl shadow-neu-sm"
             >
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-zinc-950 dark:text-white italic">Core Sync</span>
+              <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse shadow-[0_0_10px_rgba(0,0,238,0.5)]" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-display">System Sync</span>
             </motion.div>
 
             <motion.div 
               animate={{ y: [0, 15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-20 -right-8 z-20 px-4 py-3 bg-zinc-950 dark:bg-white shadow-2xl rounded-2xl flex flex-col"
+              className="absolute bottom-20 -right-8 z-20 px-6 py-4 bg-zinc-50 dark:bg-zinc-900 shadow-neu flex flex-col rounded-3xl border border-zinc-200 dark:border-zinc-800"
             >
-              <span className="text-[8px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-1">Load</span>
-              <span className="text-lg font-black text-white dark:text-zinc-950 tabular-nums">92%</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-blue-600 mb-1 font-display">Core Load</span>
+              <span className="text-2xl font-black text-zinc-950 dark:text-white font-mono tabular-nums">092.4</span>
             </motion.div>
 
             {/* Smartphone Frame */}
@@ -83,30 +85,27 @@ const LandingHero = () => {
               
               <div className="w-full h-full bg-zinc-900 rounded-[38px] overflow-hidden relative">
                 {/* Mock UI */}
-                <div className="p-6 pt-10">
-                  <div className="flex justify-between items-center mb-10">
-                    <div className="w-10 h-10 rounded-full bg-zinc-800 border border-white/5" />
-                    <Activity className="text-orange" size={20} />
+                <div className="p-8 pt-12">
+                  <div className="flex justify-between items-center mb-12">
+                    <div className="w-10 h-10 bg-zinc-800 border border-white/5 rounded-xl" />
+                    <Activity className="text-blue-600" size={20} />
                   </div>
-                  <div className="aspect-square rounded-3xl bg-zinc-950/50 border border-white/5 flex flex-col items-center justify-center p-8">
-                    <div className="w-full h-full rounded-full border-2 border-orange/20 border-dashed animate-spin-slow flex items-center justify-center">
-                      <Target className="text-orange" size={32} />
+                  <div className="aspect-square bg-zinc-950/50 border border-white/5 flex flex-col items-center justify-center p-10 rounded-[2.5rem] shadow-neu-inset">
+                    <div className="w-full h-full rounded-full border border-blue-600/30 border-dashed animate-spin-slow flex items-center justify-center shadow-[0_0_30px_rgba(0,0,238,0.1)]">
+                      <Target className="text-blue-600" size={32} />
                     </div>
-                    <span className="mt-8 text-[10px] font-black text-orange uppercase tracking-widest">Scanning...</span>
+                    <span className="mt-10 text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] font-display">Biometry Active</span>
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 grid grid-cols-2 gap-3">
+                <div className="absolute bottom-0 left-0 right-0 p-8 grid grid-cols-2 gap-4">
                   {[1, 2].map(i => (
-                    <div key={i} className="h-16 rounded-2xl bg-zinc-800/50 border border-white/5" />
+                    <div key={i} className="h-20 bg-zinc-900 border border-white/5 rounded-2xl shadow-neu-sm" />
                   ))}
                 </div>
               </div>
             </div>
-
-            {/* Glow Accents */}
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-orange/10 rounded-full blur-[80px]" />
-            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-orange/5 rounded-full blur-[80px]" />
           </motion.div>
+
 
         </div>
       </div>

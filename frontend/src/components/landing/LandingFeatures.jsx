@@ -1,109 +1,84 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Shield, Gauge, Cpu, Layers, Zap } from 'lucide-react';
-
-const FeatureCard = ({ icon: Icon, title, description, index }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ delay: index * 0.1, duration: 0.6 }}
-    whileHover={{ y: -8 }}
-    className="group relative p-8 rounded-[32px] bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800/50 shadow-xl shadow-zinc-200/50 dark:shadow-none hover:border-orange/50 dark:hover:border-orange/50 transition-all duration-500 overflow-hidden"
-  >
-    {/* Animated Inner Accent */}
-    <div className="absolute top-0 right-0 w-24 h-24 bg-orange/5 dark:bg-orange/10 rounded-bl-full translate-x-12 -translate-y-12 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-700" />
-    
-    <div className="relative z-10">
-      <div className="w-14 h-14 rounded-2xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-950 dark:text-white group-hover:bg-orange group-hover:text-white transition-all duration-500 mb-8 shadow-inner">
-        <Icon size={24} />
-      </div>
-      
-      <h3 className="text-xl font-black text-zinc-950 dark:text-white mb-4 tracking-tight uppercase">
-        {title}
-      </h3>
-      
-      <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
-        {description}
-      </p>
-    </div>
-
-    {/* Technical Detail Corner */}
-    <div className="absolute bottom-6 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-      <div className="flex items-center gap-2">
-        <span className="text-[8px] font-black uppercase tracking-[0.2em] text-orange">
-          Active Protocol
-        </span>
-        <div className="w-4 h-[1px] bg-orange" />
-      </div>
-    </div>
-  </motion.div>
-);
+import { Target, Activity, Zap, Shield } from 'lucide-react';
 
 const LandingFeatures = () => {
   const features = [
     {
-      icon: Brain,
-      title: "Contextual Logic",
-      description: "Neural-pattern recognition that understands your specific biomechanical limits and adapts in real-time."
+      icon: Target,
+      title: "Contextual Accuracy",
+      description: "Proprietary biomechanical algorithms that adapt to your unique structural limitations and recovery windows."
     },
     {
-      icon: Gauge,
-      title: "Tactile Precision",
-      description: "High-resolution data capture ensuring every rep, set, and rest interval is optimized for peak performance."
-    },
-    {
-      icon: Shield,
-      title: "Adaptive Safety",
-      description: "Dynamic fatigue monitoring prevents overtraining by analyzing biometric trends and recovery markers."
-    },
-    {
-      icon: Cpu,
-      title: "Core Processing",
-      description: "High-speed analytics engine built to handle massive data streams without latency or interruption."
-    },
-    {
-      icon: Layers,
-      title: "Modular Scaling",
-      description: "Architect your training with custom protocols that evolve as your physical capabilities expand."
+      icon: Activity,
+      title: "Live Diagnostics",
+      description: "Real-time performance stream that interprets your metabolic response during high-intensity protocols."
     },
     {
       icon: Zap,
-      title: "Instant Feedback",
-      description: "Direct-to-athlete communication channels providing corrective adjustments during active sets."
+      title: "Neural Synergy",
+      description: "Synchronization of central nervous system state with training load to prevent overreaching and optimize drive."
+    },
+    {
+      icon: Shield,
+      title: "Integrity Guard",
+      description: "Automated injury prevention layer that flags technical breakdown before it results in structural failure."
     }
   ];
 
   return (
-    <section id="features" className="py-32 bg-zinc-50 dark:bg-zinc-950 transition-colors duration-700 relative overflow-hidden">
-      {/* Background Typography */}
-      <div className="absolute top-0 left-0 text-[20vw] font-black text-zinc-950/5 dark:text-white/5 select-none pointer-events-none -translate-x-1/4 -translate-y-1/4 uppercase">
-        SYSTEM
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="mb-20">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center gap-4 mb-6"
-          >
-            <div className="w-12 h-[1px] bg-orange" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-orange">
-              Capability Matrix
-            </span>
-          </motion.div>
-          
-          <h2 className="text-5xl md:text-7xl font-black text-zinc-950 dark:text-white tracking-tighter leading-none mb-6">
-            CORE PROTOCOLS. <br />
-            UNMATCHED CONTROL.
-          </h2>
+    <section id="systems" className="py-32 bg-zinc-50 dark:bg-zinc-950 transition-colors duration-700 relative">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-24">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-[1px] bg-blue-600" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-blue-600 font-display">System Architecture</span>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-black text-zinc-950 dark:text-white tracking-tighter leading-none uppercase font-display">
+              Built for <br /> 
+              <span className="text-blue-600">Peak Load.</span>
+            </h2>
+          </div>
+          <p className="text-base md:text-xl text-zinc-500 dark:text-zinc-400 font-medium font-sans leading-relaxed max-w-lg">
+            Our infrastructure is engineered to handle the telemetry of elite performers. No fluff, just raw biological data transformed into power.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {features.map((feature, i) => (
-            <FeatureCard key={i} {...feature} index={i} />
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className={`group p-12 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 transition-all hover:border-blue-600 dark:hover:border-blue-600 relative overflow-hidden rounded-[2.5rem] shadow-neu hover:shadow-neu-lg hover:-translate-y-1 ${
+                i === 0 || i === 3 ? 'md:col-span-7' : 'md:col-span-5'
+              }`}
+            >
+              <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center text-blue-600 mb-10 group-hover:bg-blue-600 group-hover:text-white transition-all rounded-2xl shadow-neu-sm group-hover:shadow-none">
+                <feature.icon size={28} />
+              </div>
+              
+              <h3 className="text-3xl font-black text-zinc-950 dark:text-white mb-6 uppercase tracking-tighter font-display leading-[0.9]">
+                {feature.title}
+              </h3>
+              
+              <p className="text-zinc-500 dark:text-zinc-400 text-base font-medium leading-relaxed font-sans max-w-sm">
+                {feature.description}
+              </p>
+              
+              <div className="mt-12 pt-8 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 font-display">Module.0{i + 1}</span>
+                <div className="w-8 h-[1px] bg-zinc-200 dark:bg-zinc-800 group-hover:w-16 group-hover:bg-blue-600 transition-all" />
+              </div>
+
+              {/* Technical Detail Watermark */}
+              <div className="absolute top-8 right-8 text-[8px] font-black uppercase tracking-[0.4em] text-zinc-100 dark:text-zinc-800 select-none pointer-events-none group-hover:text-blue-600/10 transition-colors">
+                PROTO.0{i + 1}
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>

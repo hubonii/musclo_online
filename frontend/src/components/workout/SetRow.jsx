@@ -11,7 +11,7 @@ return (<>
             ? 'bg-success/5'
             // Active set row variant: highlighted background, ring, and scale transform.
             : isActiveSet
-                ? 'bg-surface shadow-neu transform scale-[1.02] z-10 my-1 ring-2 ring-orange ring-inset'
+                ? 'bg-surface shadow-neu transform scale-[1.02] z-10 my-1 ring-2 ring-primary ring-inset'
                 : 'bg-divider/5 hover:bg-divider/10 focus-within:bg-divider/10'}`}>
                 <div className="col-span-1 flex items-center gap-1 pl-1">
                     {!set.isCompleted && (<button onClick={() => onRemoveSet(exercise.exerciseId, set.id)} className="text-danger/50 hover:text-danger opacity-0 group-hover:opacity-100 transition-opacity" aria-label={`Remove set ${sIdx + 1}`}>
@@ -41,7 +41,7 @@ return (<>
                 </div>
 
                 <div className="col-span-3">
-                    {exercise.targetMetric === 'Time' ? (<TimeInput value={set.duration_seconds} onChange={(v) => onUpdateSet(exercise.exerciseId, set.id, 'duration_seconds', v)} disabled={set.isCompleted}/>) : (<input type="number" className="w-full bg-app rounded-lg text-center h-10 md:h-9 text-base font-black text-text-primary placeholder:text-text-muted/20 focus:ring-2 focus:ring-orange/30 outline-none disabled:opacity-50 transition-all font-mono" placeholder={(set.previousReps !== null || set.targetReps !== null)
+                    {exercise.targetMetric === 'Time' ? (<TimeInput value={set.duration_seconds} onChange={(v) => onUpdateSet(exercise.exerciseId, set.id, 'duration_seconds', v)} disabled={set.isCompleted}/>) : (<input type="number" className="w-full bg-app rounded-lg text-center h-10 md:h-9 text-base font-black text-text-primary placeholder:text-text-muted/20 focus:ring-2 focus:ring-primary/30 outline-none disabled:opacity-50 transition-all font-mono" placeholder={(set.previousReps !== null || set.targetReps !== null)
                 ? (set.previousReps ?? set.targetReps ?? 0).toString()
                 : "0"} value={set.reps === null ? '' : set.reps} onChange={(e) => onUpdateSet(exercise.exerciseId, set.id, 'reps', e.target.value === '' ? null : parseInt(e.target.value))} disabled={set.isCompleted} aria-label={`Reps for set ${sIdx + 1}`}/>)}
                 </div>
@@ -49,10 +49,10 @@ return (<>
                 <div className="col-span-2 flex justify-end pr-1">
                     {/* Toggling this button flips completion state and can trigger rest timer in store logic. */}
                     <button onClick={() => onCompleteSet(exercise.exerciseId, set.id)} className={`w-10 h-10 md:w-9 md:h-9 rounded-2xl flex items-center justify-center transition-all shadow-neu-sm border-2 ${set.isCompleted
-            ? 'bg-orange text-white border-white/20'
+            ? 'bg-primary text-white border-white/20'
             : isActiveSet
-                ? 'bg-app text-orange shadow-neu-inset border-orange/50'
-                : 'bg-app text-text-muted hover:text-orange hover:shadow-neu-inset border-transparent'}`} aria-label={`Complete set ${sIdx + 1}`} aria-pressed={set.isCompleted}>
+                ? 'bg-app text-primary shadow-neu-inset border-primary/50'
+                : 'bg-app text-text-muted hover:text-primary hover:shadow-neu-inset border-transparent'}`} aria-label={`Complete set ${sIdx + 1}`} aria-pressed={set.isCompleted}>
                         <Check size={20} strokeWidth={set.isCompleted ? 4 : 3}/>
                     </button>
                 </div>

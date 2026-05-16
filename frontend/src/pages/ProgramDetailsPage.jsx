@@ -18,12 +18,12 @@ export default function ProgramDetailsPage() {
 return (<div className="min-h-screen bg-app font-sans text-text-primary selection:bg-accent-primary/30">
             {/* Sticky breadcrumb-style top bar */}
             <div className="sticky top-0 z-40 bg-surface w-full shadow-neu-sm p-4 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm font-semibold tracking-wide">
-                    <span className="text-text-muted cursor-pointer hover:text-emerald transition-colors" onClick={() => navigate('/programs')}>
+                <div className="flex items-center gap-2 text-base font-bold tracking-wide">
+                    <span className="text-text-muted cursor-pointer hover:text-blue-600 transition-colors" onClick={() => navigate('/programs')}>
                         Programs
                     </span>
-                    <ChevronRight size={16} className="text-text-muted/40"/>
-                    <span className="text-text-primary">{program ? program.name : 'Loading...'}</span>
+                    <ChevronRight size={18} className="text-text-muted/40"/>
+                    <span className="text-text-primary uppercase tracking-tighter">{program ? program.name : 'Loading...'}</span>
                 </div>
             </div>
 
@@ -31,8 +31,8 @@ return (<div className="min-h-screen bg-app font-sans text-text-primary selectio
                 {/* Main content column */}
                 <div className="lg:col-span-8 flex flex-col gap-6 w-full">
                     <div className="flex flex-col gap-2 mb-2">
-                        <h1 className="text-4xl font-black text-text-primary tracking-tight">{program?.name || 'Program'}</h1>
-                        <p className="text-text-secondary text-lg leading-relaxed max-w-2xl">
+                        <h1 className="text-4xl md:text-6xl font-black text-text-primary tracking-tight uppercase leading-none">{program?.name || 'Program'}</h1>
+                        <p className="text-text-secondary text-xl md:text-2xl leading-relaxed max-w-2xl font-medium mt-2">
                             {program?.description || 'Manage the workouts dedicated to this training program.'}
                         </p>
                     </div>

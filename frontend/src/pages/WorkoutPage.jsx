@@ -294,7 +294,7 @@ export default function WorkoutPage() {
         return (
             <div className="p-4 md:p-8 max-w-3xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center">
                 <motion.div {...MOTION.pageEnter} className="space-y-6">
-                    <div className="w-20 h-20 bg-orange/10 text-orange rounded-[32px] flex items-center justify-center mx-auto mb-6 shadow-neu-sm border border-orange/20">
+                    <div className="w-20 h-20 bg-blue-600/10 text-blue-600 rounded-[32px] flex items-center justify-center mx-auto mb-6 shadow-neu-sm border border-blue-600/20">
                         <Play size={32} className="ml-1"/>
                     </div>
                     {isLoadingRoutine ? (
@@ -305,16 +305,16 @@ export default function WorkoutPage() {
                                 <h1 className="text-3xl font-black text-text-primary tracking-tighter uppercase">{pendingRoutine.name}</h1>
                                 <p className="text-text-secondary mt-2 font-medium">{pendingRoutine.exercises?.length || 0} exercises planned.</p>
                             </div>
-                            <Button size="lg" variant="primary" onClick={handleStartWorkout} className="w-full sm:w-auto px-12 py-7 text-xl shadow-neu-orange border-4 border-white/20">
+                            <Button size="lg" variant="primary" onClick={handleStartWorkout} className="w-full sm:w-auto px-12 py-7 text-xl shadow-neu-blue border-4 border-white/20">
                                 START WORKOUT
                             </Button>
                         </div>
                     ) : (
                         <div className="w-full flex justify-center items-center flex-col pt-4">
-                            <h1 className="text-4xl font-black text-text-primary tracking-tighter uppercase">Workout <span className="text-orange">Log</span></h1>
+                            <h1 className="text-4xl font-black text-text-primary tracking-tighter uppercase">Workout <span className="text-blue-600">Log</span></h1>
                             <p className="text-text-secondary max-w-sm mb-10 mx-auto font-medium">Choose a routine or start a quick session.</p>
 
-                            <Button size="lg" variant="primary" onClick={handleStartWorkout} className="w-full sm:w-auto px-12 py-6 text-lg shadow-neu-orange border-4 border-white/20 mb-12">
+                            <Button size="lg" variant="primary" onClick={handleStartWorkout} className="w-full sm:w-auto px-12 py-6 text-lg shadow-neu-blue border-4 border-white/20 mb-12">
                                 <Plus className="mr-2" size={24} strokeWidth={3}/>
                                 QUICK WORKOUT
                             </Button>
@@ -326,12 +326,12 @@ export default function WorkoutPage() {
                                 ) : recentRoutines.length > 0 ? (
                                     <div className="space-y-4">
                                         {recentRoutines.map((routine) => (
-                                            <Card key={routine.id} className="p-5 flex items-center justify-between cursor-pointer hover:bg-orange/5 group shadow-neu-sm" onClick={() => navigate(`/workout/${routine.id}`)}>
+                                            <Card key={routine.id} className="p-5 flex items-center justify-between cursor-pointer hover:bg-blue-600/5 group shadow-neu-sm" onClick={() => navigate(`/workout/${routine.id}`)}>
                                                 <div>
-                                                    <h4 className="font-extrabold text-text-primary group-hover:text-orange transition-colors uppercase tracking-tight">{routine.name}</h4>
+                                                    <h4 className="font-extrabold text-text-primary group-hover:text-blue-600 transition-colors uppercase tracking-tight">{routine.name}</h4>
                                                     <p className="text-[10px] text-text-muted mt-1 font-bold uppercase tracking-widest">Routine</p>
                                                 </div>
-                                                <div className="w-12 h-12 rounded-2xl bg-app shadow-neu text-text-muted group-hover:text-orange flex items-center justify-center transition-all group-hover:shadow-neu-inset">
+                                                <div className="w-12 h-12 rounded-2xl bg-app shadow-neu text-text-muted group-hover:text-blue-600 flex items-center justify-center transition-all group-hover:shadow-neu-inset">
                                                     <Play size={20} className="ml-1"/>
                                                 </div>
                                             </Card>
@@ -364,7 +364,7 @@ export default function WorkoutPage() {
                     </AnimatePresence>
 
                     <motion.div>
-                        <Button variant="outline" className="w-full py-8 border-dashed border-2 hover:border-solid text-text-secondary hover:text-orange hover:border-orange bg-app/50 shadow-neu-inset" icon={<Plus size={20}/>} onClick={() => setIsPickerOpen(true)}>
+                        <Button variant="outline" className="w-full py-8 border-dashed border-2 hover:border-solid text-text-secondary hover:text-blue-600 hover:border-blue-600 bg-app/50 shadow-neu-inset" icon={<Plus size={20}/>} onClick={() => setIsPickerOpen(true)}>
                             ADD EXERCISE
                         </Button>
                     </motion.div>
@@ -372,10 +372,10 @@ export default function WorkoutPage() {
                     <motion.div>
                         <Card className="shadow-neu-sm">
                             <div className="flex items-center gap-2 mb-4">
-                                <StickyNote size={18} className="text-orange"/>
+                                <StickyNote size={18} className="text-blue-600"/>
                                 <h3 className="text-xs font-bold text-text-secondary uppercase">Workout Notes</h3>
                             </div>
-                            <Textarea placeholder="How was your workout? Any notes on performance, feelings, or adjustments..." value={notes} onChange={handleSetNotes} className="min-h-[100px] bg-app shadow-neu-inset border-0 focus:ring-orange/20 text-sm font-medium"/>
+                            <Textarea placeholder="How was your workout? Any notes on performance, feelings, or adjustments..." value={notes} onChange={handleSetNotes} className="min-h-[100px] bg-app shadow-neu-inset border-0 focus:ring-blue-600/20 text-sm font-medium"/>
                         </Card>
                     </motion.div>
                 </div>

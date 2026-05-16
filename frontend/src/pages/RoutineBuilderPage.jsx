@@ -50,7 +50,7 @@ return (<div className="min-h-screen bg-app font-sans text-text-primary">
                 {showMobileLibrary && (<motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="fixed inset-0 z-50 bg-app flex flex-col lg:hidden">
                         {/* Mobile sheet reuses ExercisePicker and closes after selection/done action. */}
                         <div className="p-4 bg-surface flex justify-between items-center shadow-neu-sm shrink-0">
-                            <h2 className="text-xl font-black text-text-primary">Exercise Library</h2>
+                            <h2 className="text-2xl md:text-3xl font-black text-text-primary uppercase tracking-tighter">Exercise Library</h2>
                             <button onClick={() => setShowMobileLibrary(false)} className="p-2 bg-app rounded-xl shadow-neu-sm text-text-primary">
                                 <X size={20}/>
                             </button>
@@ -70,7 +70,7 @@ return (<div className="min-h-screen bg-app font-sans text-text-primary">
 
             {/* Floating action to reopen mobile library while editing */}
             {exercises.length > 0 && !showMobileLibrary && (<div className="fixed bottom-6 right-6 lg:hidden z-40 mb-safe-bottom">
-                    <button onClick={() => setShowMobileLibrary(true)} className="w-16 h-16 bg-emerald text-white rounded-xl flex items-center justify-center shadow-neu focus:outline-none">
+                    <button onClick={() => setShowMobileLibrary(true)} className="w-16 h-16 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-neu focus:outline-none">
                         <Plus size={32}/>
                     </button>
                 </div>)}
