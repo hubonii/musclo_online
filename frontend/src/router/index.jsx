@@ -18,6 +18,7 @@ const PageLoader = () => (
     </div>
 );
 
+const LandingPage = lazy(() => import('../pages/landing/LandingPage'));
 const LoginPage = lazy(() => import('../pages/LoginPage'));
 const RegisterPage = lazy(() => import('../pages/RegisterPage'));
 const DashboardPage = lazy(() => import('../pages/DashboardPage'));
@@ -38,6 +39,9 @@ const GoogleCallback = lazy(() => import('../pages/GoogleCallback'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
 export const router = createBrowserRouter([
+    // Landing Page (Public)
+    { path: '/', element: <Suspense fallback={<PageLoader />}><LandingPage /></Suspense> },
+
     // Public auth routes.
     { path: '/login', element: <Suspense fallback={<PageLoader />}><LoginPage /></Suspense> },
     { path: '/register', element: <Suspense fallback={<PageLoader />}><RegisterPage /></Suspense> },
@@ -45,16 +49,34 @@ export const router = createBrowserRouter([
     { path: '/reset-password', element: <Suspense fallback={<PageLoader />}><ResetPasswordPage /></Suspense> },
     { path: '/verify-email', element: <Suspense fallback={<PageLoader />}><EmailVerificationPage /></Suspense> },
     { path: '/auth/callback', element: <Suspense fallback={<PageLoader />}><GoogleCallback /></Suspense> },
+    
+    // Protected App Shell (Backward compatibility for /dashboard)
     {
-        path: '/',
+        path: '/dashboard',
         element: (
-            // Auth gate wrapper for all nested app routes.
             <ProtectedRoute>
                 <AppLayout />
             </ProtectedRoute>
         ),
         children: [
-            { index: true, element: <Navigate to="/dashboard" replace /> },
+            { index: true, element: <Suspense fallback={<PageLoader />}><DashboardPage /></Suspense> },
+            { path: 'programs', element: <Suspense fallback={<PageLoader />}><ProgramsPage /></Suspense> },
+            { path: 'history', element: <Suspense fallback={<PageLoader />}><HistoryPage /></Suspense> },
+            { path: 'exercises', element: <Suspense fallback={<PageLoader />}><ExercisesPage /></Suspense> },
+            { path: 'progress', element: <Suspense fallback={<PageLoader />}><ProgressPage /></Suspense> },
+            { path: 'profile', element: <Suspense fallback={<PageLoader />}><ProfilePage /></Suspense> },
+        ],
+    },
+    
+    // Main App Route
+    {
+        path: '/app',
+        element: (
+            <ProtectedRoute>
+                <AppLayout />
+            </ProtectedRoute>
+        ),
+        children: [
             { path: 'dashboard', element: <Suspense fallback={<PageLoader />}><DashboardPage /></Suspense> },
             { path: 'programs', element: <Suspense fallback={<PageLoader />}><ProgramsPage /></Suspense> },
             { path: 'programs/:id', element: <Suspense fallback={<PageLoader />}><ProgramDetailsPage /></Suspense> },
@@ -67,7 +89,7 @@ export const router = createBrowserRouter([
             { path: 'progress', element: <Suspense fallback={<PageLoader />}><ProgressPage /></Suspense> },
             { path: 'profile', element: <Suspense fallback={<PageLoader />}><ProfilePage /></Suspense> },
             { path: 'settings', element: <Suspense fallback={<PageLoader />}><SettingsPage /></Suspense> },
-        ],
+        ]
     },
     { path: '*', element: <Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense> },
 ]);
