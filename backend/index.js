@@ -1,7 +1,7 @@
 /**
  * @file index.js
  * @description Main application entry point for the Musclo API.
- * Configured for Serverless execution on Vercel and production hosting.
+ * Optimized for Serverless execution on Vercel and production deployment.
  */
 
 const express = require('express');
@@ -31,7 +31,7 @@ const defaultOrigins = ['https://musclo.tech', 'https://musclo.tech'];
 const envOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
 const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
 
-// Unified CORS and explicit preflight routing middleware
+// Unified CORS and explicit preflight routing configuration
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow server-to-server or programmatic requests lacking an origin header
@@ -63,6 +63,14 @@ app.use((req, res, next) => {
   
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
+  }
+  next();
+});
+
+// Fix to intercept accidental double slashes (//) sent from client routes without redirection
+app.use((req, res, next) => {
+  if (req.url.startsWith('//')) {
+    req.url = req.url.replace(/\/\/+/g, '/');
   }
   next();
 });
@@ -103,14 +111,18 @@ app.use('/api/profile', protect, require('./routes/profileRoutes'));
 app.use('/api/chat', protect, verified, require('./routes/aiCoachRoutes'));
 app.use('/api/export', protect, verified, require('./routes/exportRoutes'));
 
+// Silence automatic browser favicon requests to avoid 404 logs cluttering production
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+app.get('/favicon.png', (req, res) => res.status(204).end());
+
 // Root connection verification target
 app.get('/', (req, res) => {
   res.json({ message: 'Musclo API (Node.js) is running' });
 });
 
 /**
- * Initializes the database connection and invokes data seeding checks.
- * Note: Dev standalone testing environment controls included.
+ * Initializes the database connection for Serverless environments.
+ * Heavy migrations and automated initial seeders are isolated from the main function.
  */
 const startServer = async () => {
   try {
@@ -118,53 +130,23 @@ const startServer = async () => {
       throw new Error('Blocked: set TEST_DB_GUARD=enabled for test startup safety.');
     }
 
+    // Authenticate connectivity instantly without executing blocking operations
     await sequelize.authenticate();
     console.log('Database connected successfully.');
 
-    // Launch standalone instance listener for direct script executions
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
-
-    // Execute safe database sync loops asynchronously
-    (async () => {
-      try {
-        if (process.env.DB_ALTER === 'true') {
-          console.log('Syncing database models (alter: true)...');
-          await sequelize.sync({ alter: true });
-        } else {
-          console.log('Syncing database models (no alter)...');
-          await sequelize.sync();
-        }
-        
-        console.log('Checking baseline data...');
-        const { Exercise, Achievement } = require('./models');
-        const exerciseCount = await Exercise.count();
-        const achievementCount = await Achievement.count();
-
-        if (exerciseCount === 0) {
-          console.log('Seeding exercises (table is empty)...');
-          const seedExercises = require('./seeders/detectAnatomySplit');
-          await seedExercises();
-        }
-
-        if (achievementCount === 0) {
-          console.log('Seeding achievements (table is empty)...');
-          const seedAchievements = require('./seeders/seedAchievements');
-          await seedAchievements();
-        }
-      } catch (err) {
-        console.error('Background startup task failed:', err);
-      }
-    })();
+    // Invoke server listener directly only during local development testing
+    if (require.main === module) {
+      app.listen(PORT, () => {
+        console.log(`Local development server running on port ${PORT}`);
+      });
+    }
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error('Unable to connect to the database during initialization:', error);
   }
 };
 
-// Export app wrapper required for proper Vercel serverless integration
+// Export app instance explicitly as required by Vercel handlers
 module.exports = app;
 
-if (require.main === module) {
-  startServer();
-}
+// Initiate non-blocking connection tests
+startServer();
