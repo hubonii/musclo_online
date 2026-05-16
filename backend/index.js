@@ -138,10 +138,3 @@ module.exports = app;
 if (require.main === module) {
   startServer();
 }
-const cors = require('cors');
-
-app.use(cors({
-  origin: 'musclo.tech', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
