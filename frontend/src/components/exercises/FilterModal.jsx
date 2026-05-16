@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Dumbbell, User as UserIcon, Weight, Link as LinkIcon, Waves, Circle, Settings as SettingsIcon, Shield, Activity as ActivityIcon, Hexagon, Target, Component as ComponentIcon, Box } from 'lucide-react';
-import { apiClient } from '../../api/axios';
+import { apiClient, apiGet } from '../../api/axios';
 import { cn } from '../../lib/utils';
 
 const getEqIcon = (n) => {
@@ -43,16 +43,20 @@ useEffect(() => {
         const fetchFilters = async () => {
             setIsLoading(true);
             try {
-                const { data } = await apiClient.get('/exercises/filters');
+                // apiGet helper automatically extracts the .data payload.
+                const result = await apiGet('/exercises/filters');
                 
-                // Show a curated list of common equipment for a clean UX, but ensure we match against DB values correctly.
                 const equipmentKeywords = ['dumbbell', 'barbell', 'cable', 'machine', 'smith', 'body weight', 'bodyweight', 'band', 'kettlebell', 'ball', 'bench', 'rope', 'weighted'];
-                const filteredEquipment = (data.data.equipment || []).filter(eq => {
+                
+                // Filter and ensure we don't crash on null/undefined values.
+                const rawEquipment = result.equipment || [];
+                const filteredEquipment = rawEquipment.filter(eq => {
+                    if (!eq) return false;
                     const l = eq.toLowerCase();
                     return equipmentKeywords.some(k => l.includes(k));
                 });
                 
-                setBodyPartList(data.data.body_parts || []);
+                setBodyPartList(result.body_parts || []);
                 setEquipmentList(filteredEquipment);
             }
             catch (err) {
