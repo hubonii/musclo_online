@@ -38,7 +38,7 @@ exports.getExercises = async (req, res) => {
     }
 
     if (equipment) {
-      where.equipment = equipment;
+      where.equipment = { [Op.like]: `%${equipment}%` };
     }
 
     if (body_part) {
