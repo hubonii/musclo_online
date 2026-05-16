@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import AppLayout from '../components/layout/AppLayout';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
+import RootRedirect from '../components/auth/RootRedirect';
 
 // Full-page Suspense loading component for lazy route chunks.
 const PageLoader = () => (
@@ -39,8 +40,17 @@ const GoogleCallback = lazy(() => import('../pages/GoogleCallback'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
 export const router = createBrowserRouter([
-    // Landing Page (Public)
-    { path: '/', element: <Suspense fallback={<PageLoader />}><LandingPage /></Suspense> },
+    // Smart Root: Home for Guests, Dashboard for Users
+    { 
+        path: '/', 
+        element: <Suspense fallback={<PageLoader />}><RootRedirect /></Suspense> 
+    },
+
+    // Permanent Home: Always accessible Landing Page
+    { 
+        path: '/home', 
+        element: <Suspense fallback={<PageLoader />}><LandingPage /></Suspense> 
+    },
 
     // Public auth routes.
     { path: '/login', element: <Suspense fallback={<PageLoader />}><LoginPage /></Suspense> },
@@ -50,7 +60,7 @@ export const router = createBrowserRouter([
     { path: '/verify-email', element: <Suspense fallback={<PageLoader />}><EmailVerificationPage /></Suspense> },
     { path: '/auth/callback', element: <Suspense fallback={<PageLoader />}><GoogleCallback /></Suspense> },
     
-    // Protected App Shell (Backward compatibility for /dashboard)
+    // Protected App Shell
     {
         path: '/dashboard',
         element: (
@@ -68,7 +78,7 @@ export const router = createBrowserRouter([
         ],
     },
     
-    // Main App Route
+    // Main App Route (Supporting deep links)
     {
         path: '/app',
         element: (
