@@ -21,10 +21,7 @@ const LandingHero = () => {
             viewport={{ once: true }}
             className="text-center lg:text-left"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange/5 border border-orange/20 mb-8 mx-auto lg:mx-0">
-              <Zap size={10} className="text-orange" />
-              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-orange">Pro System Active</span>
-            </div>
+
 
             <h1 className="text-5xl md:text-8xl font-black text-zinc-950 dark:text-white leading-[0.9] tracking-tighter mb-8 uppercase">
               Pro <br className="hidden md:block" />
