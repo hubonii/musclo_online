@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://musclo-nodejs-production.up.railway.app/api/auth/google/callback",
+    callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://musclo-online-huboony-5837s-projects.vercel.app/api/auth/google/callback",
     proxy: true 
   },
   async (accessToken, refreshToken, profile, done) => {
