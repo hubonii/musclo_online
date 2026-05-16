@@ -139,7 +139,7 @@ Exercise.bodyPartIconUrl = (bodyPart) => {
   slug = iconMap[slug] || slug;
   slug = slug.replace(/ /g, '_');
 
-  return `/storage/exercises/icons/ic_${slug}.svg`;
+  return `https://muscloasset2.blob.core.windows.net/exercises/icons/ic_${slug}.svg`;
 };
 
 /**
