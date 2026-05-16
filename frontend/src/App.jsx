@@ -75,7 +75,7 @@ function OfflineBanner() {
     return (
         <div
             className="fixed top-0 left-0 right-0 z-[200] flex items-center justify-center gap-2 px-4 py-2.5 text-center transition-all cursor-pointer hover:brightness-110 active:brightness-90"
-            style={{ background: isOnline ? 'rgba(234, 88, 12, 0.95)' : 'rgba(245, 158, 11, 0.95)' }}
+            style={{ background: isOnline ? 'rgba(0, 0, 238, 0.95)' : 'rgba(82, 82, 91, 0.95)' }}
             onClick={() => isOnline && pendingCount > 0 && !syncing && handleOnline()}
         >
             {!isOnline && <WifiOff size={14} className="text-white flex-shrink-0" />}

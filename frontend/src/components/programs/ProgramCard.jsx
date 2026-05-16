@@ -10,7 +10,7 @@ return (<motion.div variants={MOTION.staggerItem}>
                 <div className="p-6 cursor-pointer hover:bg-divider/5 transition-colors" onClick={onClick}>
                     <div className="flex items-start justify-between">
                         <div className="flex items-start gap-4">
-                            <div className="w-14 h-14 bg-app shadow-neu-inset rounded-2xl flex items-center justify-center text-orange shrink-0">
+                            <div className="w-14 h-14 bg-app shadow-neu-inset rounded-2xl flex items-center justify-center text-primary shrink-0">
                                 <Folder size={24}/>
                             </div>
                             <div>
@@ -25,7 +25,7 @@ return (<motion.div variants={MOTION.staggerItem}>
                                         {/* Optional chaining keeps card stable when routines are not populated yet. */}
                                         {program.routines?.length || 0} PROTOCOLS
                                     </Badge>
-                                    {program.is_active && (<Badge variant="success" className="font-black border-orange/40 bg-orange/5 text-orange uppercase tracking-widest text-[9px] shadow-neu-inset px-2">
+                                    {program.is_active && (<Badge variant="success" className="font-black border-success/40 bg-success/5 text-success uppercase tracking-widest text-[9px] shadow-neu-inset px-2">
                                             ACTIVE
                                         </Badge>)}
                                 </div>

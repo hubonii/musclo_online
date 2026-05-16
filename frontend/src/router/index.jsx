@@ -9,8 +9,8 @@ import RootRedirect from '../components/auth/RootRedirect';
 const PageLoader = () => (
     <div className="min-h-screen bg-app flex items-center justify-center">
         <div className="flex flex-col items-center gap-6">
-            <div className="w-20 h-20 rounded-[32px] bg-surface shadow-neu flex items-center justify-center animate-pulse border border-blue-600/10">
-                <div className="w-10 h-10 rounded-full bg-blue-600 shadow-[0_0_20px_rgba(0,0,238,0.4)]" />
+            <div className="w-20 h-20 rounded-[32px] bg-surface shadow-neu flex items-center justify-center animate-pulse border border-primary/10">
+                <div className="w-10 h-10 rounded-full bg-primary shadow-neu-primary" />
             </div>
             <p className="text-[12px] font-black text-text-secondary uppercase tracking-[0.3em] animate-pulse">
                 Initializing Intelligence
@@ -61,46 +61,28 @@ export const router = createBrowserRouter([
     { path: '/verify-email', element: <Suspense fallback={<PageLoader />}><EmailVerificationPage /></Suspense> },
     { path: '/auth/callback', element: <Suspense fallback={<PageLoader />}><GoogleCallback /></Suspense> },
     
-    // Protected App Shell
+    // Unified Protected App Shell (Flattened to avoid 404s on direct links)
     {
-        path: '/dashboard',
         element: (
             <ProtectedRoute>
                 <AppLayout />
             </ProtectedRoute>
         ),
         children: [
-            { index: true, element: <Suspense fallback={<PageLoader />}><DashboardPage /></Suspense> },
-            { path: 'programs', element: <Suspense fallback={<PageLoader />}><ProgramsPage /></Suspense> },
-            { path: 'history', element: <Suspense fallback={<PageLoader />}><HistoryPage /></Suspense> },
-            { path: 'exercises', element: <Suspense fallback={<PageLoader />}><ExercisesPage /></Suspense> },
-            { path: 'progress', element: <Suspense fallback={<PageLoader />}><ProgressPage /></Suspense> },
-            { path: 'profile', element: <Suspense fallback={<PageLoader />}><ProfilePage /></Suspense> },
+            { path: '/dashboard', element: <Suspense fallback={<PageLoader />}><DashboardPage /></Suspense> },
+            { path: '/programs', element: <Suspense fallback={<PageLoader />}><ProgramsPage /></Suspense> },
+            { path: '/programs/:id', element: <Suspense fallback={<PageLoader />}><ProgramDetailsPage /></Suspense> },
+            { path: '/programs/:programId/routines/:routineId', element: <Suspense fallback={<PageLoader />}><RoutineBuilderPage /></Suspense> },
+            { path: '/workout', element: <Suspense fallback={<PageLoader />}><WorkoutPage /></Suspense> },
+            { path: '/workout/:routineId', element: <Suspense fallback={<PageLoader />}><WorkoutPage /></Suspense> },
+            { path: '/history', element: <Suspense fallback={<PageLoader />}><HistoryPage /></Suspense> },
+            { path: '/history/:id', element: <Suspense fallback={<PageLoader />}><WorkoutDetailPage /></Suspense> },
+            { path: '/exercises', element: <Suspense fallback={<PageLoader />}><ExercisesPage /></Suspense> },
+            { path: '/progress', element: <Suspense fallback={<PageLoader />}><ProgressPage /></Suspense> },
+            { path: '/profile', element: <Suspense fallback={<PageLoader />}><ProfilePage /></Suspense> },
+            { path: '/settings', element: <Suspense fallback={<PageLoader />}><SettingsPage /></Suspense> },
         ],
     },
     
-    // Main App Route (Supporting deep links)
-    {
-        path: '/app',
-        element: (
-            <ProtectedRoute>
-                <AppLayout />
-            </ProtectedRoute>
-        ),
-        children: [
-            { path: 'dashboard', element: <Suspense fallback={<PageLoader />}><DashboardPage /></Suspense> },
-            { path: 'programs', element: <Suspense fallback={<PageLoader />}><ProgramsPage /></Suspense> },
-            { path: 'programs/:id', element: <Suspense fallback={<PageLoader />}><ProgramDetailsPage /></Suspense> },
-            { path: 'programs/:programId/routines/:routineId', element: <Suspense fallback={<PageLoader />}><RoutineBuilderPage /></Suspense> },
-            { path: 'workout', element: <Suspense fallback={<PageLoader />}><WorkoutPage /></Suspense> },
-            { path: 'workout/:routineId', element: <Suspense fallback={<PageLoader />}><WorkoutPage /></Suspense> },
-            { path: 'history', element: <Suspense fallback={<PageLoader />}><HistoryPage /></Suspense> },
-            { path: 'history/:id', element: <Suspense fallback={<PageLoader />}><WorkoutDetailPage /></Suspense> },
-            { path: 'exercises', element: <Suspense fallback={<PageLoader />}><ExercisesPage /></Suspense> },
-            { path: 'progress', element: <Suspense fallback={<PageLoader />}><ProgressPage /></Suspense> },
-            { path: 'profile', element: <Suspense fallback={<PageLoader />}><ProfilePage /></Suspense> },
-            { path: 'settings', element: <Suspense fallback={<PageLoader />}><SettingsPage /></Suspense> },
-        ]
-    },
     { path: '*', element: <Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense> },
 ]);

@@ -29,14 +29,14 @@ return (
         >
             <div className="flex justify-between items-start mb-6">
                 <div>
-                    <h3 className="text-xl font-black text-text-primary cursor-pointer hover:text-orange transition-colors uppercase tracking-tight" onClick={onEdit}>
+                    <h3 className="text-xl font-black text-text-primary cursor-pointer hover:text-primary transition-colors uppercase tracking-tight" onClick={onEdit}>
                         {routine?.name || 'Tactical Protocol'}
                     </h3>
                     <p className="text-[10px] font-black text-text-muted mt-1 uppercase tracking-[0.15em]">
                         {exercises.length} Strategic Objectives
                     </p>
                     {lastPerformed && (
-                        <p className="text-[10px] text-orange mt-2 flex items-center gap-1 font-bold uppercase">
+                        <p className="text-[10px] text-primary mt-2 flex items-center gap-1 font-bold uppercase">
                             <Clock size={10} className="inline"/>
                             ARCHIVED: {formatLastPerformed(lastPerformed)}
                         </p>
@@ -45,7 +45,7 @@ return (
                 <div className="flex gap-2">
                     <button 
                         onClick={onEdit} 
-                        className="p-2.5 bg-app rounded-xl shadow-neu-sm text-text-muted hover:text-orange transition-all active:shadow-neu-inset" 
+                        className="p-2.5 bg-app rounded-xl shadow-neu-sm text-text-muted hover:text-primary transition-all active:shadow-neu-inset" 
                         type="button"
                     >
                         <Pencil size={16}/>
