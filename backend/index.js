@@ -138,3 +138,9 @@ module.exports = app;
 if (require.main === module) {
   startServer();
 }
+
+app.use(cors({
+  origin: 'https://musclo.tech',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
