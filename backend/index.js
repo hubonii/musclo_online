@@ -43,7 +43,7 @@ app.use((req, res, next) => {
   }
   
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.header('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+  res.header('Access-Control-Allow-Headers', 'X-CSRF-Token, X-XSRF-TOKEN, X-XSRF-Token, x-xsrf-token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
 
   // Terminate preflight checks instantly with a 200 OK success status
