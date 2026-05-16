@@ -55,7 +55,7 @@ const LandingPage = () => {
 
       {/* Background Ambient Accents */}
       <div className="fixed top-0 right-0 w-[50vw] h-[50vw] bg-orange/5 dark:bg-orange/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none z-0" />
-      <div className="fixed bottom-0 left-0 w-[40vw] h-[40vw] bg-zinc-100 dark:bg-orange/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 pointer-events-none z-0" />
+
     </div>
   );
 };
