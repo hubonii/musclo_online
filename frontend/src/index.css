@@ -40,8 +40,8 @@
 
 :root {
     /* Technical Rawness: Core Tokens */
-    --bg-app: #FFFFFF;
-    --bg-surface: #F4F4F5;
+    --bg-app: oklch(98.5% 0.005 250); /* Cool tint replacing pure white */
+    --bg-surface: oklch(96% 0.01 250); /* Cool tint replacing pure gray */
     --border-divider: #E4E4E7;
 
     /* High-Voltage Accents */
@@ -77,8 +77,8 @@
 
   .dark {
     color-scheme: dark;
-    --bg-app: #09090B;      /* Midnight Ink */
-    --bg-surface: #18181B;
+    --bg-app: oklch(18% 0.01 250);      /* Deep cool dark instead of pure black/zinc */
+    --bg-surface: oklch(22% 0.01 250);
     --border-divider: #27272A;
 
     --text-primary: #FFFFFF;
@@ -102,13 +102,21 @@
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
     width: 100%;
-    @apply bg-white dark:bg-zinc-950 text-zinc-950 dark:text-white transition-colors duration-300;
+    @apply bg-app text-zinc-950 dark:text-white transition-colors duration-300;
   }
 
   body {
     @apply antialiased text-[17px] leading-relaxed;
     font-family: 'Geist', sans-serif;
     min-height: 100vh;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
 

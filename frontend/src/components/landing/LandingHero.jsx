@@ -26,7 +26,7 @@ const LandingHero = () => {
 
             <h1 className="text-6xl md:text-8xl font-black text-zinc-950 dark:text-white leading-[0.85] tracking-tighter mb-8 uppercase font-display">
               Pro <br className="hidden md:block" />
-              <span className="text-blue-600">Athletic</span> <br />
+              Athletic <br />
               Intelligence
             </h1>
 
@@ -37,14 +37,14 @@ const LandingHero = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link
                 to="/register"
-                className="group flex items-center justify-center gap-3 px-10 py-5 bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest hover:bg-zinc-950 dark:hover:bg-white dark:hover:text-zinc-950 transition-all font-display rounded-2xl shadow-lg"
+                className="group flex items-center justify-center gap-3 px-10 py-5 bg-primary text-white text-[11px] font-black uppercase tracking-widest hover:bg-zinc-950 dark:hover:bg-white dark:hover:text-zinc-950 transition-all font-display rounded-2xl shadow-lg hover:shadow-neu"
               >
                 Initialize
                 <ChevronRight size={16} />
               </Link>
               <Link
                 to="/login"
-                className="flex items-center justify-center gap-3 px-10 py-5 bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white text-[11px] font-black uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 font-display rounded-2xl shadow-sm hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                className="flex items-center justify-center gap-3 px-10 py-5 bg-app dark:bg-zinc-900 text-zinc-950 dark:text-white text-[11px] font-black uppercase tracking-widest border border-divider font-display rounded-2xl shadow-neu-sm hover:shadow-neu transition-all"
               >
                 Sign In
                 <ArrowRight size={16} />
@@ -64,18 +64,18 @@ const LandingHero = () => {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-10 -left-6 z-20 px-4 py-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center gap-3 rounded-2xl shadow-neu-sm"
+              className="absolute top-10 -left-6 z-20 px-4 py-2 bg-app dark:bg-zinc-900 border border-divider flex items-center gap-3 rounded-2xl shadow-neu-sm"
             >
-              <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse shadow-[0_0_10px_rgba(0,0,238,0.5)]" />
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_var(--accent-primary)]" />
               <span className="text-[10px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-display">System Sync</span>
             </motion.div>
 
             <motion.div
               animate={{ y: [0, 15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-20 -right-8 z-20 px-6 py-4 bg-zinc-50 dark:bg-zinc-900 shadow-neu flex flex-col rounded-3xl border border-zinc-200 dark:border-zinc-800"
+              className="absolute bottom-20 -right-8 z-20 px-6 py-4 bg-app dark:bg-zinc-900 shadow-neu flex flex-col rounded-3xl border border-divider"
             >
-              <span className="text-[9px] font-black uppercase tracking-widest text-blue-600 mb-1 font-display">Core Load</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-primary mb-1 font-display">Core Load</span>
               <span className="text-2xl font-black text-zinc-950 dark:text-white font-mono tabular-nums">092.4</span>
             </motion.div>
 
@@ -88,13 +88,13 @@ const LandingHero = () => {
                 <div className="p-8 pt-12">
                   <div className="flex justify-between items-center mb-12">
                     <div className="w-10 h-10 bg-zinc-800 border border-white/5 rounded-xl" />
-                    <Activity className="text-blue-600" size={20} />
+                    <Activity className="text-primary" size={20} />
                   </div>
                   <div className="aspect-square bg-zinc-950/50 border border-white/5 flex flex-col items-center justify-center p-10 rounded-[2.5rem] shadow-neu-inset">
-                    <div className="w-full h-full rounded-full border border-blue-600/30 border-dashed animate-spin-slow flex items-center justify-center shadow-[0_0_30px_rgba(0,0,238,0.1)]">
-                      <Target className="text-blue-600" size={32} />
+                    <div className="w-full h-full rounded-full border border-primary border-dashed animate-spin-slow flex items-center justify-center shadow-[0_0_30px_var(--accent-primary)]">
+                      <Target className="text-primary" size={32} />
                     </div>
-                    <span className="mt-10 text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] font-display">Biometry Active</span>
+                    <span className="mt-10 text-[10px] font-black text-primary uppercase tracking-[0.3em] font-display">Biometry Active</span>
                   </div>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-8 grid grid-cols-2 gap-4">

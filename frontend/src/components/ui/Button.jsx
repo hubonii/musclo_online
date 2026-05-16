@@ -6,18 +6,18 @@ import { MOTION } from '../../lib/motion';
 import LoadingSpinner from './LoadingSpinner';
 
 const variantStyles = {
-    primary: 'bg-primary text-white shadow-neu-sm hover:shadow-neu hover:brightness-110 active:shadow-neu-inset active:scale-95 transition-colors font-bold uppercase tracking-widest',
-    secondary: 'bg-app text-text-primary shadow-neu-sm hover:shadow-neu hover:bg-surface active:shadow-neu-inset active:scale-95 transition-colors font-bold uppercase tracking-widest',
-    outline: 'bg-app border border-divider/10 text-text-primary shadow-neu hover:shadow-neu-lg hover:-translate-y-0.5 active:shadow-neu-inset active:translate-y-0 font-bold',
+    primary: 'bg-primary text-white shadow-neu-sm hover:shadow-neu hover:brightness-110 active:shadow-neu-inset transition-colors font-bold uppercase tracking-widest',
+    secondary: 'bg-app text-text-primary shadow-neu-sm hover:shadow-neu hover:bg-surface active:shadow-neu-inset transition-colors font-bold uppercase tracking-widest',
+    outline: 'bg-app border border-divider/10 text-text-primary shadow-neu hover:shadow-neu-lg active:shadow-neu-inset font-bold',
     ghost: 'text-text-primary hover:text-text-primary hover:bg-app/50 transition-colors active:shadow-neu-inset rounded-xl font-bold',
-    danger: 'bg-danger text-white shadow-neu-sm hover:shadow-neu hover:brightness-110 active:shadow-neu-inset active:scale-95 transition-colors font-bold',
+    danger: 'bg-danger text-white shadow-neu-sm hover:shadow-neu hover:brightness-110 active:shadow-neu-inset transition-colors font-bold',
 };
 
 const sizeStyles = {
-    sm: 'h-[38px] px-4 text-xs font-bold uppercase tracking-wider rounded-xl gap-2',
-    md: 'h-[46px] px-6 text-sm font-bold rounded-xl gap-2',
-    lg: 'h-[54px] px-8 text-base font-bold rounded-xl gap-2.5',
-    icon: 'h-[46px] w-[46px] rounded-xl flex items-center justify-center p-0',
+    sm: 'min-h-[44px] px-4 text-xs font-bold uppercase tracking-wider rounded-xl gap-2',
+    md: 'min-h-[46px] px-6 text-sm font-bold rounded-xl gap-2',
+    lg: 'min-h-[54px] px-8 text-base font-bold rounded-xl gap-2.5',
+    icon: 'min-h-[46px] min-w-[46px] rounded-xl flex items-center justify-center p-0',
 };
 
 const Button = forwardRef(({ className, variant = 'primary', size = 'md', isLoading, icon, children, disabled, ...props }, ref) => {
