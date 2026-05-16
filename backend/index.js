@@ -25,6 +25,19 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false
 }));
 
+// Intercept and instantly approve browser preflight OPTIONS requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://musclo.tech');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // Fix to intercept accidental double slashes (//) sent from client routes safely
 app.use((req, res, next) => {
   if (req.url.startsWith('//')) {
@@ -80,7 +93,6 @@ app.get('/', (req, res) => {
 
 /**
  * Initializes the database connection for Serverless environments.
- * Heavy migrations and automated initial seeders are isolated from the main function.
  */
 const startServer = async () => {
   try {
@@ -88,11 +100,9 @@ const startServer = async () => {
       throw new Error('Blocked: set TEST_DB_GUARD=enabled for test startup safety.');
     }
 
-    // Authenticate connectivity instantly without executing blocking operations
     await sequelize.authenticate();
     console.log('Database connected successfully.');
 
-    // Invoke server listener directly only during local development testing
     if (require.main === module) {
       app.listen(PORT, () => {
         console.log(`Local development server running on port ${PORT}`);
