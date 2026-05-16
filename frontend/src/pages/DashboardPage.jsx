@@ -50,10 +50,10 @@ return (<motion.div initial="hidden" animate="visible" variants={containerVarian
                 {recentPrograms.length > 0 && (<div className="space-y-4">
                         <div className="flex items-center justify-between px-2">
                             <h3 className="text-xl md:text-2xl font-bold text-text-primary flex items-center gap-2">
-                                <Folder size={22} className="text-blue-600"/>
+                                <Folder size={22} className="text-primary"/>
                                 My Programs
                             </h3>
-                            <button onClick={() => navigate('/programs')} className="text-base font-semibold text-blue-600 hover:underline">
+                            <button onClick={() => navigate('/programs')} className="text-base font-semibold text-primary hover:underline">
                                 See all
                             </button>
                         </div>
@@ -68,7 +68,7 @@ return (<motion.div initial="hidden" animate="visible" variants={containerVarian
                 {recentRoutines.length > 0 && (<div className="space-y-4">
                         <div className="flex items-center justify-between px-2">
                             <h3 className="text-xl md:text-2xl font-bold text-text-primary flex items-center gap-2">
-                                <Dumbbell size={22} className="text-blue-600"/>
+                                <Dumbbell size={22} className="text-primary"/>
                                 Quick Routines
                             </h3>
                         </div>

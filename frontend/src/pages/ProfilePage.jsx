@@ -80,7 +80,7 @@ export default function ProfilePage() {
                     <div className="flex-1 text-center md:text-left relative z-10 w-full">
                         <h1 className="text-3xl md:text-5xl font-black text-text-primary tracking-tight break-words">{profile.name}</h1>
                         {profile.username && (
-                            <p className="text-base font-bold text-blue-600 uppercase tracking-[0.2em] mt-1">@{profile.username}</p>
+                            <p className="text-base font-bold text-primary uppercase tracking-[0.2em] mt-1">@{profile.username}</p>
                         )}
                         <p className="text-base text-text-secondary mt-3 max-w-md mx-auto md:mx-0 break-words line-clamp-4 leading-relaxed">{profile.bio || 'This lifter prefers to let their weights do the talking.'}</p>
                     </div>
@@ -133,10 +133,10 @@ export default function ProfilePage() {
                 <Card>
                     <div className="flex items-center justify-between border-b border-divider/10 pb-4 mb-6">
                         <div className="flex items-center gap-3">
-                            <TrophyIcon className="text-blue-600" size={24} />
+                            <TrophyIcon className="text-primary" size={24} />
                             <h2 className="font-black text-text-primary text-2xl uppercase tracking-tighter">Achievements</h2>
                         </div>
-                        <span className="text-[11px] font-black bg-blue-600/10 px-3 py-1.5 rounded-md text-blue-600 uppercase tracking-widest">
+                        <span className="text-[11px] font-black bg-primary/10 px-3 py-1.5 rounded-md text-primary uppercase tracking-widest">
                             {achievements.length} Total
                         </span>
                     </div>

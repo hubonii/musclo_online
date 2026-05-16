@@ -54,7 +54,7 @@ return (
                     {/* Render one month section containing workout cards for that month. */}
                     {Object.entries(groupedWorkouts).map(([month, monthWorkouts]) => (
                         <div key={month} className="space-y-6">
-                            <h2 className="text-xl md:text-2xl font-black text-blue-600 sticky top-4 mx-auto w-max px-6 py-2 bg-surface rounded-xl shadow-neu z-10 uppercase tracking-widest">
+                            <h2 className="text-xl md:text-2xl font-black text-primary sticky top-4 mx-auto w-max px-6 py-2 bg-surface rounded-xl shadow-neu z-10 uppercase tracking-widest">
                                 {month}
                             </h2>
 
@@ -74,12 +74,12 @@ return (
                                                 </div>
 
                                                 <div>
-                                                    <h3 className="font-bold text-xl text-text-primary group-hover:text-blue-600 transition-colors">
+                                                    <h3 className="font-bold text-xl text-text-primary group-hover:text-primary transition-colors">
                                                         {workout.name || 'Workout'}
                                                     </h3>
                                                     <div className="flex items-center gap-4 text-[11px] font-bold text-text-secondary mt-2">
                                                         <span className="flex items-center gap-1 bg-divider/5 px-2.5 py-1 rounded-md">
-                                                            <Clock size={14} className="text-blue-600"/> 
+                                                            <Clock size={14} className="text-primary"/> 
                                                             {formatDuration(workout.duration_seconds)}
                                                         </span>
                                                         <span className="flex items-center gap-1 bg-divider/5 px-2 py-0.5 rounded-md">
@@ -101,7 +101,7 @@ return (
                                                         {workout.sets?.length || 0} Sets
                                                     </Badge>
                                                 </div>
-                                                <div className="w-10 h-10 rounded-lg bg-divider/10 flex items-center justify-center group-hover:bg-blue-600 text-text-muted group-hover:text-white transition-colors duration-100 shadow-neu-inset">
+                                                <div className="w-10 h-10 rounded-lg bg-divider/10 flex items-center justify-center group-hover:bg-primary text-text-muted group-hover:text-white transition-colors duration-100 shadow-neu-inset">
                                                     <ChevronRight size={20}/>
                                                 </div>
                                             </div>

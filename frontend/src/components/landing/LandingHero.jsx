@@ -14,7 +14,7 @@ const LandingHero = () => {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-16 items-center">
-          
+
           {/* Content Column */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -35,16 +35,16 @@ const LandingHero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link 
+              <Link
                 to="/register"
-                className="group flex items-center justify-center gap-3 px-10 py-5 bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest hover:bg-zinc-950 dark:hover:bg-white dark:hover:text-zinc-950 transition-all font-display rounded-2xl shadow-neu-blue"
+                className="group flex items-center justify-center gap-3 px-10 py-5 bg-blue-600 text-white text-[11px] font-black uppercase tracking-widest hover:bg-zinc-950 dark:hover:bg-white dark:hover:text-zinc-950 transition-all font-display rounded-2xl shadow-lg"
               >
-                Initialize System
+                Initialize
                 <ChevronRight size={16} />
               </Link>
-              <Link 
+              <Link
                 to="/login"
-                className="flex items-center justify-center gap-3 px-10 py-5 bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white text-[11px] font-black uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 font-display rounded-2xl shadow-neu-sm hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                className="flex items-center justify-center gap-3 px-10 py-5 bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white text-[11px] font-black uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 font-display rounded-2xl shadow-sm hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
               >
                 Sign In
                 <ArrowRight size={16} />
@@ -61,7 +61,7 @@ const LandingHero = () => {
             className="relative w-full max-w-[320px] mx-auto lg:max-w-none"
           >
             {/* Floating Mobile HUD Elements */}
-            <motion.div 
+            <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               className="absolute top-10 -left-6 z-20 px-4 py-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center gap-3 rounded-2xl shadow-neu-sm"
@@ -70,7 +70,7 @@ const LandingHero = () => {
               <span className="text-[10px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-display">System Sync</span>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               animate={{ y: [0, 15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute bottom-20 -right-8 z-20 px-6 py-4 bg-zinc-50 dark:bg-zinc-900 shadow-neu flex flex-col rounded-3xl border border-zinc-200 dark:border-zinc-800"
@@ -82,7 +82,7 @@ const LandingHero = () => {
             {/* Smartphone Frame */}
             <div className="relative mx-auto w-full aspect-[1/2] max-h-[600px] bg-zinc-950 rounded-[48px] p-3 border-[6px] border-zinc-800/50 shadow-2xl overflow-hidden">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-zinc-950 rounded-b-2xl z-20" />
-              
+
               <div className="w-full h-full bg-zinc-900 rounded-[38px] overflow-hidden relative">
                 {/* Mock UI */}
                 <div className="p-8 pt-12">

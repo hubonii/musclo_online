@@ -17,7 +17,7 @@ return (
                         <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
                             <PolarGrid stroke="var(--border-divider)" strokeWidth={2}/>
                             <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--text-secondary)', fontSize: 12, fontWeight: 600 }}/>
-                            <Radar name="Volume" dataKey="volume" stroke="var(--accent-orange)" strokeWidth={3} fill="var(--accent-orange)" fillOpacity={0.8}/>
+                            <Radar name="Volume" dataKey="volume" stroke="var(--accent-primary)" strokeWidth={3} fill="var(--accent-primary)" fillOpacity={0.8}/>
                             <RechartsTooltip contentStyle={{ backgroundColor: 'var(--bg-surface)', borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', color: 'var(--text-primary)' }} cursor={{ fill: 'transparent' }}/>
                         </RadarChart>
                     </ResponsiveContainer>

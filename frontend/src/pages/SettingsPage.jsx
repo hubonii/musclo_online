@@ -208,7 +208,7 @@ export default function SettingsPage() {
                     <div className="lg:col-span-2 space-y-8">
                         <Card className="space-y-8">
                             <div className="flex items-center gap-3 border-b border-divider/10 pb-4">
-                                <User className="text-blue-600" size={22}/>
+                                <User className="text-primary" size={22}/>
                                 <h2 className="font-black text-xl uppercase tracking-tighter">Edit Profile</h2>
                             </div>
 
@@ -237,7 +237,7 @@ export default function SettingsPage() {
                                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
                                         <p className="text-xs text-text-muted uppercase tracking-widest font-bold">{email}</p>
                                         {username && (
-                                            <p className="text-[10px] font-black text-blue-600 uppercase tracking-wider">@{username}</p>
+                                            <p className="text-[10px] font-black text-primary uppercase tracking-wider">@{username}</p>
                                         )}
                                     </div>
                                 </div>
@@ -271,7 +271,7 @@ export default function SettingsPage() {
                                     suffix={isEmailChanged && !user?.google_id && (
                                         <button 
                                             onClick={handleRequestEmailChange}
-                                            className="px-3 py-1 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-neu active:scale-95 transition-all"
+                                            className="px-3 py-1 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-lg shadow-neu active:scale-95 transition-all"
                                         >
                                             Verify
                                         </button>
@@ -282,7 +282,7 @@ export default function SettingsPage() {
                                     <textarea 
                                         value={bio}
                                         onChange={(e) => setBio(e.target.value)}
-                                        className="w-full bg-app shadow-neu-inset rounded-2xl p-4 text-sm font-medium text-text-primary outline-none min-h-[100px] border border-transparent focus:border-blue-600/20 transition-all"
+                                        className="w-full bg-app shadow-neu-inset rounded-2xl p-4 text-sm font-medium text-text-primary outline-none min-h-[100px] border border-transparent focus:border-primary/20 transition-all"
                                         placeholder="What drives you to train?"
                                     />
                                 </div>
@@ -296,13 +296,13 @@ export default function SettingsPage() {
                                 <div className="flex bg-divider/10 rounded-2xl p-1 shadow-neu-inset w-full max-w-xs">
                                     <button 
                                         onClick={() => setUnitSystem('metric')} 
-                                        className={`flex-1 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${unitSystem === 'metric' ? 'bg-app shadow-neu text-blue-600' : 'text-text-muted hover:text-text-secondary'}`}
+                                        className={`flex-1 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${unitSystem === 'metric' ? 'bg-app shadow-neu text-primary' : 'text-text-muted hover:text-text-secondary'}`}
                                     >
                                         Metric (kg)
                                     </button>
                                     <button 
                                         onClick={() => setUnitSystem('imperial')} 
-                                        className={`flex-1 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${unitSystem === 'imperial' ? 'bg-app shadow-neu text-blue-600' : 'text-text-muted hover:text-text-secondary'}`}
+                                        className={`flex-1 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${unitSystem === 'imperial' ? 'bg-app shadow-neu text-primary' : 'text-text-muted hover:text-text-secondary'}`}
                                     >
                                         Imperial (lbs)
                                     </button>
@@ -330,7 +330,7 @@ export default function SettingsPage() {
                         {!user?.google_id && (
                             <Card className="space-y-6">
                                 <div className="flex items-center gap-3 border-b border-divider/10 pb-4">
-                                    <Lock className="text-blue-600" size={20}/>
+                                    <Lock className="text-primary" size={20}/>
                                     <h2 className="font-black text-lg uppercase tracking-tighter">Security</h2>
                                 </div>
                                 <form onSubmit={handlePasswordChange} className="space-y-4">
@@ -374,7 +374,7 @@ export default function SettingsPage() {
                         {/* Data Card */}
                         <Card className="space-y-4">
                             <div className="flex items-center gap-3 border-b border-divider/10 pb-4">
-                                <Download className="text-blue-600" size={20}/>
+                                <Download className="text-primary" size={20}/>
                                 <h2 className="font-black text-lg uppercase tracking-tighter">My Data</h2>
                             </div>
                             <p className="text-[11px] text-text-secondary font-medium leading-relaxed">

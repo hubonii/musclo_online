@@ -25,14 +25,14 @@ return (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ op
                     <div className="min-w-0">
                         <h3 className="font-black text-base md:text-lg text-text-primary capitalize tracking-tight truncate">{item.exercise.name}</h3>
                         <div className="flex items-center flex-wrap gap-2 mt-1">
-                            <p className="text-[10px] font-black text-orange uppercase tracking-[0.15em] opacity-80">{item.exercise.muscle_group}</p>
+                            <p className="text-[10px] font-black text-primary uppercase tracking-[0.15em] opacity-80">{item.exercise.muscle_group}</p>
                             <span className="text-divider/40 inline-block">•</span>
-                            <Select variant="ghost-orange" className="uppercase tracking-widest text-[9px] font-black h-auto" value={item.override_type || (item.exercise.equipment === 'Body Weight' ? 'Bodyweight' : 'Weights')} onValueChange={(v) => onUpdateParam(exIndex, 'override_type', v)} options={[
+                            <Select variant="ghost-primary" className="uppercase tracking-widest text-[9px] font-black h-auto" value={item.override_type || (item.exercise.equipment === 'Body Weight' ? 'Bodyweight' : 'Weights')} onValueChange={(v) => onUpdateParam(exIndex, 'override_type', v)} options={[
             { value: 'Weights', label: 'WEIGHTS' },
             { value: 'Bodyweight', label: 'BODYWEIGHT' }
         ]}/>
                             <span className="text-divider/40 inline-block">•</span>
-                            <Select variant="ghost-orange" className="uppercase tracking-widest text-[9px] font-black h-auto" value={item.override_metric || 'Reps'} onValueChange={(v) => onUpdateParam(exIndex, 'override_metric', v)} options={[
+                            <Select variant="ghost-primary" className="uppercase tracking-widest text-[9px] font-black h-auto" value={item.override_metric || 'Reps'} onValueChange={(v) => onUpdateParam(exIndex, 'override_metric', v)} options={[
             { value: 'Reps', label: 'REPS' },
             { value: 'Time', label: 'TIME' }
         ]}/>

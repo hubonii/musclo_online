@@ -111,7 +111,7 @@ export default function TemplateSetsTable({ sets, isBodyweight, isTime, exIndex,
 
             <Button
                 variant="outline"
-                className="w-full mt-4 border-dashed border-divider/40 hover:border-orange/50 uppercase tracking-widest font-black text-[10px] py-3 h-auto"
+                className="w-full mt-4 border-dashed border-divider/40 hover:border-primary/50 uppercase tracking-widest font-black text-[10px] py-3 h-auto"
                 onClick={() => onAddSet(exIndex)}
             >
                 <Plus size={12} strokeWidth={3} className="mr-1" /> Add Prescribed Set
