@@ -15,7 +15,13 @@
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 <!-- impeccable-live-start -->
-<script src="http://localhost:8400/live.js"></script>
+<script>
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    const script = document.createElement('script');
+    script.src = 'http://localhost:8400/live.js';
+    document.body.appendChild(script);
+  }
+</script>
 <!-- impeccable-live-end -->
 </body>
 
