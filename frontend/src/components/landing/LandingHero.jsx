@@ -37,15 +37,15 @@ const LandingHero = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link
                 to="/register"
-                className="group flex items-center justify-center gap-3 px-10 py-5 bg-primary text-white text-[11px] font-black uppercase tracking-widest hover:bg-zinc-950 dark:hover:bg-white dark:hover:text-zinc-950 transition-all font-display rounded-2xl shadow-lg hover:shadow-neu"
+                className="group flex items-center justify-center gap-2 px-6 py-4 md:px-8 md:py-4 bg-primary text-white text-xs md:text-sm font-bold uppercase tracking-wider hover:bg-zinc-950 dark:hover:bg-white dark:hover:text-zinc-950 dark:hover:text-zinc-950 transition-all font-sans rounded-2xl shadow-neu-primary hover:shadow-neu"
               >
                 <span className="group-hover:hidden">Initialize</span>
                 <span className="hidden group-hover:inline">Create Account</span>
-                <ChevronRight size={16} />
+                <ChevronRight size={16} className="transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 to="/login"
-                className="flex items-center justify-center gap-3 px-10 py-5 bg-app dark:bg-zinc-900 text-zinc-950 dark:text-white text-[11px] font-black uppercase tracking-widest border border-divider font-display rounded-2xl shadow-neu-sm hover:shadow-neu transition-all"
+                className="flex items-center justify-center gap-2 px-6 py-4 md:px-8 md:py-4 bg-app dark:bg-zinc-900 text-zinc-950 dark:text-white text-xs md:text-sm font-bold uppercase tracking-wider border border-divider font-sans rounded-2xl shadow-neu-sm hover:shadow-neu transition-all"
               >
                 Sign In
                 <ArrowRight size={16} />
@@ -65,7 +65,7 @@ const LandingHero = () => {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-10 -left-6 z-20 px-4 py-2 bg-app dark:bg-zinc-900 border border-divider flex items-center gap-3 rounded-2xl shadow-neu-sm"
+              className="absolute top-10 -left-6 z-20 px-4 py-2 bg-app dark:bg-zinc-900 border border-divider hidden sm:flex items-center gap-3 rounded-2xl shadow-neu-sm"
             >
               <div className="relative flex items-center justify-center w-2 h-2">
                 <div className="absolute inset-0 rounded-full bg-primary blur-[4px] animate-pulse opacity-75" />
@@ -77,7 +77,7 @@ const LandingHero = () => {
             <motion.div
               animate={{ y: [0, 15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-20 -right-8 z-20 px-6 py-4 bg-app dark:bg-zinc-900 shadow-neu flex flex-col rounded-3xl border border-divider"
+              className="absolute bottom-20 -right-8 z-20 px-6 py-4 bg-app dark:bg-zinc-900 shadow-neu hidden sm:flex flex-col rounded-3xl border border-divider"
             >
               <span className="text-[9px] font-black uppercase tracking-widest text-primary mb-1 font-display">Core Load</span>
               <span className="text-2xl font-black text-zinc-950 dark:text-white font-mono tabular-nums">092.4</span>

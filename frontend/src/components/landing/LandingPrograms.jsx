@@ -33,12 +33,12 @@ const LandingPrograms = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-24">
           <div className="max-w-2xl">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-[1px] bg-blue-600" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-blue-600 font-display">Engineered Protocols</span>
+              <div className="w-12 h-[1px] bg-primary" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">Engineered Protocols</span>
             </div>
             <h2 className="text-5xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-none uppercase font-display">
               Select your <br /> 
-              <span className="text-blue-600">Vector.</span>
+              <span className="text-primary">Vector.</span>
             </h2>
           </div>
           <p className="max-w-sm text-lg text-zinc-600 dark:text-zinc-400 font-medium font-sans leading-relaxed">
@@ -57,7 +57,7 @@ const LandingPrograms = () => {
               className="group p-8 md:p-10 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[2.5rem] shadow-neu hover:shadow-neu-lg transition-all"
             >
               <div className="flex justify-between items-start mb-12">
-                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center text-blue-600 rounded-2xl shadow-neu-sm group-hover:bg-blue-600 group-hover:text-white transition-all">
+                <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center text-primary rounded-2xl shadow-neu-sm group-hover:bg-primary group-hover:text-white transition-all">
                   <prog.icon size={28} />
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 font-display">{prog.level}</span>
@@ -86,14 +86,14 @@ const LandingPrograms = () => {
                       aria-valuemax="100"
                       aria-label={`${prog.title} ${key} intensity`}
                     >
-                      <div className="h-full bg-blue-600" style={{ width: val }} />
+                      <div className="h-full bg-primary" style={{ width: val }} />
                     </div>
                   </div>
                 ))}
               </div>
 
               <button 
-                className="w-full py-5 bg-zinc-100 dark:bg-zinc-950 text-zinc-950 dark:text-white text-[10px] font-black uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all shadow-neu-sm group-hover:shadow-none font-display flex items-center justify-center gap-3"
+                className="w-full py-4 bg-zinc-100 dark:bg-zinc-950 text-zinc-950 dark:text-white text-xs font-bold uppercase tracking-wider border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:bg-primary hover:text-white hover:border-primary transition-all shadow-neu-sm group-hover:shadow-none font-sans flex items-center justify-center gap-2"
                 aria-label={`Load ${prog.title} module`}
               >
                 Load Module

@@ -46,7 +46,7 @@ return (
                 {/* Page header */}
                 <div className="flex items-center justify-between mb-4 md:mb-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-app shadow-neu flex items-center justify-center text-blue-600 hidden md:flex shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-app shadow-neu flex items-center justify-center text-primary hidden md:flex shrink-0">
                             <ImageIcon size={20}/>
                         </div>
                         <div>

@@ -17,23 +17,23 @@ const LandingAnalytics = () => {
             {/* Mock Analytics Dashboard */}
             <div className="flex items-center justify-between mb-12">
               <div className="flex items-center gap-4">
-                <BarChart2 size={20} className="text-blue-600" />
+                <BarChart2 size={20} className="text-primary" />
                 <span className="text-[11px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-display">Performance.Metric</span>
               </div>
-              <div className="px-4 py-1.5 bg-blue-600/10 text-blue-600 text-[9px] font-black uppercase tracking-widest rounded-full border border-blue-600/20">
+              <div className="px-4 py-1.5 bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest rounded-full border border-primary/20">
                 Live Data
               </div>
             </div>
 
             <div className="space-y-10">
               {[
-                { label: "Volume Distribution", value: "48,200kg", icon: TrendingUp, color: "blue-600" },
+                { label: "Volume Distribution", value: "48,200kg", icon: TrendingUp, color: "primary" },
                 { label: "Intensity Variance", value: "0.14%", icon: Activity, color: "zinc-400" },
-                { label: "Frequency Heatmap", value: "Active", icon: PieChart, color: "blue-600" }
+                { label: "Frequency Heatmap", value: "Active", icon: PieChart, color: "primary" }
               ].map((metric, i) => (
                 <div key={i} className="p-6 md:p-8 bg-zinc-100 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-inset">
                   <div className="flex items-center justify-between mb-6">
-                    <div className="w-10 h-10 bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center text-blue-600 rounded-xl shadow-neu-sm">
+                    <div className="w-10 h-10 bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center text-primary rounded-xl shadow-neu-sm">
                       <metric.icon size={18} />
                     </div>
                     <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400 font-display">{metric.label}</span>
@@ -54,7 +54,7 @@ const LandingAnalytics = () => {
                       whileInView={{ width: i === 0 ? '75%' : i === 1 ? '45%' : '90%' }}
                       viewport={{ once: true }}
                       transition={{ duration: 1.5, delay: i * 0.2 }}
-                      className="h-full bg-blue-600 rounded-full"
+                      className="h-full bg-primary rounded-full"
                     />
                   </div>
                 </div>
@@ -69,15 +69,15 @@ const LandingAnalytics = () => {
             className="order-1 lg:order-2"
           >
             <div className="flex items-center gap-6 mb-8">
-              <div className="w-16 h-[1px] bg-blue-600" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-blue-600 font-display">
+              <div className="w-16 h-[1px] bg-primary" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">
                 Advanced Telemetry
               </span>
             </div>
 
             <h2 className="text-6xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.85] mb-10 uppercase font-display">
               Unrivaled <br />
-              <span className="text-blue-600">Analytics.</span>
+              <span className="text-primary">Analytics.</span>
             </h2>
 
             <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 font-medium font-sans leading-relaxed mb-12">
@@ -92,8 +92,8 @@ const LandingAnalytics = () => {
                 "Recovery curve visualization"
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-6 group">
-                  <div className="w-6 h-6 rounded-full bg-blue-600/10 border border-blue-600/20 flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                  <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                   </div>
                   <span className="text-base font-black text-zinc-950 dark:text-white uppercase tracking-widest font-display">
                     {item}

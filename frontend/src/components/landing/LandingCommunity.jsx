@@ -20,15 +20,15 @@ const LandingCommunity = () => {
             viewport={{ once: true }}
           >
             <div className="flex items-center gap-6 mb-8">
-              <div className="w-16 h-[1px] bg-blue-600" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-blue-600 font-display">
+              <div className="w-16 h-[1px] bg-primary" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">
                 Global Network
               </span>
             </div>
 
             <h2 className="text-6xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.85] mb-10 uppercase font-display">
               Join the <br />
-              <span className="text-blue-600">Vanguard.</span>
+              <span className="text-primary">Vanguard.</span>
             </h2>
 
             <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 font-medium font-sans leading-relaxed mb-12 max-w-lg">
@@ -38,7 +38,7 @@ const LandingCommunity = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {stats.map((stat, i) => (
                 <div key={i} className="p-8 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm flex items-center gap-6">
-                  <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center text-blue-600 rounded-2xl">
+                  <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center text-primary rounded-2xl">
                     <stat.icon size={22} />
                   </div>
                   <div>
@@ -59,9 +59,9 @@ const LandingCommunity = () => {
             {/* Mock Chat / Community UI */}
             <div className="space-y-6" role="log" aria-label="Recent community telemetry">
               {[
-                { name: "Atlas.01", msg: "Just uploaded new biomechanical baseline. Efficiency at 94.2%.", color: "blue-600" },
+                { name: "Atlas.01", msg: "Just uploaded new biomechanical baseline. Efficiency at 94.2%.", color: "primary" },
                 { name: "Vector_Prime", msg: "Copy that. Analyzing neural sync for metabolic threshold.", color: "zinc-400" },
-                { name: "Nova_Static", msg: "Record load achieved in Protocol.04. Telemetry stable.", color: "blue-600" }
+                { name: "Nova_Static", msg: "Record load achieved in Protocol.04. Telemetry stable.", color: "primary" }
               ].map((chat, i) => (
                 <div key={i} className={`p-6 rounded-2xl shadow-neu-inset-focused bg-zinc-100 dark:bg-zinc-950 border border-white/5`}>
                   <div className="flex items-center gap-3 mb-3">
@@ -79,7 +79,7 @@ const LandingCommunity = () => {
               <div className="flex-1 h-12 bg-zinc-100 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl px-6 flex items-center text-zinc-400 text-[10px] font-black uppercase tracking-widest shadow-neu-inset">
                 Communicate...
               </div>
-              <div className="w-12 h-12 bg-blue-600 flex items-center justify-center text-white rounded-2xl shadow-neu-blue">
+              <div className="w-12 h-12 bg-primary flex items-center justify-center text-white rounded-2xl shadow-neu-primary">
                 <MessageSquare size={20} />
               </div>
             </div>

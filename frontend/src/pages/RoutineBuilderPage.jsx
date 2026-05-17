@@ -70,7 +70,7 @@ return (<div className="min-h-screen bg-app font-sans text-text-primary">
 
             {/* Floating action to reopen mobile library while editing */}
             {exercises.length > 0 && !showMobileLibrary && (<div className="fixed bottom-6 right-6 lg:hidden z-40 mb-safe-bottom">
-                    <button onClick={() => setShowMobileLibrary(true)} className="w-16 h-16 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-neu focus:outline-none">
+                    <button onClick={() => setShowMobileLibrary(true)} className="w-16 h-16 bg-primary text-white rounded-xl flex items-center justify-center shadow-neu focus:outline-none">
                         <Plus size={32}/>
                     </button>
                 </div>)}

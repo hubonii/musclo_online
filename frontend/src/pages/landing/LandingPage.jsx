@@ -28,7 +28,7 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-white dark:bg-zinc-950 transition-colors duration-700 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="relative min-h-screen bg-white dark:bg-zinc-950 transition-colors duration-700 font-sans selection:bg-primary selection:text-white">
       {/* Global Grain Texture Overlay */}
       <div className="fixed inset-0 pointer-events-none z-[999] opacity-[0.03] dark:opacity-[0.05] contrast-150 mix-blend-multiply dark:mix-blend-overlay">
         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -41,7 +41,7 @@ const LandingPage = () => {
 
       {/* Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-blue-600 z-[110] origin-left"
+        className="fixed top-0 left-0 right-0 h-1 bg-primary z-[110] origin-left"
         style={{ scaleX }}
       />
 

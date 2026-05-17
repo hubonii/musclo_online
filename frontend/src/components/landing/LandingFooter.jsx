@@ -12,7 +12,7 @@ const LandingFooter = () => {
           {/* Brand Info */}
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-8">
-              <div className="w-12 h-12 bg-blue-600 flex items-center justify-center rounded-2xl shadow-lg">
+              <div className="w-12 h-12 bg-primary flex items-center justify-center rounded-2xl shadow-lg">
                 <span className="text-white font-black text-2xl font-display">M</span>
               </div>
               <span className="text-2xl font-black uppercase tracking-tighter text-zinc-950 dark:text-white font-display leading-none">
@@ -28,9 +28,9 @@ const LandingFooter = () => {
           <div>
             <h4 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-600 mb-8 font-display">System</h4>
             <ul className="space-y-4">
-              <li><a href="#features" className="text-base font-black text-zinc-950 dark:text-white hover:text-blue-600 transition-colors uppercase font-display">Features</a></li>
-              <li><a href="#intelligence" className="text-base font-black text-zinc-950 dark:text-white hover:text-blue-600 transition-colors uppercase font-display">Intelligence</a></li>
-              <li><a href="#telemetry" className="text-base font-black text-zinc-950 dark:text-white hover:text-blue-600 transition-colors uppercase font-display">Telemetry</a></li>
+              <li><a href="#systems" className="text-base font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-display">Systems</a></li>
+              <li><a href="#intelligence" className="text-base font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-display">Intelligence</a></li>
+              <li><a href="#methodology" className="text-base font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-display">Methodology</a></li>
             </ul>
           </div>
 
@@ -38,8 +38,8 @@ const LandingFooter = () => {
           <div>
             <h4 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-600 mb-8 font-display">Legal</h4>
             <ul className="space-y-4">
-              <li><a href="/privacy" className="text-sm font-black text-zinc-950 dark:text-white hover:text-blue-600 transition-colors uppercase font-display">Privacy</a></li>
-              <li><a href="/terms" className="text-sm font-black text-zinc-950 dark:text-white hover:text-blue-600 transition-colors uppercase font-display">Terms</a></li>
+              <li><a href="/privacy" className="text-sm font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-display">Privacy</a></li>
+              <li><a href="/terms" className="text-sm font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-display">Terms</a></li>
             </ul>
           </div>
         </div>
@@ -52,7 +52,7 @@ const LandingFooter = () => {
           
           <div className="flex items-center gap-4">
             {[Github, Twitter, Instagram].map((Icon, i) => (
-              <a key={i} href="#" className="p-4 bg-zinc-50 dark:bg-zinc-900 text-zinc-400 hover:text-blue-600 transition-all border border-zinc-200 dark:border-zinc-800 hover:border-blue-600 dark:hover:border-blue-600 rounded-xl">
+              <a key={i} href="#" className="p-4 bg-zinc-50 dark:bg-zinc-900 text-zinc-400 hover:text-primary transition-all border border-zinc-200 dark:border-zinc-800 hover:border-primary dark:hover:border-primary rounded-xl">
                 <Icon size={24} />
               </a>
             ))}

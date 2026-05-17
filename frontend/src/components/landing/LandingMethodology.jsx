@@ -31,12 +31,12 @@ const LandingMethodology = () => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col items-center text-center mb-24">
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-[1px] bg-blue-600" />
-            <span className="text-[11px] font-black uppercase tracking-widest text-blue-600 font-display">Scientific Precision</span>
-            <div className="w-12 h-[1px] bg-blue-600" />
+            <div className="w-12 h-[1px] bg-primary" />
+            <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">Scientific Precision</span>
+            <div className="w-12 h-[1px] bg-primary" />
           </div>
           <h2 className="text-5xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-none uppercase font-display mb-10">
-            The <span className="text-blue-600">Protocol.</span>
+            The <span className="text-primary">Protocol.</span>
           </h2>
           <p className="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400 font-medium font-sans leading-relaxed">
             Our methodology is built on the convergence of biomechanical telemetry and neural optimization. We don't just track sets; we engineer results.
@@ -53,7 +53,7 @@ const LandingMethodology = () => {
               transition={{ delay: i * 0.1 }}
               className="group p-8 md:p-10 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[2.5rem] shadow-neu hover:shadow-neu-lg transition-all"
             >
-              <div className="w-14 h-14 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center text-blue-600 mb-10 rounded-2xl shadow-neu-sm group-hover:bg-blue-600 group-hover:text-white transition-all">
+              <div className="w-14 h-14 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center text-primary mb-10 rounded-2xl shadow-neu-sm group-hover:bg-primary group-hover:text-white transition-all">
                 <step.icon size={24} />
               </div>
               <h3 className="text-2xl font-black text-zinc-950 dark:text-white mb-6 uppercase tracking-tighter font-display leading-tight">

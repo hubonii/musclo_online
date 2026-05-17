@@ -19,7 +19,7 @@ return (<div className="min-h-screen bg-app font-sans text-text-primary selectio
             {/* Sticky breadcrumb-style top bar */}
             <div className="sticky top-0 z-40 bg-surface w-full shadow-neu-sm p-4 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-base font-bold tracking-wide">
-                    <span className="text-text-muted cursor-pointer hover:text-blue-600 transition-colors" onClick={() => navigate('/programs')}>
+                    <span className="text-text-muted cursor-pointer hover:text-primary transition-colors" onClick={() => navigate('/programs')}>
                         Programs
                     </span>
                     <ChevronRight size={18} className="text-text-muted/40"/>

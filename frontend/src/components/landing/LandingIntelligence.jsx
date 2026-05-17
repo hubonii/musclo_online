@@ -21,7 +21,7 @@ const DataLine = ({ label, value, progress, delay = 0 }) => {
     <div className="mb-6">
       <div className="flex justify-between items-end mb-2">
         <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500 font-display">{label}</span>
-        <span className="text-sm font-black text-blue-600 font-mono tabular-nums">{displayValue}</span>
+        <span className="text-sm font-black text-primary font-mono tabular-nums">{displayValue}</span>
       </div>
       <div 
         className="h-[3px] w-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden rounded-full"
@@ -36,7 +36,7 @@ const DataLine = ({ label, value, progress, delay = 0 }) => {
           whileInView={{ width: `${progress}%` }}
           viewport={{ once: true }}
           transition={{ duration: 1.5, ease: "circOut", delay }}
-          className="h-full bg-blue-600 rounded-full"
+          className="h-full bg-primary rounded-full"
         />
       </div>
     </div>
@@ -59,7 +59,7 @@ const LandingIntelligence = () => {
             {/* UI Header */}
             <div className="flex items-center justify-between mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-8">
               <div className="flex items-center gap-4">
-                <Terminal size={20} className="text-blue-600" />
+                <Terminal size={20} className="text-primary" />
                 <span className="text-[11px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-display">Neural.Diagnostics</span>
               </div>
               <div className="flex gap-2">
@@ -70,12 +70,12 @@ const LandingIntelligence = () => {
             {/* Live Readouts */}
             <div className="grid grid-cols-2 gap-8 mb-12">
               <div className="p-8 bg-zinc-100 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm">
-                <Search size={18} className="text-blue-600 mb-6" />
+                <Search size={18} className="text-primary mb-6" />
                 <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2 font-display">Pattern recognition</div>
                 <div className="text-3xl font-black text-zinc-950 dark:text-white font-display">ACTIVE</div>
               </div>
               <div className="p-8 bg-zinc-100 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm">
-                <Globe size={18} className="text-blue-600 mb-6" />
+                <Globe size={18} className="text-primary mb-6" />
                 <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2 font-display">Network Sync</div>
                 <div className="text-3xl font-black text-zinc-950 dark:text-white font-mono italic">100%</div>
               </div>
@@ -89,7 +89,7 @@ const LandingIntelligence = () => {
             </div>
 
             {/* Decorative Background Elements */}
-            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-blue-600/5 blur-[80px]" />
+            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-primary/5 blur-[80px]" />
           </motion.div>
 
           {/* Content Column */}
@@ -100,8 +100,8 @@ const LandingIntelligence = () => {
             className="order-1 lg:order-2"
           >
             <div className="flex items-center gap-6 mb-8">
-              <div className="w-16 h-[1px] bg-blue-600" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-blue-600 font-display">
+              <div className="w-16 h-[1px] bg-primary" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">
                 Contextual Engine
               </span>
             </div>
@@ -109,7 +109,7 @@ const LandingIntelligence = () => {
             <h2 className="text-6xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.85] mb-10 uppercase font-display">
               Beyond <br />
               Standard <br />
-              <span className="text-blue-600">Logics.</span>
+              <span className="text-primary">Logics.</span>
             </h2>
 
             <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 font-medium font-sans leading-relaxed mb-12">
@@ -123,7 +123,7 @@ const LandingIntelligence = () => {
                 { icon: Cpu, text: "Automated protocol adjustments" }
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-6 group">
-                  <div className="w-14 h-14 bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-400 group-hover:bg-blue-600 group-hover:text-white transition-all border border-zinc-100 dark:border-zinc-800 group-hover:border-blue-600 rounded-2xl shadow-neu-sm">
+                  <div className="w-14 h-14 bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-400 group-hover:bg-primary group-hover:text-white transition-all border border-zinc-100 dark:border-zinc-800 group-hover:border-primary rounded-2xl shadow-neu-sm">
                     <item.icon size={24} />
                   </div>
                   <span className="text-base font-black text-zinc-950 dark:text-white uppercase tracking-widest font-display">
