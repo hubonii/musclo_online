@@ -28,6 +28,20 @@ export default {
                     800: 'oklch(27% 0.01 250)',
                     900: 'oklch(20% 0.01 250)',
                     950: 'oklch(15% 0.01 250)',
+                },
+                // Aliasing blue to orange scale to instantly transition hardcoded accent blue classes to orange.
+                blue: {
+                    50: '#fff7ed',
+                    100: '#ffedd5',
+                    200: '#fed7aa',
+                    300: '#fdbb74',
+                    400: '#fb923c',
+                    500: '#f97316',
+                    600: '#ea580c',
+                    700: '#c2410c',
+                    800: '#9a3412',
+                    900: '#7c2d12',
+                    950: '#431407',
                 }
             },
             fontFamily: {

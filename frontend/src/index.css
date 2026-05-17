@@ -45,8 +45,8 @@
     --border-divider: #E4E4E7;
 
     /* High-Voltage Accents */
-    --accent-blue: #0000EE;   /* True Blue */
-    --accent-primary: var(--accent-blue);
+    --accent-orange: #EA580C;   /* Musclo Orange */
+    --accent-primary: var(--accent-orange);
     
     /* Typography */
     --text-primary: #09090B;
@@ -189,20 +189,24 @@
       -20px -20px 40px var(--neu-light-lg);
   }
 
-  .shadow-neu-blue {
+  .shadow-neu-orange {
     box-shadow:
-      8px 8px 16px rgba(0, 0, 238, 0.3),
+      8px 8px 16px rgba(234, 88, 12, 0.3),
       -8px -8px 16px rgba(255, 255, 255, 0.8);
   }
-  .dark .shadow-neu-blue {
+  .dark .shadow-neu-orange {
     box-shadow:
       8px 8px 16px rgba(0, 0, 0, 0.8),
-      -8px -8px 16px rgba(0, 0, 238, 0.15);
+      -8px -8px 16px rgba(234, 88, 12, 0.15);
+  }
+
+  .shadow-neu-blue {
+    @apply shadow-neu-orange;
   }
 
   /* Legacy alias for compatibility during migration */
   .shadow-neu-primary {
-    @apply shadow-neu-blue;
+    @apply shadow-neu-orange;
   }
 
 
