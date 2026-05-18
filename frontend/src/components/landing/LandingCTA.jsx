@@ -14,7 +14,7 @@ const LandingCTA = () => {
           className="max-w-5xl mx-auto p-8 md:p-24 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 relative rounded-[3.5rem] shadow-neu"
         >
 
-          <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-10 inline-block font-display">
+          <span className="text-[11px] font-black uppercase tracking-widest text-primary mb-10 inline-block font-sans">
             Final Protocol
           </span>
           <h2 className="text-4xl md:text-8xl font-black uppercase tracking-tighter leading-[0.85] text-zinc-950 dark:text-white mb-10 font-display">

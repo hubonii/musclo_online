@@ -65,6 +65,8 @@ jest.mock('../../../src/components/ui/EmptyState', () => ({
   default: ({ title }) => <div>{title}</div>,
 }));
 
+import { useMemoryStore } from '../../../src/stores/useMemoryStore';
+
 // Global mock for IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
   constructor() {}
@@ -80,6 +82,8 @@ describe('ExercisesPage', () => {
     jest.clearAllMocks();
     jest.useFakeTimers();
     useToast.mockReturnValue({ toast });
+    localStorage.clear();
+    useMemoryStore.getState().resetExercisesFilters();
   });
 
   afterEach(() => {

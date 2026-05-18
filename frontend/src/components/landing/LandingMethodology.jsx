@@ -32,7 +32,7 @@ const LandingMethodology = () => {
         <div className="flex flex-col items-center text-center mb-24">
           <div className="flex items-center gap-4 mb-8">
             <div className="w-12 h-[1px] bg-primary" />
-            <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">Scientific Precision</span>
+            <span className="text-[11px] font-black uppercase tracking-widest text-primary font-sans">Scientific Precision</span>
             <div className="w-12 h-[1px] bg-primary" />
           </div>
           <h2 className="text-5xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-none uppercase font-display mb-10">
@@ -51,7 +51,7 @@ const LandingMethodology = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group p-8 md:p-10 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[2.5rem] shadow-neu hover:shadow-neu-lg transition-all"
+              className="group p-6 md:p-10 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[2.5rem] shadow-neu hover:shadow-neu-lg transition-all"
             >
               <div className="w-14 h-14 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center text-primary mb-10 rounded-2xl shadow-neu-sm group-hover:bg-primary group-hover:text-white transition-all">
                 <step.icon size={24} />

@@ -20,7 +20,7 @@ const DataLine = ({ label, value, progress, delay = 0 }) => {
   return (
     <div className="mb-6">
       <div className="flex justify-between items-end mb-2">
-        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500 font-display">{label}</span>
+        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500 font-sans">{label}</span>
         <span className="text-sm font-black text-primary font-mono tabular-nums">{displayValue}</span>
       </div>
       <div 
@@ -54,13 +54,13 @@ const LandingIntelligence = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="order-2 lg:order-1 relative p-12 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 overflow-hidden rounded-[2.5rem] shadow-neu"
+            className="order-2 lg:order-1 relative p-6 md:p-12 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 overflow-hidden rounded-[2.5rem] shadow-neu"
           >
             {/* UI Header */}
             <div className="flex items-center justify-between mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-8">
               <div className="flex items-center gap-4">
                 <Terminal size={20} className="text-primary" />
-                <span className="text-[11px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-display">Neural.Diagnostics</span>
+                <span className="text-[11px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-sans">Neural.Diagnostics</span>
               </div>
               <div className="flex gap-2">
                 {[1, 2, 3].map(i => <div key={i} className="w-2 h-2 rounded-full bg-zinc-300 dark:bg-zinc-700" />)}
@@ -68,15 +68,15 @@ const LandingIntelligence = () => {
             </div>
 
             {/* Live Readouts */}
-            <div className="grid grid-cols-2 gap-8 mb-12">
-              <div className="p-8 bg-zinc-100 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mb-12">
+              <div className="p-6 bg-zinc-100 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm">
                 <Search size={18} className="text-primary mb-6" />
-                <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2 font-display">Pattern recognition</div>
-                <div className="text-3xl font-black text-zinc-950 dark:text-white font-display">ACTIVE</div>
+                <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2 font-sans">Pattern recognition</div>
+                <div className="text-3xl font-black text-zinc-950 dark:text-white font-sans">ACTIVE</div>
               </div>
-              <div className="p-8 bg-zinc-100 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm">
+              <div className="p-6 bg-zinc-100 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm">
                 <Globe size={18} className="text-primary mb-6" />
-                <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2 font-display">Network Sync</div>
+                <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-2 font-sans">Network Sync</div>
                 <div className="text-3xl font-black text-zinc-950 dark:text-white font-mono italic">100%</div>
               </div>
             </div>
@@ -101,12 +101,12 @@ const LandingIntelligence = () => {
           >
             <div className="flex items-center gap-6 mb-8">
               <div className="w-16 h-[1px] bg-primary" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">
+              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-sans">
                 Contextual Engine
               </span>
             </div>
 
-            <h2 className="text-6xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.85] mb-10 uppercase font-display">
+            <h2 className="text-5xl sm:text-6xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.85] mb-10 uppercase font-display">
               Beyond <br />
               Standard <br />
               <span className="text-primary">Logics.</span>
@@ -126,7 +126,7 @@ const LandingIntelligence = () => {
                   <div className="w-14 h-14 bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-zinc-400 group-hover:bg-primary group-hover:text-white transition-all border border-zinc-100 dark:border-zinc-800 group-hover:border-primary rounded-2xl shadow-neu-sm">
                     <item.icon size={24} />
                   </div>
-                  <span className="text-base font-black text-zinc-950 dark:text-white uppercase tracking-widest font-display">
+                  <span className="text-base font-black text-zinc-950 dark:text-white uppercase tracking-widest font-sans">
                     {item.text}
                   </span>
                 </div>

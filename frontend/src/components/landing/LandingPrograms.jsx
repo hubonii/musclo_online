@@ -34,7 +34,7 @@ const LandingPrograms = () => {
           <div className="max-w-2xl">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-[1px] bg-primary" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">Engineered Protocols</span>
+              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-sans">Engineered Protocols</span>
             </div>
             <h2 className="text-5xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-none uppercase font-display">
               Select your <br /> 
@@ -54,13 +54,13 @@ const LandingPrograms = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group p-8 md:p-10 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[2.5rem] shadow-neu hover:shadow-neu-lg transition-all"
+              className="group p-6 md:p-10 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[2.5rem] shadow-neu hover:shadow-neu-lg transition-all"
             >
               <div className="flex justify-between items-start mb-12">
                 <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center text-primary rounded-2xl shadow-neu-sm group-hover:bg-primary group-hover:text-white transition-all">
                   <prog.icon size={28} />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 font-display">{prog.level}</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 font-sans">{prog.level}</span>
               </div>
               
               <h3 className="text-3xl font-black text-zinc-950 dark:text-white mb-6 uppercase tracking-tighter font-display">
@@ -74,7 +74,7 @@ const LandingPrograms = () => {
               <div className="space-y-4 mb-12">
                 {Object.entries(prog.stats).map(([key, val]) => (
                   <div key={key}>
-                    <div className="flex justify-between text-[8px] font-black uppercase tracking-widest text-zinc-400 mb-2 font-display">
+                    <div className="flex justify-between text-[8px] font-black uppercase tracking-widest text-zinc-400 mb-2 font-sans">
                       <span>{key} intensity</span>
                       <span>{val}</span>
                     </div>

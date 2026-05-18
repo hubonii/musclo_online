@@ -23,8 +23,10 @@ jest.mock('react-router-dom', () => ({
 describe('App Root Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useAuthStore.mockReturnValue({ user: null, isAuthenticated: false });
-    useAuthStore.getState = jest.fn(() => ({ fetchUser: jest.fn() }));
+    const state = { user: null, isAuthenticated: false, fetchUser: jest.fn() };
+    useAuthStore.mockImplementation((selector) => typeof selector === 'function' ? selector(state) : state);
+    useAuthStore.getState = jest.fn(() => state);
+    window.history.replaceState({}, '', '/');
   });
 
   test('renders without crashing and shows router content', () => {
@@ -33,14 +35,14 @@ describe('App Root Component', () => {
   });
 
   test('initializes offline sync when user is logged in', () => {
-    useAuthStore.mockReturnValue({ user: { id: 123 }, isAuthenticated: true });
+    const state = { user: { id: 123 }, isAuthenticated: true, fetchUser: jest.fn() };
+    useAuthStore.mockImplementation((selector) => typeof selector === 'function' ? selector(state) : state);
     render(<App />);
     expect(initOfflineSync).toHaveBeenCalledWith(123);
   });
 
   test('extracts and saves token from URL search params', () => {
-    delete window.location;
-    window.location = new URL('https://musclo.tech/?token=url-token');
+    window.history.replaceState({}, '', '/?token=url-token');
     const setItemSpy = jest.spyOn(Storage.prototype, 'setItem');
     const fetchUserMock = jest.fn();
     useAuthStore.getState.mockReturnValue({ fetchUser: fetchUserMock });

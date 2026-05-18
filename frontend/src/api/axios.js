@@ -3,6 +3,7 @@
  */
 import axios from 'axios';
 import { useAuthStore } from '../stores/useAuthStore';
+import { redirectTo } from './navigation';
 
 
 export const API_URL = import.meta.env.VITE_API_URL || 'https://musclo-online.vercel.app';
@@ -23,24 +24,25 @@ apiClient.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
+}, (error) => {
+    return Promise.reject(error);
 });
 
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-
             useAuthStore.getState().reset();
             const publicPaths = ['/', '/home', '/login', '/register'];
             if (!publicPaths.includes(window.location.pathname)) {
-                window.location.href = '/login';
+                redirectTo('/login');
             }
         }
 
         if (error.response?.status === 403 && error.response?.data?.needs_verification) {
             const publicPaths = ['/', '/home', '/verify-email'];
             if (!publicPaths.includes(window.location.pathname)) {
-                window.location.href = '/verify-email';
+                redirectTo('/verify-email');
             }
         }
         if (error.response && error.response.status >= 500) {

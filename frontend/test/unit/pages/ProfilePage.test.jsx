@@ -74,8 +74,14 @@ describe('ProfilePage', () => {
     jest.clearAllMocks();
     useNavigate.mockReturnValue(navigate);
     useParams.mockReturnValue({});
-    useAuthStore.mockImplementation((selector) => selector({ user: { id: 42 } }));
-    useThemeStore.mockImplementation((selector) => selector({ theme: 'dark', toggleTheme: jest.fn() }));
+    useAuthStore.mockImplementation((selector) => {
+      const state = { user: { id: 42 }, logout: jest.fn() };
+      return typeof selector === 'function' ? selector(state) : state;
+    });
+    useThemeStore.mockImplementation((selector) => {
+      const state = { theme: 'dark', toggleTheme: jest.fn() };
+      return typeof selector === 'function' ? selector(state) : state;
+    });
     useAchievements.mockReturnValue({ data: [], isLoading: false });
     useSharedWorkouts.mockReturnValue({ data: [], isLoading: false });
   });

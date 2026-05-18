@@ -79,6 +79,16 @@ jest.mock('../../../src/components/ui/Avatar', () => ({
   default: () => <div>Avatar</div>,
 }));
 
+jest.mock('../../../src/components/ui/Modal', () => ({
+  __esModule: true,
+  default: ({ children, open, title }) => open ? (
+    <div data-testid="mock-modal">
+      <h2>{title}</h2>
+      {children}
+    </div>
+  ) : null,
+}));
+
 jest.mock('../../../src/components/ui/Input', () => ({
   __esModule: true,
   default: ({ label, value, onChange, placeholder, disabled }) => (

@@ -6,7 +6,7 @@ const LandingFooter = () => {
   return (
     <footer className="bg-white dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 py-24">
 
-      <div className="container mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-16 md:gap-8 mb-24">
           
           {/* Brand Info */}
@@ -26,27 +26,27 @@ const LandingFooter = () => {
 
           {/* Links 1 */}
           <div>
-            <h4 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-600 mb-8 font-display">System</h4>
+            <h4 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-600 mb-8 font-sans">System</h4>
             <ul className="space-y-4">
-              <li><a href="#systems" className="text-base font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-display">Systems</a></li>
-              <li><a href="#intelligence" className="text-base font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-display">Intelligence</a></li>
-              <li><a href="#methodology" className="text-base font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-display">Methodology</a></li>
+              <li><a href="#systems" className="text-base font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-sans">Systems</a></li>
+              <li><a href="#intelligence" className="text-base font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-sans">Intelligence</a></li>
+              <li><a href="#methodology" className="text-base font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-sans">Methodology</a></li>
             </ul>
           </div>
 
           {/* Links 2 */}
           <div>
-            <h4 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-600 mb-8 font-display">Legal</h4>
+            <h4 className="text-[11px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-600 mb-8 font-sans">Legal</h4>
             <ul className="space-y-4">
-              <li><a href="/privacy" className="text-sm font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-display">Privacy</a></li>
-              <li><a href="/terms" className="text-sm font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-display">Terms</a></li>
+              <li><a href="/privacy" className="text-sm font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-sans">Privacy</a></li>
+              <li><a href="/terms" className="text-sm font-black text-zinc-950 dark:text-white hover:text-primary transition-colors uppercase font-sans">Terms</a></li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="pt-10 border-t border-zinc-200 dark:border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-8">
-          <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-600 font-display">
+          <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-600 font-sans">
             © 2026 Musclo Engine // EST 000.1
           </p>
           

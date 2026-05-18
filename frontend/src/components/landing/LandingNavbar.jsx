@@ -27,7 +27,7 @@ const LandingNavbar = () => {
     };
   }, [isOpen]);
 
-  const navItems = ['Systems', 'Intelligence', 'Methodology', 'Programs', 'Community', 'Analytics'];
+  const navItems = ['Intelligence', 'Methodology', 'Programs', 'Community', 'Analytics'];
 
   return (
     <nav 
@@ -54,7 +54,7 @@ const LandingNavbar = () => {
               <a 
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="text-sm font-black uppercase tracking-wide text-zinc-500 dark:text-zinc-400 hover:text-primary transition-colors font-display"
+                className="text-[11px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 hover:text-primary transition-colors font-sans"
               >
                 {item}
               </a>
@@ -64,7 +64,7 @@ const LandingNavbar = () => {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">System: Active</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400 font-sans">System: Active</span>
             </div>
             
             <button
@@ -129,7 +129,7 @@ const LandingNavbar = () => {
                   transition={{ delay: i * 0.05 }}
                   href={`#${item.toLowerCase()}`}
                   onClick={() => setIsOpen(false)}
-                  className="text-3xl sm:text-4xl font-black text-zinc-950 dark:text-white tracking-tighter uppercase font-display hover:text-primary transition-colors"
+                  className="text-3xl sm:text-4xl font-black text-zinc-950 dark:text-white tracking-tight uppercase font-sans hover:text-primary transition-colors"
                 >
                   {item}
                 </motion.a>
@@ -140,7 +140,7 @@ const LandingNavbar = () => {
               <Link 
                 to="/register"
                 onClick={() => setIsOpen(false)}
-                className="flex items-center justify-between w-full p-5 bg-primary text-white text-base font-black uppercase tracking-tighter shadow-neu-primary mb-4 rounded-2xl"
+                className="flex items-center justify-between w-full p-5 bg-primary text-white text-base font-black uppercase tracking-tighter shadow-neu-primary mb-4 rounded-2xl font-sans"
               >
                 Initialize System
                 <ArrowRight size={20} />
@@ -148,7 +148,7 @@ const LandingNavbar = () => {
               <Link 
                 to="/login"
                 onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center w-full p-5 bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white text-xs font-black uppercase tracking-widest rounded-2xl shadow-neu-sm"
+                className="flex items-center justify-center w-full p-5 bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white text-xs font-black uppercase tracking-widest rounded-2xl shadow-neu-sm font-sans"
               >
                 Access Account
               </Link>

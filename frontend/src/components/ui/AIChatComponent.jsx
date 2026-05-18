@@ -65,7 +65,7 @@ export default function AIChatComponent() {
     }, [isOpen, isAuthenticated]);
 
     useEffect(() => {
-        if (messagesEndRef.current)
+        if (messagesEndRef.current && typeof messagesEndRef.current.scrollIntoView === 'function')
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isLoading]);
 
@@ -83,14 +83,12 @@ export default function AIChatComponent() {
     const handleStop = () => {
         if (abortController) {
             abortController.abort();
-            setAbortController(null);
-            setLoading(false);
+            if (typeof setAbortController === 'function') setAbortController(null);
+            if (typeof setLoading === 'function') setLoading(false);
             const lastMsg = messages[messages.length - 1];
-            if (lastMsg?.id) finalizeStreaming(lastMsg.id);
+            if (lastMsg?.id && typeof finalizeStreaming === 'function') finalizeStreaming(lastMsg.id);
         }
     };
-
-
 
     const handleSend = async (msgOverride) => {
         const textToSend = msgOverride || input;
@@ -101,28 +99,29 @@ export default function AIChatComponent() {
         if (!textToSend.trim() || isLoading) return;
 
         if (!isAuthenticated) {
-            setError('Authentication required for Musclo AI access.');
+            if (typeof setError === 'function') setError('Authentication required for Musclo AI access.');
             return;
-        }setError(null);
+        }
+        if (typeof setError === 'function') setError(null);
 
-        addUserMessage(textToSend);
-        setLoading(true);
-        setError(null);
+        if (typeof addUserMessage === 'function') addUserMessage(textToSend);
+        if (typeof setLoading === 'function') setLoading(true);
+        if (typeof setError === 'function') setError(null);
 
-        const workoutContext = isActive ? {
+        const workoutContext = isActive && Array.isArray(exercises) ? {
             is_active: true,
             routine_name: routineName,
             exercises: exercises.map(ex => ({
                 id: ex.exerciseId,
                 name: ex.exerciseName,
-                sets_completed: ex.sets.filter(s => s.isCompleted).length,
-                total_sets: ex.sets.length,
-                current_weight: ex.sets[ex.sets.length - 1]?.weight_kg || 0
+                sets_completed: Array.isArray(ex.sets) ? ex.sets.filter(s => s.isCompleted).length : 0,
+                total_sets: Array.isArray(ex.sets) ? ex.sets.length : 0,
+                current_weight: Array.isArray(ex.sets) && ex.sets.length > 0 ? ex.sets[ex.sets.length - 1]?.weight_kg || 0 : 0
             }))
         } : null;
 
         const controller = new AbortController();
-        setAbortController(controller);
+        if (typeof setAbortController === 'function') setAbortController(controller);
 
         try {
             // Get CSRF from cookie safely
@@ -155,7 +154,7 @@ export default function AIChatComponent() {
 
             const reader = response.body?.getReader();
             const decoder = new TextDecoder();
-            const assistantMsgId = addAssistantMessage('');
+            const assistantMsgId = typeof addAssistantMessage === 'function' ? addAssistantMessage('') : 'temp-id';
             let fullContent = '';
 
             if (reader) {
@@ -171,28 +170,28 @@ export default function AIChatComponent() {
                         if (!trimmedLine.startsWith('data: ')) continue;
                         const data = trimmedLine.slice(6);
                         if (data === '[DONE]') {
-                            finalizeStreaming(assistantMsgId);
+                            if (typeof finalizeStreaming === 'function') finalizeStreaming(assistantMsgId);
                             break;
                         }
                         try {
                             const parsed = JSON.parse(data);
                             const content = parsed.content || '';
                             fullContent += content;
-                            setStreaming(assistantMsgId, fullContent);
+                            if (typeof setStreaming === 'function') setStreaming(assistantMsgId, fullContent);
                         } catch (e) { }
                     }
                 }
             }
             // Stream ended — finalize if not already done via [DONE] signal.
-            finalizeStreaming(assistantMsgId);
+            if (typeof finalizeStreaming === 'function') finalizeStreaming(assistantMsgId);
         } catch (err) {
             if (err instanceof Error && err.name !== 'AbortError') {
-                setError(err.message || 'Signal lost.');
+                if (typeof setError === 'function') setError(err.message || 'Signal lost.');
             }
         } finally {
             // Always unlock input when everything is done.
-            setLoading(false);
-            setAbortController(null);
+            if (typeof setLoading === 'function') setLoading(false);
+            if (typeof setAbortController === 'function') setAbortController(null);
         }
     };
 

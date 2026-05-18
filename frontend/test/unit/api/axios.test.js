@@ -1,5 +1,6 @@
 import { apiClient, apiGet, apiPost } from '../../../src/api/axios';
 import { useAuthStore } from '../../../src/stores/useAuthStore';
+import { redirectTo } from '../../../src/api/navigation';
 
 // --- Mocks ---
 jest.mock('../../../src/stores/useAuthStore', () => ({
@@ -8,21 +9,19 @@ jest.mock('../../../src/stores/useAuthStore', () => ({
   },
 }));
 
+jest.mock('../../../src/api/navigation', () => ({
+  redirectTo: jest.fn(),
+}));
+
 describe('Axios API Client', () => {
-  const originalLocation = window.location;
-
-  beforeAll(() => {
-    delete window.location;
-    window.location = { href: '', pathname: '' };
-  });
-
-  afterAll(() => {
-    window.location = originalLocation;
-  });
-
   beforeEach(() => {
+    window.history.replaceState({}, '', '/dashboard');
     localStorage.clear();
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    window.history.replaceState({}, '', '/');
   });
 
   test('request interceptor adds Authorization header if token exists', async () => {
@@ -56,7 +55,7 @@ describe('Axios API Client', () => {
     }
     
     expect(resetMock).toHaveBeenCalled();
-    expect(window.location.href).toBe('/login');
+    expect(redirectTo).toHaveBeenCalledWith('/login');
   });
 
   test('apiGet extracts data.data payload', async () => {

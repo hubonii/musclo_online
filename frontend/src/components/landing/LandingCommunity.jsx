@@ -21,12 +21,12 @@ const LandingCommunity = () => {
           >
             <div className="flex items-center gap-6 mb-8">
               <div className="w-16 h-[1px] bg-primary" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">
+              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-sans">
                 Global Network
               </span>
             </div>
 
-            <h2 className="text-6xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.85] mb-10 uppercase font-display">
+            <h2 className="text-5xl sm:text-6xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.85] mb-10 uppercase font-display">
               Join the <br />
               <span className="text-primary">Vanguard.</span>
             </h2>
@@ -37,12 +37,12 @@ const LandingCommunity = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {stats.map((stat, i) => (
-                <div key={i} className="p-8 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm flex items-center gap-6">
+                <div key={i} className="p-6 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-3xl shadow-neu-sm flex items-center gap-6">
                   <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center text-primary rounded-2xl">
                     <stat.icon size={22} />
                   </div>
                   <div>
-                    <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 font-display mb-1">{stat.label}</div>
+                    <div className="text-[9px] font-black uppercase tracking-widest text-zinc-400 font-sans mb-1">{stat.label}</div>
                     <div className="text-2xl font-black text-zinc-950 dark:text-white font-display">{stat.value}</div>
                   </div>
                 </div>
@@ -54,7 +54,7 @@ const LandingCommunity = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="relative p-8 md:p-12 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[3rem] shadow-neu"
+            className="relative p-6 md:p-12 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[3rem] shadow-neu"
           >
             {/* Mock Chat / Community UI */}
             <div className="space-y-6" role="log" aria-label="Recent community telemetry">
@@ -66,7 +66,7 @@ const LandingCommunity = () => {
                 <div key={i} className={`p-6 rounded-2xl shadow-neu-inset-focused bg-zinc-100 dark:bg-zinc-950 border border-white/5`}>
                   <div className="flex items-center gap-3 mb-3">
                     <div className={`w-2 h-2 rounded-full bg-${chat.color}`} />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 font-display">{chat.name}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 font-sans">{chat.name}</span>
                   </div>
                   <p className="text-sm font-medium text-zinc-950 dark:text-white font-sans leading-relaxed">
                     {chat.msg}

@@ -24,7 +24,7 @@ const LandingHero = () => {
           >
 
 
-            <h1 className="text-6xl md:text-8xl font-black text-zinc-950 dark:text-white leading-[0.85] tracking-tighter mb-8 uppercase font-display">
+            <h1 className="text-5xl sm:text-6xl md:text-8xl font-black text-zinc-950 dark:text-white leading-[0.85] tracking-tighter mb-8 uppercase font-display">
               Pro <br className="hidden md:block" />
               Athletic <br />
               Intelligence
@@ -71,7 +71,7 @@ const LandingHero = () => {
                 <div className="absolute inset-0 rounded-full bg-primary blur-[4px] animate-pulse opacity-75" />
                 <div className="relative w-2 h-2 rounded-full bg-primary" />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-display">System Sync</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-sans">System Sync</span>
             </motion.div>
 
             <motion.div
@@ -79,7 +79,7 @@ const LandingHero = () => {
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute bottom-20 -right-8 z-20 px-6 py-4 bg-app dark:bg-zinc-900 shadow-neu hidden sm:flex flex-col rounded-3xl border border-divider"
             >
-              <span className="text-[9px] font-black uppercase tracking-widest text-primary mb-1 font-display">Core Load</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-primary mb-1 font-sans">Core Load</span>
               <span className="text-2xl font-black text-zinc-950 dark:text-white font-mono tabular-nums">092.4</span>
             </motion.div>
 
@@ -100,7 +100,7 @@ const LandingHero = () => {
                       <div className="absolute inset-0 rounded-full bg-primary/10 blur-[15px]" />
                       <Target className="text-primary relative z-10" size={32} />
                     </div>
-                    <span className="mt-10 text-[10px] font-black text-primary uppercase tracking-[0.3em] font-display">Biometry Active</span>
+                    <span className="mt-10 text-[10px] font-black text-primary uppercase tracking-[0.3em] font-sans">Biometry Active</span>
                   </div>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-8 grid grid-cols-2 gap-4">

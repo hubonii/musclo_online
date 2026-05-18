@@ -1,15 +1,10 @@
 // Unit tests for HistoryPage — paginated workout lists and detail navigation.
+import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import HistoryPage from '../../../src/pages/HistoryPage';
-import { apiClient } from '../../../src/api/axios';
 import { useToast } from '../../../src/components/ui/Toast';
 import { useSettings } from '../../../src/hooks/useSettings';
-
-jest.mock('../../../src/api/axios', () => ({
-  apiClient: {
-    get: jest.fn(),
-  },
-}));
+import { useWorkoutHistory } from '../../../src/hooks/useWorkoutHistory';
 
 jest.mock('../../../src/components/ui/Toast', () => ({
   useToast: jest.fn(),
@@ -17,6 +12,10 @@ jest.mock('../../../src/components/ui/Toast', () => ({
 
 jest.mock('../../../src/hooks/useSettings', () => ({
   useSettings: jest.fn(),
+}));
+
+jest.mock('../../../src/hooks/useWorkoutHistory', () => ({
+  useWorkoutHistory: jest.fn(),
 }));
 
 jest.mock('framer-motion', () => ({
@@ -67,7 +66,7 @@ describe('HistoryPage', () => {
   });
 
   test('shows loading state on first render', () => {
-    apiClient.get.mockReturnValue(new Promise(() => {}));
+    useWorkoutHistory.mockReturnValue({ data: null, isLoading: true, error: null });
 
     render(<HistoryPage />);
 
@@ -75,7 +74,7 @@ describe('HistoryPage', () => {
   });
 
   test('shows empty state when no workout history exists', async () => {
-    apiClient.get.mockResolvedValue({ data: { data: [] } });
+    useWorkoutHistory.mockReturnValue({ data: [], isLoading: false, error: null });
 
     render(<HistoryPage />);
 
@@ -83,7 +82,7 @@ describe('HistoryPage', () => {
   });
 
   test('toasts an error when history fetch fails', async () => {
-    apiClient.get.mockRejectedValue(new Error('network'));
+    useWorkoutHistory.mockReturnValue({ data: [], isLoading: false, error: new Error('network') });
 
     render(<HistoryPage />);
 
@@ -93,20 +92,20 @@ describe('HistoryPage', () => {
   });
 
   test('opens workout detail modal when workout row is clicked', async () => {
-    apiClient.get.mockResolvedValue({
-      data: {
-        data: [
-          {
-            id: 17,
-            name: 'Leg Day',
-            started_at: '2026-04-18T10:00:00.000Z',
-            duration_seconds: 1800,
-            total_volume: '1500',
-            sets: [{ id: 1 }],
-            top_muscles: ['Quads'],
-          },
-        ],
-      },
+    useWorkoutHistory.mockReturnValue({
+      data: [
+        {
+          id: 17,
+          name: 'Leg Day',
+          started_at: '2026-04-18T10:00:00.000Z',
+          duration_seconds: 1800,
+          total_volume: '1500',
+          sets: [{ id: 1 }],
+          top_muscles: ['Quads'],
+        },
+      ],
+      isLoading: false,
+      error: null,
     });
 
     render(<HistoryPage />);

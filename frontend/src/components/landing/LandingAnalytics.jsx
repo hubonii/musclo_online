@@ -12,13 +12,13 @@ const LandingAnalytics = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="order-2 lg:order-1 relative p-8 md:p-12 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[3rem] shadow-neu"
+            className="order-2 lg:order-1 relative p-6 md:p-12 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[3rem] shadow-neu"
           >
             {/* Mock Analytics Dashboard */}
             <div className="flex items-center justify-between mb-12">
               <div className="flex items-center gap-4">
                 <BarChart2 size={20} className="text-primary" />
-                <span className="text-[11px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-display">Performance.Metric</span>
+                <span className="text-[11px] font-black uppercase tracking-widest text-zinc-950 dark:text-white font-sans">Performance.Metric</span>
               </div>
               <div className="px-4 py-1.5 bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest rounded-full border border-primary/20">
                 Live Data
@@ -36,7 +36,7 @@ const LandingAnalytics = () => {
                     <div className="w-10 h-10 bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center text-primary rounded-xl shadow-neu-sm">
                       <metric.icon size={18} />
                     </div>
-                    <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400 font-display">{metric.label}</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400 font-sans">{metric.label}</span>
                   </div>
                   <div className="text-4xl font-black text-zinc-950 dark:text-white tracking-tighter font-display mb-6">
                     {metric.value}
@@ -70,12 +70,12 @@ const LandingAnalytics = () => {
           >
             <div className="flex items-center gap-6 mb-8">
               <div className="w-16 h-[1px] bg-primary" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">
+              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-sans">
                 Advanced Telemetry
               </span>
             </div>
 
-            <h2 className="text-6xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.85] mb-10 uppercase font-display">
+            <h2 className="text-5xl sm:text-6xl md:text-8xl font-black text-zinc-950 dark:text-white tracking-tighter leading-[0.85] mb-10 uppercase font-display">
               Unrivaled <br />
               <span className="text-primary">Analytics.</span>
             </h2>
@@ -95,7 +95,7 @@ const LandingAnalytics = () => {
                   <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                   </div>
-                  <span className="text-base font-black text-zinc-950 dark:text-white uppercase tracking-widest font-display">
+                  <span className="text-base font-black text-zinc-950 dark:text-white uppercase tracking-widest font-sans">
                     {item}
                   </span>
                 </div>

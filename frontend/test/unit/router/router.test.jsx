@@ -19,18 +19,18 @@ describe('router config', () => {
   test('includes all protected app route areas', () => {
     const source = readRouterSource();
     [
-      "path: 'dashboard'",
-      "path: 'programs'",
-      "path: 'programs/:id'",
-      "path: 'programs/:programId/routines/:routineId'",
-      "path: 'workout'",
-      "path: 'workout/:routineId'",
-      "path: 'history'",
-      "path: 'history/:id'",
-      "path: 'exercises'",
-      "path: 'progress'",
-      "path: 'profile'",
-      "path: 'settings'",
+      "path: '/dashboard'",
+      "path: '/programs'",
+      "path: '/programs/:id'",
+      "path: '/programs/:programId/routines/:routineId'",
+      "path: '/workout'",
+      "path: '/workout/:routineId'",
+      "path: '/history'",
+      "path: '/history/:id'",
+      "path: '/exercises'",
+      "path: '/progress'",
+      "path: '/profile'",
+      "path: '/settings'",
     ].forEach((routeSnippet) => {
       expect(source).toContain(routeSnippet);
     });

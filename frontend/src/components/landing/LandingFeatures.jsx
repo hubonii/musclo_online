@@ -33,7 +33,7 @@ const LandingFeatures = () => {
           <div className="max-w-2xl">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-[1px] bg-primary" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-display">System Architecture</span>
+              <span className="text-[11px] font-black uppercase tracking-widest text-primary font-sans">System Architecture</span>
             </div>
             <h2 className="text-5xl md:text-7xl font-black text-zinc-950 dark:text-white tracking-tighter leading-none uppercase font-display">
               Built for <br /> 
@@ -53,7 +53,7 @@ const LandingFeatures = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className={`group p-12 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 transition-all hover:border-primary dark:hover:border-primary relative overflow-hidden rounded-[2.5rem] shadow-neu hover:shadow-neu-lg hover:-translate-y-1 ${
+              className={`group p-6 md:p-12 bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 transition-all hover:border-primary dark:hover:border-primary relative overflow-hidden rounded-[2.5rem] shadow-neu hover:shadow-neu-lg hover:-translate-y-1 ${
                 i === 0 || i === 3 ? 'md:col-span-7' : 'md:col-span-5'
               }`}
             >
@@ -70,7 +70,7 @@ const LandingFeatures = () => {
               </p>
               
               <div className="mt-12 pt-8 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 font-display">Module.0{i + 1}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 font-sans">Module.0{i + 1}</span>
                 <div className="w-8 h-[1px] bg-zinc-200 dark:bg-zinc-800 group-hover:w-16 group-hover:bg-primary transition-all" />
               </div>
 
